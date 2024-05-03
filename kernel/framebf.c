@@ -2,6 +2,7 @@
 #include "mbox.h"
 #include "../uart/uart0.h"
 #include "../uart/uart1.h"
+#include "image.h"
 
 //Use RGBA32 (32 bits for each pixel)
 #define COLOR_DEPTH 32
@@ -72,7 +73,7 @@ uart_puts("Got allocated Frame Buffer at RAM physical address: ");
 uart_hex(mBuf[28]);
 uart_puts("\n");
 uart_puts("Frame Buffer Size (bytes): ");
-uart_dec(mBuf[29]);
+uart_hex(mBuf[29]); //????????????????????????????????? in running at the beginning but now have to change back to hex?
 uart_puts("\n");
 width = mBuf[5]; // Actual physical width
 height = mBuf[6]; // Actual physical height
@@ -103,4 +104,15 @@ drawPixelARGB32(x, y, attr);
 else if (fill)
 drawPixelARGB32(x, y, attr);
 }
+}
+
+void displayImage(int x, int y, const unsigned long *image, int width, int height) {
+    for (int j = 0; j < height; j++) {
+        for (int i = 0; i < width; i++) {
+            // Calculate the index for the pixel data
+            int index = j * width + i;
+            // Draw the pixel at the corresponding (x, y) position
+            drawPixelARGB32(x + i, y + j, image[index]);
+        }
+    }
 }

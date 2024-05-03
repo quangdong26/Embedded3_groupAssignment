@@ -3,6 +3,7 @@
 #include "gpio.h"
 #include "../uart/uart1.h"
 #include "../uart/uart0.h"
+#include "image.h"
 
 /* Mailbox Data Buffer (each element is 32-bit)*/
 /*
