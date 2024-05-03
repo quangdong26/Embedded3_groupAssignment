@@ -116,3 +116,13 @@ void displayImage(int x, int y, const unsigned long *image, int width, int heigh
         }
     }
 }
+
+void deleteImage(int x, int y, int width, int height) { // to move the image: simply delete and replace a new image with new postion
+    unsigned int backgroundColor = 0x00000000; // ARGB value for black
+    for (int j = 0; j < height; j++) {
+        for (int i = 0; i < width; i++) {
+            // Overwrite the pixel at the corresponding (x, y) position with the background color
+            drawPixelARGB32(x + i, y + j, backgroundColor);
+        }
+    }
+}
