@@ -24,7 +24,7 @@ void main()
     drawRectARGB32(250,250,400,400,0x00FFFF00,1); //YELLOW
     drawPixelARGB32(300, 300, 0x00FF0000); //RED
     
-    displayImage(0, 0, image , 600, 600);
+    displayImage(0, 0, image , 732, 587);
 
 
     // echo everything back
