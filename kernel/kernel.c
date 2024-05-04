@@ -55,7 +55,7 @@ void cli()
         displayImage(0, 0, epd_bitmap_allArray[0], VIDEO_WIDTH, VIDEO_HEIGHT);
         for (int i = 1; i < 26; i++)
         {
-            wait_msec(200000);
+            wait_msec(100000);
             deleteImage(0, 0, VIDEO_WIDTH,  VIDEO_HEIGHT);
             displayImage(0, 0, epd_bitmap_allArray[i] , VIDEO_WIDTH,  VIDEO_HEIGHT);
         }
