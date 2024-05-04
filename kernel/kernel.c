@@ -9,8 +9,8 @@
 // #define MAX_CMD_SIZE 100
 #define IMAGE_WIDTH 732
 #define IMAGE_HEIGHT 578
-#define VIDEO_WIDTH 1280
-#define VIDEO_HEIGHT 720
+#define VIDEO_WIDTH 320
+#define VIDEO_HEIGHT 240
 
 int currentY = 0;
 int currentX = 0;
@@ -52,13 +52,12 @@ void cli()
     else if (c == 'v')
     {
         deleteImage(currentX, currentY, IMAGE_WIDTH, IMAGE_HEIGHT);
-        displayImage(0, 0, f001, VIDEO_WIDTH, VIDEO_HEIGHT);
-        for (int i = 1; i < 2; i++)
+        displayImage(0, 0, epd_bitmap_allArray[0], VIDEO_WIDTH, VIDEO_HEIGHT);
+        for (int i = 1; i < 26; i++)
         {
-            unsigned long frame = frameArray[i];
             wait_msec(200000);
-            deleteImage(0, 0, VIDEO_WIDTH, VIDEO_HEIGHT);
-            displayImage(0, 0, frame, VIDEO_WIDTH, VIDEO_HEIGHT);
+            deleteImage(0, 0, VIDEO_WIDTH,  VIDEO_HEIGHT);
+            displayImage(0, 0, epd_bitmap_allArray[i] , VIDEO_WIDTH,  VIDEO_HEIGHT);
         }
     }
 }
