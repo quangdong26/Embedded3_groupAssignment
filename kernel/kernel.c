@@ -79,11 +79,15 @@ void main()
     // drawRectARGB32(200,200,400,400,0x000000CC,1); //BLUE
     // drawRectARGB32(250,250,400,400,0x00FFFF00,1); //YELLOW
     // drawPixelARGB32(300, 300, 0x00FF0000); //RED
-    drawString(300, 70, "Team 1 ", 0xFFFFFFFF, 2);     // white color, zoom factor of 3
-    drawString(300, 140, "Shirin Shujaa", 0xFFFF00FF, 2);     // Pink color, zoom factor of 3
-    drawString(300, 210, "Nguyen Ngoc Luong", 0x000000FF, 2); // Blue color, zoom factor of 3
-    drawString(300, 280, "Hunh Quang Dong", 0x0000FF00, 2);   // Green color, zoom factor of 3
-    drawString(300, 350, "Dinh Ngoc Minh", 0x00FFFF00, 2);    // Yellow color, zoom factor of 3
+
+    drawWhiteSquare(230, 80, 550);
+
+
+    drawString(350, 100, "Team 1 : ", 0xFFFFFFFF, 4);     // white color, zoom factor of 3
+    drawString(350, 200, "Shirin Shujaa", 0xFFFF99FF, 3);     // Pink color, zoom factor of 3
+    drawString(350, 300, "Nguyen Ngoc Luong", 0x0000FFFF, 3); // Blue color, zoom factor of 3
+    drawString(350, 400, "Hunh Quang Dong", 0x0000FF00, 3);   // Green color, zoom factor of 3
+    drawString(350, 500, "Dinh Ngoc Minh", 0x00FFFF00, 3);    // Yellow color, zoom factor of 3
 
     // displayImage(currentX, currentY, image , IMAGE_WIDTH,  IMAGE_HEIGHT); //starting position (x,y), image, width, height
 

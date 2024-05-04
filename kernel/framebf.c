@@ -107,6 +107,15 @@ drawPixelARGB32(x, y, attr);
 }
 }
 
+void drawWhiteSquare(int x, int y, int size) {
+    // Draw top dashes
+    drawRectARGB32(x - 1, y - 1, x + size, y - 1, 0xFFFFFFFF, 1); // Top border
+    // Draw left and right borders
+    drawRectARGB32(x - 1, y, x - 1, y + size, 0xFFFFFFFF, 1); // Left border
+    drawRectARGB32(x + size, y, x + size, y + size, 0xFFFFFFFF, 1); // Right border
+    // Draw bottom dashes
+    drawRectARGB32(x - 1, y + size, x + size, y + size, 0xFFFFFFFF, 1); // Bottom border
+}
 void displayImage(int x, int y, const unsigned long *image, int width, int height) {
     for (int j = 0; j < height; j++) {
         for (int i = 0; i < width; i++) {

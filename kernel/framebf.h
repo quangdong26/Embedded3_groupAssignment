@@ -8,3 +8,4 @@ void deleteImage(int x, int y, int width, int height);
 //task 3 
 void drawChar(unsigned char ch, int x, int y, unsigned int attr, int zoom);
 void drawString(int x, int y, char *str, unsigned int attr, int zoom);
+void drawWhiteSquare(int x, int y, int size);
