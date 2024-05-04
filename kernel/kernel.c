@@ -74,8 +74,9 @@ void main()
     // drawRectARGB32(200,200,400,400,0x000000CC,1); //BLUE
     // drawRectARGB32(250,250,400,400,0x00FFFF00,1); //YELLOW
     // drawPixelARGB32(300, 300, 0x00FF0000); //RED
-    
-    displayImage(currentX, currentY, image , IMAGE_WIDTH,  IMAGE_HEIGHT); //starting position (x,y), image, width, height
+    drawString(0, 100, "Hello, love!", 0x0f); // Draw centered text on line 100
+
+   // displayImage(currentX, currentY, image , IMAGE_WIDTH,  IMAGE_HEIGHT); //starting position (x,y), image, width, height
 
     // echo everything back
     while(1) {

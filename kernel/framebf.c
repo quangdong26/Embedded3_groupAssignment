@@ -3,6 +3,7 @@
 #include "../uart/uart0.h"
 #include "../uart/uart1.h"
 #include "image.h"
+#include "font.h"
 
 //Use RGBA32 (32 bits for each pixel)
 #define COLOR_DEPTH 32
@@ -125,4 +126,40 @@ void deleteImage(int x, int y, int width, int height) { // to move the image: si
             drawPixelARGB32(x + i, y + j, backgroundColor);
         }
     }
+}
+
+void drawChar(unsigned char ch, int x, int y, unsigned char attr)
+{
+    unsigned char *glyph = (unsigned char *)&font + (ch < FONT_NUMGLYPHS ? ch : 0) * FONT_BPG;
+
+    for (int i=0;i<FONT_HEIGHT;i++) {
+	for (int j=0;j<FONT_WIDTH;j++) {
+	    unsigned char mask = 1 << j;
+	    unsigned char col = (*glyph & mask) ? attr & 0x0f : (attr & 0xf0) >> 4;
+
+	    drawPixel(x+j, y+i, col);
+	}
+	glyph += FONT_BPL;
+    }
+}
+
+void drawString(int x, int y, char *s, unsigned char attr)
+{
+
+    while (*s) {
+       if (*s == '\r') {
+          x = 0;
+       } else if(*s == '\n') {
+          x = 0; y += FONT_HEIGHT;
+       } else {
+	  drawChar(*s, x, y, attr);
+          x += FONT_WIDTH;
+       }
+       s++;
+    }
+}
+void drawPixel(int x, int y, unsigned char attr)
+{
+    int offs = (y * pitch) + (x * 4);
+    *((unsigned int*)(fb + offs)) = vgapal[attr & 0x0f];
 }
