@@ -1,3 +1,4 @@
+#define VIDEO_TOTAL_FRAME 26
 
 extern const unsigned long* epd_bitmap_allArray[26];
 

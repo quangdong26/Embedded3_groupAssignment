@@ -53,7 +53,7 @@ void cli()
     {
         deleteImage(currentX, currentY, IMAGE_WIDTH, IMAGE_HEIGHT);
         displayImage(0, 0, epd_bitmap_allArray[0], VIDEO_WIDTH, VIDEO_HEIGHT);
-        for (int i = 1; i < 26; i++)
+        for (int i = 1; i < VIDEO_TOTAL_FRAME; i++)
         {
             wait_msec(100000);
             deleteImage(0, 0, VIDEO_WIDTH,  VIDEO_HEIGHT);
