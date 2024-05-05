@@ -17,6 +17,7 @@
 int currentY = 0;
 int currentX = 0;
 int pastY = 0;
+int pastX = 0;
 // Assuming fd is the file descriptor of the opened file
 // buf is the buffer where the data will be stored
 // count is the number of bytes to read
@@ -48,12 +49,26 @@ void cli()
     {
         pastY = currentY;
         currentY += 100; // scroll down by 10 pixels
-        deleteImage(currentX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+        deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+        displayImage(currentX, currentY, image, IMAGE_WIDTH, IMAGE_HEIGHT);
+    }
+    else if (c == 'a')
+    {
+        pastX = currentX;
+        currentX -= 100; // scroll down by 10 pixels
+        deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+        displayImage(currentX, currentY, image, IMAGE_WIDTH, IMAGE_HEIGHT);
+    }
+    else if (c == 'd')
+    {
+        pastX = currentX;
+        currentX += 100; // scroll down by 10 pixels
+        deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
         displayImage(currentX, currentY, image, IMAGE_WIDTH, IMAGE_HEIGHT);
     }
     else if (c == 'v')
     {
-        deleteImage(currentX, currentY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+        deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
         displayImage(0, 0, epd_bitmap_allArray[0], VIDEO_WIDTH, VIDEO_HEIGHT);
         for (int i = 1; i < VIDEO_TOTAL_FRAME; i++)
         {
