@@ -6,6 +6,8 @@
 #include "video.h"
 #include "delay.h"
 
+#include "background1.h"
+
 // #define MAX_CMD_SIZE 100
 #define IMAGE_WIDTH 732
 #define IMAGE_HEIGHT 578
@@ -13,6 +15,8 @@
 #define VIDEO_HEIGHT 240
 #define ENTIRE_SCREEN 1500
 
+#define BACKGROUND1_HEIGHT 224
+#define BACKGROUND1_WIDTH 3268
 
 int currentY = 0;
 int currentX = 0;
@@ -77,6 +81,12 @@ void cli()
             displayImage(0, 0, epd_bitmap_allArray[i] , VIDEO_WIDTH,  VIDEO_HEIGHT);
         }
     }
+    else if (c == 'g')
+    {
+        deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+        displayImage(currentX, currentY, background1, BACKGROUND1_WIDTH, BACKGROUND1_HEIGHT);
+    }
+
 }
 
 void main()
