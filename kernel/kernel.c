@@ -7,6 +7,8 @@
 #include "delay.h"
 
 #include "background1.h"
+#include "background2.h"
+
 
 // #define MAX_CMD_SIZE 100
 #define IMAGE_WIDTH 732
@@ -17,6 +19,8 @@
 
 #define BACKGROUND1_HEIGHT 224
 #define BACKGROUND1_WIDTH 3268
+#define BACKGROUND2_HEIGHT 456
+#define BACKGROUND2_WIDTH 3390
 
 int currentY = 0;
 int currentX = 0;
@@ -85,6 +89,11 @@ void cli()
     {
         deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
         displayImage(currentX, currentY, background1, BACKGROUND1_WIDTH, BACKGROUND1_HEIGHT);
+    }
+    else if (c == 'n')
+    {
+        deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+        displayImage(currentX, currentY, background2, BACKGROUND2_WIDTH, BACKGROUND2_HEIGHT);
     }
 
 }
