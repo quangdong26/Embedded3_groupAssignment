@@ -1,15 +1,14 @@
-#include "mbox.h"
-#include "../uart/uart0.h"
-#include "../uart/uart1.h"
-#include "framebf.h"
-#include "image.h"
+#include "./mailbox/mbox.h"
+#include "./uart/uart0.h"
+#include "./uart/uart1.h"
+#include "./image/image.h"
 #include "../video/video.h"
-#include "delay.h"
+#include "./delay/delay.h"
 
-#include "background1.h"
-#include "background2.h"
+#include "./background/background1.h"
+#include "./game/game.h"
 
-#include "mario.h"
+
 
 
 // #define MAX_CMD_SIZE 100
@@ -19,10 +18,7 @@
 #define VIDEO_HEIGHT 240
 #define ENTIRE_SCREEN 3000
 
-#define BACKGROUND1_HEIGHT 224
-#define BACKGROUND1_WIDTH 3268
-#define BACKGROUND2_HEIGHT 456
-#define BACKGROUND2_WIDTH 3390
+
 
 int currentY = 0;
 int currentX = 0;
@@ -37,78 +33,85 @@ int MpastX = 0;
 // buf is the buffer where the data will be stored
 // count is the number of bytes to read
 
+void printTeamName(void) {
+    drawWhiteSquare(230, 80, 550);
+
+
+    drawString(350, 100, "Team 1 : ", 0xFFFFFFFF, 4);     // white color, zoom factor of 3
+    drawString(350, 200, "Shirin Shujaa", 0xFFFF99FF, 3);     // Pink color, zoom factor of 3
+    drawString(350, 300, "Nguyen Ngoc Luong", 0x0000FFFF, 3); // Blue color, zoom factor of 3
+    drawString(350, 400, "Hunh Quang Dong", 0x0000FF00, 3);   // Green color, zoom factor of 3
+    drawString(350, 500, "Dinh Ngoc Minh", 0x00FFFF00, 3);    // Yellow color, zoom factor of 3
+}
+
 void cli()
 {
     // static char cli_buffer[MAX_CMD_SIZE];
     // static int index = 0;
     char c = uart_getc();
-
-    // if (c != '\n' && c != 'w' && c != 's'){ // replace 127 with '\b' if using Window
-    // 	cli_buffer[index] = c; //Store into the buffer
-    // 	index++;
-    //     uart_sendc(c); //send c here to avoid tab appear
-    // } else if (c == '\n'){
-    // 	cli_buffer[index] = '\0';
-
-    // 	uart_puts("\nGot commands: ");
-    // 	uart_puts(cli_buffer);
-    // }
-    if (c == 'w')
-    {
-        pastY = currentY;
-        currentY -= 100; // scroll up by 10 pixels
-        deleteImage(currentX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
-        displayImage(currentX, currentY, image, IMAGE_WIDTH, IMAGE_HEIGHT);
-    }
-    else if (c == 's')
-    {
-        pastY = currentY;
-        currentY += 100; // scroll down by 10 pixels
-        deleteImage(currentX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
-        displayImage(currentX, currentY, image, IMAGE_WIDTH, IMAGE_HEIGHT);
-    }
-    else if (c == 'a')
-    {
-        pastX = currentX;
-        currentX -= 100; // scroll down by 10 pixels
-        deleteImage(pastX, currentY, ENTIRE_SCREEN, ENTIRE_SCREEN);
-        displayImage(currentX, currentY, image, IMAGE_WIDTH, IMAGE_HEIGHT);
-    }
-    else if (c == 'd')
-    {
-        pastX = currentX;
-        currentX += 100; // scroll down by 10 pixels
-        deleteImage(pastX, currentY, ENTIRE_SCREEN, ENTIRE_SCREEN);
-        displayImage(currentX, currentY, image, IMAGE_WIDTH, IMAGE_HEIGHT);
-    }
-    else if (c == 'v')
-    {
-        deleteImage(currentX, currentY, ENTIRE_SCREEN, ENTIRE_SCREEN);
-        displayImage(0, 0, epd_bitmap_allArray[0], VIDEO_WIDTH, VIDEO_HEIGHT);
-        for (int i = 1; i < VIDEO_TOTAL_FRAME; i++)
+    if(gameState == GAME_OFF) {
+        if (c == 'w')
         {
-            wait_msec(100000);
-            deleteImage(0, 0, VIDEO_WIDTH,  VIDEO_HEIGHT);
-            displayImage(0, 0, epd_bitmap_allArray[i] , VIDEO_WIDTH,  VIDEO_HEIGHT);
+            pastY = currentY;
+            currentY -= 100; // scroll up by 10 pixels
+            deleteImage(currentX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+            displayImage(currentX, currentY, image, IMAGE_WIDTH, IMAGE_HEIGHT);
+        }
+        else if (c == 's')
+        {
+            pastY = currentY;
+            currentY += 100; // scroll down by 10 pixels
+            deleteImage(currentX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+            displayImage(currentX, currentY, image, IMAGE_WIDTH, IMAGE_HEIGHT);
+        }
+        else if (c == 'a')
+        {
+            pastX = currentX;
+            currentX -= 100; // scroll down by 10 pixels
+            deleteImage(pastX, currentY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+            displayImage(currentX, currentY, image, IMAGE_WIDTH, IMAGE_HEIGHT);
+        }
+        else if (c == 'd')
+        {
+            pastX = currentX;
+            currentX += 100; // scroll down by 10 pixels
+            deleteImage(pastX, currentY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+            displayImage(currentX, currentY, image, IMAGE_WIDTH, IMAGE_HEIGHT);
+        }
+        else if (c == 'v')
+        {
+            deleteImage(currentX, currentY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+            displayImage(0, 0, epd_bitmap_allArray[0], VIDEO_WIDTH, VIDEO_HEIGHT);
+            for (int i = 1; i < VIDEO_TOTAL_FRAME; i++)
+            {
+                wait_msec(100000);
+                deleteImage(0, 0, VIDEO_WIDTH,  VIDEO_HEIGHT);
+                displayImage(0, 0, epd_bitmap_allArray[i] , VIDEO_WIDTH,  VIDEO_HEIGHT);
+            }
+        }
+        else if (c == 'g')
+        {
+            deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+            displayImage(currentX, currentY, background1, BACKGROUND1_WIDTH, BACKGROUND1_HEIGHT);
+        }
+        else if (c == 'n')
+        {
+            deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+            displayImage(currentX, currentY, background2, BACKGROUND2_WIDTH, BACKGROUND2_HEIGHT);
+        }
+        else if (c == 'm') 
+        {
+            gameState = GAME_ON;
+            // MpastX = McurrentX;
+            // McurrentX += 100;
+            // deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+            // displayImage(currentX, currentY, background2, BACKGROUND2_WIDTH, BACKGROUND2_HEIGHT);
+            // displayObject(McurrentX, McurrentY, marioImg, 206, 233);
         }
     }
-    else if (c == 'g')
-    {
-        deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
-        displayImage(currentX, currentY, background1, BACKGROUND1_WIDTH, BACKGROUND1_HEIGHT);
-    }
-    else if (c == 'n')
-    {
-        deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
-        displayImage(currentX, currentY, background2, BACKGROUND2_WIDTH, BACKGROUND2_HEIGHT);
-    }
-    else if (c == 'm') 
-    {
-        MpastX = McurrentX;
-        McurrentX += 100;
-        deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
-        displayImage(currentX, currentY, background2, BACKGROUND2_WIDTH, BACKGROUND2_HEIGHT);
-        displayObject(McurrentX, McurrentY, marioImg, 206, 233);
+
+    if(gameState == GAME_ON) {
+        gameOn(c);
     }
 
 }
@@ -118,37 +121,15 @@ void main()
     // set up serial console
     uart_init();
     // say hello
-    uart_puts("Hello World!\n");
-
+    
     // Initialize frame buffer
     framebf_init(); // ini() again if you want to set the window screen to another size
-
-    // Draw something on the screen
-    // drawRectARGB32(100,100,400,400,0x00AA0000,1); //RED
-    // drawRectARGB32(150,150,400,400,0x0000BB00,1); //GREEN
-    // drawRectARGB32(200,200,400,400,0x000000CC,1); //BLUE
-    // drawRectARGB32(250,250,400,400,0x00FFFF00,1); //YELLOW
-    // drawPixelARGB32(300, 300, 0x00FF0000); //RED
-
-    drawWhiteSquare(230, 80, 550);
-
-
-    drawString(350, 100, "Team 1 : ", 0xFFFFFFFF, 4);     // white color, zoom factor of 3
-    drawString(350, 200, "Shirin Shujaa", 0xFFFF99FF, 3);     // Pink color, zoom factor of 3
-    drawString(350, 300, "Nguyen Ngoc Luong", 0x0000FFFF, 3); // Blue color, zoom factor of 3
-    drawString(350, 400, "Hunh Quang Dong", 0x0000FF00, 3);   // Green color, zoom factor of 3
-    drawString(350, 500, "Dinh Ngoc Minh", 0x00FFFF00, 3);    // Yellow color, zoom factor of 3
-
+    printTeamName();
     // displayImage(currentX, currentY, image , IMAGE_WIDTH,  IMAGE_HEIGHT); //starting position (x,y), image, width, height
 
     // echo everything back
     while (1)
     {
-
-        // //read each char
-        // char c = uart_getc();
-        // //send back
-        // uart_sendc(c);
         cli();
     }
 }
