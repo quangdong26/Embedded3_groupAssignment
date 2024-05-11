@@ -50,7 +50,7 @@ void cli()
     {
         pastY = currentY;
         currentY -= 100; // scroll up by 10 pixels
-        deleteImage(currentX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+        deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
         displayImage(currentX, currentY, image, IMAGE_WIDTH, IMAGE_HEIGHT);
     }
     else if (c == 's')
@@ -106,7 +106,7 @@ void main()
     uart_puts("Hello World!\n");
 
     // Initialize frame buffer
-    framebf_init();
+    framebf_init(); // ini() again if you want to set the window screen to another size
 
     // Draw something on the screen
     // drawRectARGB32(100,100,400,400,0x00AA0000,1); //RED
