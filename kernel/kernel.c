@@ -3,7 +3,7 @@
 #include "../uart/uart1.h"
 #include "framebf.h"
 #include "image.h"
-#include "video.h"
+#include "../video/video.h"
 #include "delay.h"
 
 #include "background1.h"
@@ -17,7 +17,7 @@
 #define IMAGE_HEIGHT 578
 #define VIDEO_WIDTH 320
 #define VIDEO_HEIGHT 240
-#define ENTIRE_SCREEN 1500
+#define ENTIRE_SCREEN 3000
 
 #define BACKGROUND1_HEIGHT 224
 #define BACKGROUND1_WIDTH 3268
@@ -57,33 +57,33 @@ void cli()
     {
         pastY = currentY;
         currentY -= 100; // scroll up by 10 pixels
-        deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+        deleteImage(currentX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
         displayImage(currentX, currentY, image, IMAGE_WIDTH, IMAGE_HEIGHT);
     }
     else if (c == 's')
     {
         pastY = currentY;
         currentY += 100; // scroll down by 10 pixels
-        deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+        deleteImage(currentX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
         displayImage(currentX, currentY, image, IMAGE_WIDTH, IMAGE_HEIGHT);
     }
     else if (c == 'a')
     {
         pastX = currentX;
         currentX -= 100; // scroll down by 10 pixels
-        deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+        deleteImage(pastX, currentY, ENTIRE_SCREEN, ENTIRE_SCREEN);
         displayImage(currentX, currentY, image, IMAGE_WIDTH, IMAGE_HEIGHT);
     }
     else if (c == 'd')
     {
         pastX = currentX;
         currentX += 100; // scroll down by 10 pixels
-        deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+        deleteImage(pastX, currentY, ENTIRE_SCREEN, ENTIRE_SCREEN);
         displayImage(currentX, currentY, image, IMAGE_WIDTH, IMAGE_HEIGHT);
     }
     else if (c == 'v')
     {
-        deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+        deleteImage(currentX, currentY, ENTIRE_SCREEN, ENTIRE_SCREEN);
         displayImage(0, 0, epd_bitmap_allArray[0], VIDEO_WIDTH, VIDEO_HEIGHT);
         for (int i = 1; i < VIDEO_TOTAL_FRAME; i++)
         {
