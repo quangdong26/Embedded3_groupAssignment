@@ -28,6 +28,11 @@ int currentY = 0;
 int currentX = 0;
 int pastY = 0;
 int pastX = 0;
+
+int McurrentY = 0;
+int McurrentX = 0;
+int MpastY = 0;
+int MpastX = 0;
 // Assuming fd is the file descriptor of the opened file
 // buf is the buffer where the data will be stored
 // count is the number of bytes to read
@@ -99,9 +104,11 @@ void cli()
     }
     else if (c == 'm') 
     {
+        MpastX = McurrentX;
+        McurrentX += 100;
         deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
         displayImage(currentX, currentY, background2, BACKGROUND2_WIDTH, BACKGROUND2_HEIGHT);
-        displayObject(currentX, currentY, marioImg, 206, 233);
+        displayObject(McurrentX, McurrentY, marioImg, 206, 233);
     }
 
 }
