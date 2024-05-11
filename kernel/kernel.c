@@ -9,6 +9,8 @@
 #include "background1.h"
 #include "background2.h"
 
+#include "mario.h"
+
 
 // #define MAX_CMD_SIZE 100
 #define IMAGE_WIDTH 732
@@ -94,6 +96,12 @@ void cli()
     {
         deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
         displayImage(currentX, currentY, background2, BACKGROUND2_WIDTH, BACKGROUND2_HEIGHT);
+    }
+    else if (c == 'm') 
+    {
+        deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+        displayImage(currentX, currentY, background2, BACKGROUND2_WIDTH, BACKGROUND2_HEIGHT);
+        displayObject(currentX, currentY, marioImg, 206, 233);
     }
 
 }
