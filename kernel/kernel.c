@@ -16,7 +16,7 @@
 #define IMAGE_HEIGHT 578
 #define VIDEO_WIDTH 320
 #define VIDEO_HEIGHT 240
-#define ENTIRE_SCREEN 3000
+
 
 
 

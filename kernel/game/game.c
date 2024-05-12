@@ -1,5 +1,7 @@
 #include "./game.h"
 volatile int gameState = GAME_OFF;
+volatile int isGameInit = DEFAULT;
+mario_t mario_char;
 
 
 void renderBackGround(void) {
@@ -8,25 +10,48 @@ void renderBackGround(void) {
 }
 
 void renderPlayerInitPoint(void) {
-    displayObject(0, 0, marioImg, 203, 206);
+    mario_char.currentX = 0;
+    mario_char.currentY = 0;
+    displayObject(mario_char.currentX, mario_char.currentY, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+}
+
+void marioJump(void) {
+    mario_char.pastY = mario_char.currentY;
+    mario_char.currentY -= 100;
+    deleteImage(mario_char.currentX, mario_char.pastY, OBJECT_WIDTH, OBJECT_HEIGHT);
+    displayObject(mario_char.currentX, mario_char.currentY, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+}
+
+void reset(void) {
+    renderBackGround(); 
+    renderPlayerInitPoint();
 }
 
 void gameOn(char c) {
-    renderBackGround(); 
-    renderPlayerInitPoint();
+    // setting up the initial value for game
+    if(isGameInit == DEFAULT) {
+        renderBackGround(); 
+        renderPlayerInitPoint();
+        isGameInit = INIT;
+    }
+
     switch (c)
     {
-    case 'W':
+    case 'w':
         /* code */
+        marioJump();
         break;
-    case 'A':
+    case 'a':
         break;
-    case 'S':
+    case 's':
         break;
-    case 'D':
+    case 'd':
         break;
-
+    case 'r': // reset
+        reset();
+        break;
     default:
         break;
     }
-}
+
+} 
