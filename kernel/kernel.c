@@ -97,7 +97,7 @@ void cli()
         else if (c == 'n')
         {
             deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);
-            displayImage(currentX, currentY, background2, BACKGROUND2_WIDTH, BACKGROUND2_HEIGHT);
+            // displayImage(currentX, currentY, background2, BACKGROUND2_WIDTH, BACKGROUND2_HEIGHT);
         }
         else if (c == 'm') 
         {

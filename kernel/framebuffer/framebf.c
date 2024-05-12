@@ -96,13 +96,13 @@ void drawPixelARGB32(int x, int y, unsigned int attr)
 }
 void drawRectARGB32(int x1, int y1, int x2, int y2, unsigned int attr, int fill)
 {
-for (int y = y1; y <= y2; y++ )
-for (int x = x1; x <= x2; x++) {
-if ((x == x1 || x == x2) || (y == y1 || y == y2))
-drawPixelARGB32(x, y, attr);
-else if (fill)
-drawPixelARGB32(x, y, attr);
-}
+    for (int y = y1; y <= y2; y++ )
+        for (int x = x1; x <= x2; x++) {
+        if ((x == x1 || x == x2) || (y == y1 || y == y2))
+        drawPixelARGB32(x, y, attr);
+        else if (fill)
+        drawPixelARGB32(x, y, attr);
+        }
 }
 
 void drawWhiteSquare(int x, int y, int size) {
@@ -186,11 +186,10 @@ void drawPixel(int x, int y, unsigned int color)
     *((unsigned int*)(fb + offs)) = color;
 }
 
-void drawMario(int x, int y, unsigned int imagePixels[],int mheight, int mwidth) {
-    for (int y = 0; y < mheight; y++) {
-        for (int x = 0; x < mwidth; x++) {
-            unsigned int pixel = imagePixels[y * mwidth + x];
-            drawPixelARGB32(x, y, pixel);  
+void drawArrayPixel(int x, int y, unsigned int color, int width, int height) {
+     for(int i = x; i < x + width; i++) {
+        for(int j = y; j < y + height; j++) {
+            drawPixelARGB32(i, j, color);
         }
     }
 }

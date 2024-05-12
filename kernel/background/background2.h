@@ -1,1 +1,1 @@
-extern const unsigned long background2 [];
+extern const unsigned long ground [];

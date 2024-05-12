@@ -2,16 +2,27 @@
 volatile int gameState = GAME_OFF;
 volatile int isGameInit = DEFAULT;
 mario_t mario_char;
+ground_t ground_obj;
 
 
 void renderBackGround(void) {
     deleteImage(DEFAULT, DEFAULT, 3000, 3000);
-    displayImage(DEFAULT, DEFAULT, background2, BACKGROUND2_WIDTH, BACKGROUND2_HEIGHT);
+    // displayImage(0, 0, ground, 100, 100);
+    drawGround();
+}
+
+void drawGround(void) {
+    ground_obj.xPos = GND_X_POS;
+    ground_obj.yPos = GND_Y_POS;
+    ground_obj.width = WINDOW_WIDTH - ground_obj.xPos;
+    ground_obj.height = WINDOW_HEIGHT - ground_obj.yPos;
+
+    drawArrayPixel(ground_obj.xPos, ground_obj.yPos, 0xFFA500, ground_obj.width, ground_obj.height);
 }
 
 void renderPlayerInitPoint(void) {
-    mario_char.currentX = 0;
-    mario_char.currentY = 0;
+    mario_char.currentX = ground_obj.xPos;
+    mario_char.currentY = ground_obj.yPos - OBJECT_HEIGHT; // to get the offset of the mario image standing on ground
     displayObject(mario_char.currentX, mario_char.currentY, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
 }
 
