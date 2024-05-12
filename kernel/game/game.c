@@ -33,6 +33,13 @@ void marioJump(void) {
     displayObject(mario_char.currentX, mario_char.currentY, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
 }
 
+void marioMoveRight(void) {
+    mario_char.pastX = mario_char.currentX;
+    mario_char.currentX += 100;
+    deleteImage(mario_char.pastX, mario_char.currentY, OBJECT_WIDTH, OBJECT_HEIGHT);
+    displayObject(mario_char.currentX, mario_char.currentY, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+}
+
 void reset(void) {
     renderBackGround(); 
     renderPlayerInitPoint();
@@ -57,6 +64,7 @@ void gameOn(char c) {
     case 's':
         break;
     case 'd':
+        marioMoveRight();
         break;
     case 'r': // reset
         reset();

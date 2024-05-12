@@ -20,14 +20,13 @@
 
 //Define ground position
 #define GND_X_POS 0
-#define GND_Y_POS 400
+#define GND_Y_POS 600
 
 // game state
 extern volatile int gameState;
 extern volatile int isGameInit;
 
 // mario struct
-
 typedef struct {
     volatile int currentX;
     volatile int currentY;
