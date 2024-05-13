@@ -34,6 +34,14 @@ typedef struct {
     volatile int pastY;
 } mario_t;
 
+// mario action
+typedef enum {
+    MOVE_LEFT,
+    MOVE_RIGHT,
+    JUMP,
+    CROUCH
+} MarioAction;
+
 //ground struct
 typedef struct {
     volatile int xPos;
