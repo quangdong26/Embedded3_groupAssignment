@@ -129,7 +129,7 @@ void gameOn(char c) {
     {
     case 'w':
         /* code */
-        marioJump();
+        marioMovement(JUMP);
         break;
     case 'a': // Move left
         marioMovement(MOVE_LEFT);
