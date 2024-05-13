@@ -26,17 +26,42 @@ void renderPlayerInitPoint(void) {
     displayObject(mario_char.currentX, mario_char.currentY, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
 }
 
-void marioJump(void) {
-    mario_char.pastY = mario_char.currentY;
-    mario_char.currentY -= 100;
-    deleteImage(mario_char.currentX, mario_char.pastY, OBJECT_WIDTH, OBJECT_HEIGHT);
-    displayObject(mario_char.currentX, mario_char.currentY, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
-}
+void marioMovement(MarioAction action) {
+    int delta_x = 0;
+    int delta_y = 0;
 
-void marioMoveRight(void) {
-    mario_char.pastX = mario_char.currentX;
-    mario_char.currentX += 100;
-    deleteImage(mario_char.pastX, mario_char.currentY, OBJECT_WIDTH, OBJECT_HEIGHT);
+    // Determine the change in position based on the action
+    switch (action) {
+        case MOVE_RIGHT:
+            delta_x = 10; 
+            break;
+        case MOVE_LEFT:
+            delta_x = -10; 
+            break;
+        case JUMP:
+            delta_y = -10; 
+            break;
+        case CROUCH:
+            // Crouching does not change the x or y coordinates,
+            // it could change Mario's height or trigger a sprite change
+            // so I will continue this when we got the animation ready
+            break;
+    }
+
+    // Update Mario's position based on the action
+    if (delta_x != 0) {
+        mario_char.pastX = mario_char.currentX;
+        mario_char.currentX += delta_x;
+        deleteImage(mario_char.pastX, mario_char.currentY, OBJECT_WIDTH, OBJECT_HEIGHT);
+    }
+
+    if (delta_y != 0) {
+        mario_char.pastY = mario_char.currentY;
+        mario_char.currentY += delta_y;
+        deleteImage(mario_char.currentX, mario_char.pastY, OBJECT_WIDTH, OBJECT_HEIGHT);
+    }
+
+    // Display Mario's updated position
     displayObject(mario_char.currentX, mario_char.currentY, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
 }
 
@@ -53,24 +78,23 @@ void gameOn(char c) {
         isGameInit = INIT;
     }
 
-    switch (c)
-    {
-    case 'w':
-        /* code */
-        marioJump();
+    switch (c) {
+    case 'w': // Jump
+        marioMovement(JUMP);
         break;
-    case 'a':
+    case 'a': // Move left
+        marioMovement(MOVE_LEFT);
         break;
-    case 's':
+    case 's': // Crouch
+        marioMovement(CROUCH);
         break;
-    case 'd':
-        marioMoveRight();
+    case 'd': // Move right
+        marioMovement(MOVE_RIGHT);
         break;
-    case 'r': // reset
+    case 'r': // Reset
         reset();
         break;
     default:
         break;
     }
-
-} 
+}
