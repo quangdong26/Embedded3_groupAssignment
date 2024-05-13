@@ -1,6 +1,4 @@
 #include "./mailbox/mbox.h"
-#include "./uart/uart0.h"
-#include "./uart/uart1.h"
 #include "./image/image.h"
 #include "../video/video.h"
 #include "./delay/delay.h"
