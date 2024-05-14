@@ -38,7 +38,7 @@ void printTeamName(void) {
     drawString(350, 100, "Team 1 : ", 0xFFFFFFFF, 4);     // white color, zoom factor of 3
     drawString(350, 200, "Shirin Shujaa", 0xFFFF99FF, 3);     // Pink color, zoom factor of 3
     drawString(350, 300, "Nguyen Ngoc Luong", 0x0000FFFF, 3); // Blue color, zoom factor of 3
-    drawString(350, 400, "Hunh Quang Dong", 0x0000FF00, 3);   // Green color, zoom factor of 3
+    drawString(350, 400, "Huynh Quang Dong", 0x0000FF00, 3);   // Green color, zoom factor of 3
     drawString(350, 500, "Dinh Ngoc Minh", 0x00FFFF00, 3);    // Yellow color, zoom factor of 3
 }
 
