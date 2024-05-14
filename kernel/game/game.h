@@ -71,5 +71,6 @@ extern mario_t mario_char;
 extern ground_t ground_obj;
 extern obstacle_t mario_obstacle;
 
-
+// function prototype
 void gameOn(char c);
+void drawGround(void);
