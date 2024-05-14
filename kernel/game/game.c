@@ -79,19 +79,19 @@ void gameOn(char c) {
     }
 
     switch (c) {
-    case 'w': // Jump
+    case 'w':
         marioMovement(JUMP);
         break;
-    case 'a': // Move left
+    case 'a':
         marioMovement(MOVE_LEFT);
         break;
-    case 's': // Crouch
+    case 's':
         marioMovement(CROUCH);
         break;
-    case 'd': // Move right
+    case 'd':
         marioMovement(MOVE_RIGHT);
         break;
-    case 'r': // Reset
+    case 'r': // For debug purposes
         reset();
         break;
     default:

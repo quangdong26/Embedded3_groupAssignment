@@ -56,3 +56,4 @@ extern ground_t ground_obj;
 
 
 void gameOn(char c);
+void drawGround(void);
