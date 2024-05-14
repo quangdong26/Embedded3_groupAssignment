@@ -36,15 +36,29 @@ void renderPlayerInitPoint(void) {
     mario_char.height_size = OBJECT_HEIGHT;
     mario_char.width_size = OBJECT_WIDTH;
     mario_char.currentPos.X = ground_obj.groundPos.X;
-    mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // to get the offset of the mario image standing on ground
+    mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT;
+    mario_char.isJumping = 0;
+    mario_char.jumpVelocity = 0;
     displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+}
+
+void applyGravity(void) {
+    if (!mario_char.isJumping && mario_char.currentPos.Y < ground_obj.groundPos.Y - OBJECT_HEIGHT) {
+        mario_char.pastPos.Y = mario_char.currentPos.Y;
+        mario_char.currentPos.Y += GRAVITY;
+        if (mario_char.currentPos.Y > ground_obj.groundPos.Y - OBJECT_HEIGHT) {
+            mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Snap back to ground level
+            mario_char.isJumping = 0; // Stop jumping
+        }
+        deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
+        displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+    }
 }
 
 void marioMovement(MarioAction action) {
     int delta_x = 0;
-    int delta_y = 0;
 
-    // Determine the change in position based on the action
+    // Handle horizontal movement
     switch (action) {
         case MOVE_RIGHT:
             delta_x = 10; 
@@ -53,30 +67,40 @@ void marioMovement(MarioAction action) {
             delta_x = -10; 
             break;
         case JUMP:
-            delta_y = -10; 
+            // Only allow jumping if Mario is on the ground and not already jumping
+            if (!mario_char.isJumping && mario_char.currentPos.Y == ground_obj.groundPos.Y - OBJECT_HEIGHT) {
+                mario_char.isJumping = 1;
+                mario_char.jumpVelocity = JUMP_VELOCITY;
+            }
             break;
         case CROUCH:
-            // Crouching does not change the x or y coordinates,
-            // it could change Mario's height or trigger a sprite change
-            // so I will continue this when we got the animation ready
+            // Crouch action implement later
             break;
     }
 
-    // Update Mario's position based on the action
+    // Update horizontal position
     if (delta_x != 0) {
         mario_char.pastPos.X = mario_char.currentPos.X;
         mario_char.currentPos.X += delta_x;
         deleteImage(mario_char.pastPos.X, mario_char.currentPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
+        displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
     }
 
-    if (delta_y != 0) {
+    // Handle vertical movement if Mario is jumping
+    if (mario_char.isJumping) {
         mario_char.pastPos.Y = mario_char.currentPos.Y;
-        mario_char.currentPos.Y += delta_y;
-        deleteImage(mario_char.currentPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
-    }
+        mario_char.currentPos.Y -= mario_char.jumpVelocity; // Move Mario up
+        mario_char.jumpVelocity -= GRAVITY; // Reduce the jump velocity by gravity
 
-    // Display Mario's updated position
-    displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+        if (mario_char.currentPos.Y >= ground_obj.groundPos.Y - OBJECT_HEIGHT) {
+            mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Snap back to ground level
+            mario_char.isJumping = 0; // End the jump
+            mario_char.jumpVelocity = 0; // Reset jump velocity
+        }
+
+        deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
+        displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+    }
 }
 
 void reset(void) {
@@ -113,37 +137,40 @@ void *my_memcpy(void *dest, const void *src, size_t n) {
 }
 
 void gameOn(char c) {
-    // setting up the initial value for game
-    if(isGameInit == DEFAULT) {
+    // Handle initialization
+    if (isGameInit == DEFAULT) {
         renderBackGround(); 
         renderPlayerInitPoint();
-        drawObstacle(); // draw the obstacle
+        drawObstacle(); 
         isGameInit = INIT;
     }
 
-    if(checkCollision(sizeof(mario_char), sizeof(mario_obstacle))) {
+    // Apply gravity every cycle
+    applyGravity();
+
+    // Check for collisions
+    if (checkCollision(sizeof(mario_char), sizeof(mario_obstacle))) {
         reset();
     }
 
-    switch (c)
-    {
-    case 'w':
-        /* code */
-        marioMovement(JUMP);
-        break;
-    case 'a': // Move left
-        marioMovement(MOVE_LEFT);
-        break;
-    case 's': // Crouch
-        marioMovement(CROUCH);
-        break;
-    case 'd': // Move right
-        marioMovement(MOVE_RIGHT);
-        break;
-    case 'r': // Reset
-        reset();
-        break;
-    default:
-        break;
+    // Handle input
+    switch (c) {
+        case 'w':
+            marioMovement(JUMP);
+            break;
+        case 'a':
+            marioMovement(MOVE_LEFT);
+            break;
+        case 's':
+            marioMovement(CROUCH);
+            break;
+        case 'd':
+            marioMovement(MOVE_RIGHT);
+            break;
+        case 'r':
+            reset();
+            break;
+        default:
+            break;
     }
 }
