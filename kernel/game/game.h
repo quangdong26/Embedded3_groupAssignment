@@ -9,12 +9,12 @@
 #define ENTIRE_SCREEN 3000
 
 // define Left/right coordinate
-#define LEFT_CORNER 0
-#define RIGHT_CORNER 1
+#define TOP_LEFT_CORNER 0
+#define TOP_RIGHT_CORNER 1
 
 // define top/bot 
-#define TOP_CORNER 0
-#define BOT_CORNER 1
+#define BOTTOM_LEFT_CORNER 0
+#define BOTTOM_RIGHT_CORNER 1
 
 #define JUMP_VELOCITY 50 // Initial velocity for the jump
 #define GRAVITY 5 // Gravity strength

@@ -44,10 +44,14 @@ void drawObstacle(void) {
 }
 
 void renderPlayerInitPoint(void) {
-    initStatMario();
-    uart_puts("Bottom right corner X: ");
-    uart_dec(mario_char.marioHitBox.bottom_right_corner.X);
-    uart_puts(" bottom right corner Y: ");
+    mario_char.height_size = OBJECT_HEIGHT;
+    mario_char.width_size = OBJECT_WIDTH;
+    mario_char.currentPos.X = ground_obj.groundPos.X;
+
+    mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // to get the offset of the mario image standing on ground
+    mario_char.isJumping = 0;
+    mario_char.jumpVelocity = 0;
+    setHitBox(sizeof(mario_char));
     uart_dec(mario_char.marioHitBox.bottom_right_corner.Y);
     displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
 }
@@ -77,7 +81,8 @@ void applyGravity(void) {
         mario_char.pastPos.Y = mario_char.currentPos.Y;
         mario_char.currentPos.Y += GRAVITY;
         if (mario_char.currentPos.Y > ground_obj.groundPos.Y - OBJECT_HEIGHT) {
-           initStatMario();
+            mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Snap back to ground level
+            mario_char.isJumping = 0; // Stop jumping
         }
         deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
         displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
@@ -122,13 +127,20 @@ void marioMovement(MarioAction action) {
         mario_char.jumpVelocity -= GRAVITY; // Reduce the jump velocity by gravity
 
         if (mario_char.currentPos.Y >= ground_obj.groundPos.Y - OBJECT_HEIGHT) {
-            initStatMario(); // snap back to the ground
+            mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Snap back to ground level
+            mario_char.isJumping = 0; // End the jump
+            mario_char.jumpVelocity = 0; // Reset jump velocity
+            setHitBox(sizeof(mario_char));
         }
         updateObject(sizeof(mario_char), mario_char.jumpVelocity, action);
 
         deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
         displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
     }
+    uart_puts("\nBottom right corner X: ");
+    uart_dec(mario_char.marioHitBox.bottom_right_corner.X);
+    uart_puts(" bottom right corner Y: ");
+    uart_dec(mario_char.marioHitBox.bottom_right_corner.X);
 }
 
 void reset(void) {
@@ -153,19 +165,21 @@ int checkCollision(int obj1, int obj2) {
     return 0;
 }
 
-void changeBoxSize(coordinate_t *dat, int width_size, int height_size, int isLeft, int isTop) {
-    if(isLeft == LEFT_CORNER) {
-        dat->X = width_size + HITBOX_OFFSET;
-        
-    } else {
-        dat->X = width_size - HITBOX_OFFSET;
-    }
-
-    if(isTop == TOP_CORNER) {
-        dat->Y = height_size + HITBOX_OFFSET;
-    } else {
-        dat->Y = ground_obj.groundPos.Y - 20; // stick the bottom corner to ground
-    }
+// the hitbox must follow the coordinate of the position
+void changeBoxSize(coordinate_t *dat, coordinate_t object_pos, int width_size, int height_size, int coord_pos) {
+    if(coord_pos == TOP_LEFT_CORNER) {
+            dat->X = object_pos.X + HITBOX_OFFSET;
+            dat->Y = object_pos.Y + HITBOX_OFFSET;
+        } else if(coord_pos == TOP_RIGHT_CORNER) {
+            dat->X = (object_pos.X + width_size) - HITBOX_OFFSET;
+            dat->Y = object_pos.Y + HITBOX_OFFSET;
+        } else if(coord_pos == BOTTOM_LEFT_CORNER) {
+            dat->X = object_pos.X + HITBOX_OFFSET;
+            dat->Y = height_size - HITBOX_OFFSET;
+        } else if(coord_pos == BOTTOM_RIGHT_CORNER) {
+            dat->X = (object_pos.X + width_size) - HITBOX_OFFSET;
+            dat->Y = height_size - HITBOX_OFFSET;
+        }
 }
 
 /**
@@ -177,16 +191,16 @@ void setHitBox(int objLen) {
     {
     case sizeof(mario_char):
         /* code */
-        changeBoxSize(&mario_char.marioHitBox.bottom_left_corner, mario_char.width_size, mario_char.height_size, LEFT_CORNER, BOT_CORNER);
-        changeBoxSize(&mario_char.marioHitBox.bottom_right_corner, mario_char.width_size, mario_char.height_size, RIGHT_CORNER, BOT_CORNER);
-        changeBoxSize(&mario_char.marioHitBox.top_left_corner, mario_char.width_size, mario_char.height_size, LEFT_CORNER, TOP_CORNER);
-        changeBoxSize(&mario_char.marioHitBox.top_right_corner, mario_char.width_size, mario_char.height_size, RIGHT_CORNER, TOP_CORNER);
+        changeBoxSize(&mario_char.marioHitBox.bottom_left_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, TOP_LEFT_CORNER);
+        changeBoxSize(&mario_char.marioHitBox.bottom_right_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, TOP_RIGHT_CORNER);
+        changeBoxSize(&mario_char.marioHitBox.top_left_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, BOTTOM_LEFT_CORNER);
+        changeBoxSize(&mario_char.marioHitBox.top_right_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, BOTTOM_RIGHT_CORNER);
         break;
     case sizeof(mario_obstacle):
-        changeBoxSize(&mario_obstacle.obstacleHitBox.bottom_left_corner, mario_obstacle.width, mario_obstacle.height, LEFT_CORNER, BOT_CORNER);
-        changeBoxSize(&mario_obstacle.obstacleHitBox.bottom_right_corner, mario_obstacle.width, mario_obstacle.height, RIGHT_CORNER, BOT_CORNER);
-        changeBoxSize(&mario_obstacle.obstacleHitBox.top_left_corner, mario_obstacle.width, mario_obstacle.height, LEFT_CORNER, TOP_CORNER);
-        changeBoxSize(&mario_obstacle.obstacleHitBox.top_right_corner, mario_obstacle.width, mario_obstacle.height, RIGHT_CORNER, TOP_CORNER);
+        changeBoxSize(&mario_obstacle.obstacleHitBox.bottom_left_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBJECT_HEIGHT, TOP_LEFT_CORNER);
+        changeBoxSize(&mario_obstacle.obstacleHitBox.bottom_right_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBJECT_HEIGHT, TOP_RIGHT_CORNER);
+        changeBoxSize(&mario_obstacle.obstacleHitBox.top_left_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBJECT_HEIGHT, BOTTOM_LEFT_CORNER);
+        changeBoxSize(&mario_obstacle.obstacleHitBox.top_right_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBJECT_HEIGHT, BOTTOM_RIGHT_CORNER);
     default:
         break;
     }
