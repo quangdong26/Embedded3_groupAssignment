@@ -16,6 +16,10 @@
 #define TOP_CORNER 0
 #define BOT_CORNER 1
 
+#define JUMP_VELOCITY 50 // Initial velocity for the jump
+#define GRAVITY 5 // Gravity strength
+
+
 //State define
 #define DEFAULT 0
 #define GAME_ON 1
@@ -66,6 +70,8 @@ typedef struct {
     hitbox_t marioHitBox;
     volatile int width_size;
     volatile int height_size;
+    int isJumping; // Flag to check if Mario is currently jumping
+    int jumpVelocity; // Current jump velocity
 } mario_t;
 
 // mario action
@@ -96,5 +102,6 @@ extern mario_t mario_char;
 extern ground_t ground_obj;
 extern obstacle_t mario_obstacle;
 
-
 void gameOn(void);
+
+void drawGround(void);
