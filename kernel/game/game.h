@@ -8,8 +8,18 @@
 #define BACKGROUND1_WIDTH 3268
 #define ENTIRE_SCREEN 3000
 
-#define JUMP_VELOCITY 50 // Initial velocity for the jump
-#define GRAVITY 5 // Gravity strength
+// define Left/right coordinate
+#define TOP_LEFT_CORNER 0
+#define TOP_RIGHT_CORNER 1
+
+// define top/bot 
+#define BOTTOM_LEFT_CORNER 0
+#define BOTTOM_RIGHT_CORNER 1
+
+#define JUMP_VELOCITY 25  // Higher initial jump velocity, change this if you want mario to jump higher or lower
+#define GRAVITY 1         // Gravity applied each frame, change this if you want mario to fall faster or slower
+
+#define FRAME_DELAY 50000  // Update position every 50000 frames
 
 //State define
 #define DEFAULT 0
@@ -25,9 +35,16 @@
 #define OBSTACLE_WIDTH 150
 #define OBSTACLE_HEIGHT 150
 
+// hitbox offset
+#define HITBOX_OFFSET 20
+
 //Define ground position
 #define GND_X_POS 0
 #define GND_Y_POS 600
+
+// plus or minus new value
+#define INCREMENT_VAL 1
+#define DECREMENT_VAL -1
 
 // game state
 extern volatile int gameState;
@@ -39,10 +56,19 @@ typedef struct {
     volatile int Y;
 } coordinate_t;
 
+// hitbox struct
+typedef struct {
+    coordinate_t top_left_corner;
+    coordinate_t top_right_corner;
+    coordinate_t bottom_left_corner;
+    coordinate_t bottom_right_corner;
+} hitbox_t;
+
 // mario struct
 typedef struct {
     coordinate_t currentPos;
     coordinate_t pastPos;
+    hitbox_t marioHitBox;
     volatile int width_size;
     volatile int height_size;
     int isJumping; // Flag to check if Mario is currently jumping
@@ -68,6 +94,7 @@ typedef struct {
 //obstacle
 typedef struct {
     coordinate_t obstaclePos;
+    hitbox_t obstacleHitBox;
     volatile int width;
     volatile int height;
 } obstacle_t;
@@ -76,6 +103,7 @@ extern mario_t mario_char;
 extern ground_t ground_obj;
 extern obstacle_t mario_obstacle;
 
-// function prototype
-void gameOn(char c);
+// Function prototype
+void gameOn(void);
+void setHitBox(int objLen);
 void drawGround(void);
