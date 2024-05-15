@@ -102,6 +102,7 @@ extern mario_t mario_char;
 extern ground_t ground_obj;
 extern obstacle_t mario_obstacle;
 
+// Function prototype
 void gameOn(void);
-
+void setHitBox(int objLen);
 void drawGround(void);

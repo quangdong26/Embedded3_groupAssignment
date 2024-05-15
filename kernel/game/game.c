@@ -80,10 +80,12 @@ void applyGravity(void) {
     if (!mario_char.isJumping && mario_char.currentPos.Y < ground_obj.groundPos.Y - OBJECT_HEIGHT) {
         mario_char.pastPos.Y = mario_char.currentPos.Y;
         mario_char.currentPos.Y += GRAVITY;
+        
         if (mario_char.currentPos.Y > ground_obj.groundPos.Y - OBJECT_HEIGHT) {
             mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Snap back to ground level
             mario_char.isJumping = 0; // Stop jumping
         }
+        
         deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
         displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
     }
@@ -108,14 +110,15 @@ void marioMovement(MarioAction action) {
             }
             break;
         case CROUCH:
-            // Crouch action implement later
+            // Crouch action to be implemented later
             break;
     }
 
     // Update horizontal position
     if (delta_x != 0) {
         mario_char.pastPos.X = mario_char.currentPos.X;
-        updateObject(sizeof(mario_char), delta_x, action);
+        mario_char.currentPos.X += delta_x;
+
         deleteImage(mario_char.pastPos.X, mario_char.currentPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
         displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
     }
@@ -130,17 +133,19 @@ void marioMovement(MarioAction action) {
             mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Snap back to ground level
             mario_char.isJumping = 0; // End the jump
             mario_char.jumpVelocity = 0; // Reset jump velocity
-            setHitBox(sizeof(mario_char));
         }
-        updateObject(sizeof(mario_char), mario_char.jumpVelocity, action);
 
         deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
         displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
     }
+
+    // Update the hitbox after the movement
+    setHitBox(sizeof(mario_char));
+
     uart_puts("\nBottom right corner X: ");
     uart_dec(mario_char.marioHitBox.bottom_right_corner.X);
     uart_puts(" bottom right corner Y: ");
-    uart_dec(mario_char.marioHitBox.bottom_right_corner.X);
+    uart_dec(mario_char.marioHitBox.bottom_right_corner.Y);
 }
 
 void reset(void) {
