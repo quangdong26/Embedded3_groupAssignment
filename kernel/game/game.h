@@ -16,7 +16,7 @@
 #define BOTTOM_LEFT_CORNER 0
 #define BOTTOM_RIGHT_CORNER 1
 
-#define JUMP_VELOCITY 50 // Initial velocity for the jump
+#define JUMP_VELOCITY 10 // Initial velocity for the jump
 #define GRAVITY 5 // Gravity strength
 
 
@@ -61,6 +61,8 @@ typedef struct {
     coordinate_t top_right_corner;
     coordinate_t bottom_left_corner;
     coordinate_t bottom_right_corner;
+    volatile int height;
+    volatile int width;
 } hitbox_t;
 
 // mario struct

@@ -5,17 +5,6 @@ mario_t mario_char;
 ground_t ground_obj;
 obstacle_t mario_obstacle;
 
-void initStatMario(void) {
-    mario_char.height_size = OBJECT_HEIGHT;
-    mario_char.width_size = OBJECT_WIDTH;
-    mario_char.currentPos.X = ground_obj.groundPos.X;
-
-    mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // to get the offset of the mario image standing on ground
-    mario_char.isJumping = 0;
-    mario_char.jumpVelocity = 0;
-    setHitBox(sizeof(mario_char));
-}
-
 void clearScreen(void) {
     deleteImage(DEFAULT, DEFAULT, 3000, 3000);
 }
@@ -54,6 +43,7 @@ void renderPlayerInitPoint(void) {
     setHitBox(sizeof(mario_char));
     uart_dec(mario_char.marioHitBox.bottom_right_corner.Y);
     displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+    drawArrayPixel(mario_char.marioHitBox.top_left_corner.X, mario_char.marioHitBox.top_left_corner.Y, 0x00FF00, OBJECT_WIDTH, OBJECT_HEIGHT);
 }
 
 
@@ -112,12 +102,13 @@ void marioMovement(MarioAction action) {
             break;
     }
 
-    // Update horizontal position
+    // Update horizontal positio
     if (delta_x != 0) {
         mario_char.pastPos.X = mario_char.currentPos.X;
         updateObject(sizeof(mario_char), delta_x, action);
         deleteImage(mario_char.pastPos.X, mario_char.currentPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
         displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+        drawArrayPixel(mario_char.marioHitBox.top_left_corner.X, mario_char.marioHitBox.top_left_corner.Y, 0x00FF00, OBJECT_WIDTH, OBJECT_HEIGHT);
     }
 
     // Handle vertical movement if Mario is jumping
@@ -195,6 +186,9 @@ void setHitBox(int objLen) {
         changeBoxSize(&mario_char.marioHitBox.bottom_right_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, TOP_RIGHT_CORNER);
         changeBoxSize(&mario_char.marioHitBox.top_left_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, BOTTOM_LEFT_CORNER);
         changeBoxSize(&mario_char.marioHitBox.top_right_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, BOTTOM_RIGHT_CORNER);
+        // set size of the hitbox
+        mario_char.marioHitBox.width = mario_char.marioHitBox.top_right_corner.X - mario_char.marioHitBox.top_left_corner.X;
+        mario_char.marioHitBox.height = mario_char.marioHitBox.bottom_left_corner.Y - mario_char.marioHitBox.top_left_corner.Y;
         break;
     case sizeof(mario_obstacle):
         changeBoxSize(&mario_obstacle.obstacleHitBox.bottom_left_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBJECT_HEIGHT, TOP_LEFT_CORNER);
@@ -206,6 +200,7 @@ void setHitBox(int objLen) {
     }
     // set hitbox for other assets 
 }
+
 
 void gameOn(void) {
     char c = uart_getc();
