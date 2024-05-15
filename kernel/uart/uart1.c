@@ -131,3 +131,8 @@ void uart_dec(int num)
 
 	uart_puts(str);
 }
+
+int uart_has_data(void) {
+    // Implementation to check if UART has data, return 1 if data is available, 0 otherwise
+	return (AUX_MU_LSR & 0x01);
+}

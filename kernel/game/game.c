@@ -1,6 +1,8 @@
 #include "./game.h"
 volatile int gameState = GAME_OFF;
 volatile int isGameInit = DEFAULT;
+int frameCounter = 0;
+
 mario_t mario_char;
 ground_t ground_obj;
 obstacle_t mario_obstacle;
@@ -76,18 +78,39 @@ void updateObject(int objLen, int offset_val, MarioAction condition) {
     }   
 }
 
+void handleJumping(void) {
+    if (mario_char.isJumping) {
+        if (frameCounter % FRAME_DELAY == 0) {
+            mario_char.pastPos.Y = mario_char.currentPos.Y;
+            mario_char.currentPos.Y -= mario_char.jumpVelocity; // Move Mario up
+            mario_char.jumpVelocity -= GRAVITY; // Reduce the jump velocity by gravity
+
+            // End the jump when Mario lands
+            if (mario_char.currentPos.Y >= ground_obj.groundPos.Y - OBJECT_HEIGHT) {
+                mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Snap back to ground level
+                mario_char.isJumping = 0; // End the jump
+                mario_char.jumpVelocity = 0; // Reset jump velocity
+            }
+
+            // Update the screen
+            deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
+            displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+        }
+    }
+}
+
 void applyGravity(void) {
     if (!mario_char.isJumping && mario_char.currentPos.Y < ground_obj.groundPos.Y - OBJECT_HEIGHT) {
-        mario_char.pastPos.Y = mario_char.currentPos.Y;
-        mario_char.currentPos.Y += GRAVITY;
-        
-        if (mario_char.currentPos.Y > ground_obj.groundPos.Y - OBJECT_HEIGHT) {
-            mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Snap back to ground level
-            mario_char.isJumping = 0; // Stop jumping
+        if (frameCounter % FRAME_DELAY == 0) {
+            mario_char.pastPos.Y = mario_char.currentPos.Y;
+            mario_char.currentPos.Y += GRAVITY;
+            if (mario_char.currentPos.Y > ground_obj.groundPos.Y - OBJECT_HEIGHT) {
+                mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Snap back to ground level
+            }
+            // Update the screen
+            deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
+            displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
         }
-        
-        deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
-        displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
     }
 }
 
@@ -97,10 +120,10 @@ void marioMovement(MarioAction action) {
     // Handle horizontal movement
     switch (action) {
         case MOVE_RIGHT:
-            delta_x = 10; 
+            delta_x = 10;
             break;
         case MOVE_LEFT:
-            delta_x = -10; 
+            delta_x = -10;
             break;
         case JUMP:
             // Only allow jumping if Mario is on the ground and not already jumping
@@ -110,7 +133,7 @@ void marioMovement(MarioAction action) {
             }
             break;
         case CROUCH:
-            // Crouch action to be implemented later
+            // Crouch action implementation later
             break;
     }
 
@@ -123,25 +146,8 @@ void marioMovement(MarioAction action) {
         displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
     }
 
-    // Handle vertical movement if Mario is jumping
-    if (mario_char.isJumping) {
-        mario_char.pastPos.Y = mario_char.currentPos.Y;
-        mario_char.currentPos.Y -= mario_char.jumpVelocity; // Move Mario up
-        mario_char.jumpVelocity -= GRAVITY; // Reduce the jump velocity by gravity
-
-        if (mario_char.currentPos.Y >= ground_obj.groundPos.Y - OBJECT_HEIGHT) {
-            mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Snap back to ground level
-            mario_char.isJumping = 0; // End the jump
-            mario_char.jumpVelocity = 0; // Reset jump velocity
-        }
-
-        deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
-        displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
-    }
-
-    // Update the hitbox after the movement
+    // Update hitbox and print debug information
     setHitBox(sizeof(mario_char));
-
     uart_puts("\nBottom right corner X: ");
     uart_dec(mario_char.marioHitBox.bottom_right_corner.X);
     uart_puts(" bottom right corner Y: ");
@@ -213,16 +219,41 @@ void setHitBox(int objLen) {
 }
 
 void gameOn(void) {
-    char c = uart_getc();
     // setting up the initial value for game
-    if(isGameInit == DEFAULT) {
+    if (isGameInit == DEFAULT) {
         renderBackGround(); 
         renderPlayerInitPoint();
         drawObstacle(); 
         isGameInit = INIT;
     }
 
-    // Apply gravity every cycle
+    // Handle input
+    if (uart_has_data()) { // Check if there's input to read
+        char c = uart_getc();
+        switch (c) {
+            case 'w':
+                // Initiate jump if Mario is on the ground and not already jumping
+                marioMovement(JUMP);
+                break;
+            case 'a':
+                marioMovement(MOVE_LEFT);
+                break;
+            case 's':
+                marioMovement(CROUCH);
+                break;
+            case 'd':
+                marioMovement(MOVE_RIGHT);
+                break;
+            case 'r':
+                reset();
+                break;
+            default:
+                break;
+        }
+    }
+
+    // Apply gravity and handle jumping every cycle
+    handleJumping();
     applyGravity();
 
     // Check for collisions
@@ -230,24 +261,6 @@ void gameOn(void) {
         reset();
     }
 
-    // Handle input
-    switch (c) {
-        case 'w':
-            marioMovement(JUMP);
-            break;
-        case 'a':
-            marioMovement(MOVE_LEFT);
-            break;
-        case 's':
-            marioMovement(CROUCH);
-            break;
-        case 'd':
-            marioMovement(MOVE_RIGHT);
-            break;
-        case 'r':
-            reset();
-            break;
-        default:
-            break;
-    }
+    // Increment frame counter
+    frameCounter++;
 }
