@@ -122,9 +122,7 @@ void marioMovement(MarioAction action) {
         mario_char.jumpVelocity -= GRAVITY; // Reduce the jump velocity by gravity
 
         if (mario_char.currentPos.Y >= ground_obj.groundPos.Y - OBJECT_HEIGHT) {
-            mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Snap back to ground level
-            mario_char.isJumping = 0; // End the jump
-            mario_char.jumpVelocity = 0; // Reset jump velocity
+            initStatMario(); // snap back to the ground
         }
         updateObject(sizeof(mario_char), mario_char.jumpVelocity, action);
 
