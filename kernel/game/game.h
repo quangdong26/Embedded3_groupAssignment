@@ -8,6 +8,14 @@
 #define BACKGROUND1_WIDTH 3268
 #define ENTIRE_SCREEN 3000
 
+// define Left/right coordinate
+#define LEFT_CORNER 0
+#define RIGHT_CORNER 1
+
+// define top/bot 
+#define TOP_CORNER 0
+#define BOT_CORNER 1
+
 //State define
 #define DEFAULT 0
 #define GAME_ON 1
@@ -22,9 +30,16 @@
 #define OBSTACLE_WIDTH 150
 #define OBSTACLE_HEIGHT 150
 
+// hitbox offset
+#define HITBOX_OFFSET 20
+
 //Define ground position
 #define GND_X_POS 0
 #define GND_Y_POS 600
+
+// plus or minus new value
+#define INCREMENT_VAL 1
+#define DECREMENT_VAL -1
 
 // game state
 extern volatile int gameState;
@@ -36,10 +51,19 @@ typedef struct {
     volatile int Y;
 } coordinate_t;
 
+// hitbox struct
+typedef struct {
+    coordinate_t top_left_corner;
+    coordinate_t top_right_corner;
+    coordinate_t bottom_left_corner;
+    coordinate_t bottom_right_corner;
+} hitbox_t;
+
 // mario struct
 typedef struct {
     coordinate_t currentPos;
     coordinate_t pastPos;
+    hitbox_t marioHitBox;
     volatile int width_size;
     volatile int height_size;
 } mario_t;
@@ -63,6 +87,7 @@ typedef struct {
 //obstacle
 typedef struct {
     coordinate_t obstaclePos;
+    hitbox_t obstacleHitBox;
     volatile int width;
     volatile int height;
 } obstacle_t;
@@ -72,4 +97,4 @@ extern ground_t ground_obj;
 extern obstacle_t mario_obstacle;
 
 
-void gameOn(char c);
+void gameOn(void);

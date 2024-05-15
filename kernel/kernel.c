@@ -107,9 +107,9 @@ void cli()
             // displayObject(McurrentX, McurrentY, marioImg, 206, 233);
         }
     }
-
-    if(gameState == GAME_ON) {
-        gameOn(c);
+    // put the game in a loop
+    while(gameState == GAME_ON) {
+        gameOn();
     }
 
 }
