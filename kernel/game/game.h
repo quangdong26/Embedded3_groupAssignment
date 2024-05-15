@@ -16,9 +16,10 @@
 #define BOTTOM_LEFT_CORNER 0
 #define BOTTOM_RIGHT_CORNER 1
 
-#define JUMP_VELOCITY 10 // Initial velocity for the jump
-#define GRAVITY 5 // Gravity strength
+#define JUMP_VELOCITY 25  // Higher initial jump velocity, change this if you want mario to jump higher or lower
+#define GRAVITY 1         // Gravity applied each frame, change this if you want mario to fall faster or slower
 
+#define FRAME_DELAY 50000  // Update position every 50000 frames
 
 //State define
 #define DEFAULT 0
@@ -44,6 +45,9 @@
 // plus or minus new value
 #define INCREMENT_VAL 1
 #define DECREMENT_VAL -1
+
+#define SCENE_TRANSITION_X 800  // Transition point
+
 
 // game state
 extern volatile int gameState;
@@ -104,6 +108,7 @@ extern mario_t mario_char;
 extern ground_t ground_obj;
 extern obstacle_t mario_obstacle;
 
+// Function prototype
 void gameOn(void);
-
+void setHitBox(int objLen);
 void drawGround(void);
