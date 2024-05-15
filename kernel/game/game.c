@@ -85,17 +85,53 @@ void handleJumping(void) {
             mario_char.currentPos.Y -= mario_char.jumpVelocity; // Move Mario up
             mario_char.jumpVelocity -= GRAVITY; // Reduce the jump velocity by gravity
 
+            // Move Mario horizontally if jumping forward or backward
+            if (mario_char.jumpDirection == 1) {
+                mario_char.pastPos.X = mario_char.currentPos.X;
+                mario_char.currentPos.X += 10; // Adjust this value as needed
+            } else if (mario_char.jumpDirection == -1) {
+                mario_char.pastPos.X = mario_char.currentPos.X;
+                mario_char.currentPos.X -= 10; // Adjust this value as needed
+            }
+
             // End the jump when Mario lands
             if (mario_char.currentPos.Y >= ground_obj.groundPos.Y - OBJECT_HEIGHT) {
                 mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Snap back to ground level
                 mario_char.isJumping = 0; // End the jump
                 mario_char.jumpVelocity = 0; // Reset jump velocity
+                mario_char.jumpDirection = 0; // Reset jump direction
             }
 
             // Update the screen
             deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
             displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+            setHitBox(sizeof(mario_char)); // Update hitbox during jumping
         }
+    }
+}
+
+void handleHorizontalMovement(MarioAction action) {
+    int delta_x = 0;
+
+    switch (action) {
+        case MOVE_RIGHT:
+            delta_x = 10;
+            break;
+        case MOVE_LEFT:
+            delta_x = -10;
+            break;
+        default:
+            break;
+    }
+
+    if (delta_x != 0) {
+        mario_char.pastPos.X = mario_char.currentPos.X;
+        mario_char.pastPos.Y = mario_char.currentPos.Y; // Ensure we also save the Y position to clear properly
+        mario_char.currentPos.X += delta_x;
+
+        deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
+        displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+        setHitBox(sizeof(mario_char)); // Update hitbox during horizontal movement
     }
 }
 
@@ -108,46 +144,26 @@ void applyGravity(void) {
                 mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Snap back to ground level
             }
             // Update the screen
-            deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
+            deleteImage(mario_char.pastPos.Y, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
             displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+            setHitBox(sizeof(mario_char)); // Update hitbox during gravity application
         }
     }
 }
 
 void marioMovement(MarioAction action) {
-    int delta_x = 0;
-
-    // Handle horizontal movement
-    switch (action) {
-        case MOVE_RIGHT:
-            delta_x = 10;
-            break;
-        case MOVE_LEFT:
-            delta_x = -10;
-            break;
-        case JUMP:
-            // Only allow jumping if Mario is on the ground and not already jumping
-            if (!mario_char.isJumping && mario_char.currentPos.Y == ground_obj.groundPos.Y - OBJECT_HEIGHT) {
-                mario_char.isJumping = 1;
-                mario_char.jumpVelocity = JUMP_VELOCITY;
-            }
-            break;
-        case CROUCH:
-            // Crouch action implementation later
-            break;
+    // Handle jumping
+    if (action == JUMP) {
+        if (!mario_char.isJumping && mario_char.currentPos.Y == ground_obj.groundPos.Y - OBJECT_HEIGHT) {
+            mario_char.isJumping = 1;
+            mario_char.jumpVelocity = JUMP_VELOCITY;
+        }
+    } else {
+        // Handle horizontal movement even when in air
+        handleHorizontalMovement(action);
     }
 
-    // Update horizontal position
-    if (delta_x != 0) {
-        mario_char.pastPos.X = mario_char.currentPos.X;
-        mario_char.currentPos.X += delta_x;
-
-        deleteImage(mario_char.pastPos.X, mario_char.currentPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
-        displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
-    }
-
-    // Update hitbox and print debug information
-    setHitBox(sizeof(mario_char));
+    // Print debug information
     uart_puts("\nBottom right corner X: ");
     uart_dec(mario_char.marioHitBox.bottom_right_corner.X);
     uart_puts(" bottom right corner Y: ");
@@ -219,6 +235,7 @@ void setHitBox(int objLen) {
 }
 
 void gameOn(void) {
+    static int w_pressed = 0;
     // setting up the initial value for game
     if (isGameInit == DEFAULT) {
         renderBackGround(); 
@@ -233,22 +250,37 @@ void gameOn(void) {
         switch (c) {
             case 'w':
                 // Initiate jump if Mario is on the ground and not already jumping
-                marioMovement(JUMP);
+                if (!w_pressed) {
+                    w_pressed = 1;
+                    marioMovement(JUMP);
+                }
                 break;
             case 'a':
-                marioMovement(MOVE_LEFT);
+                if (w_pressed) {
+                    mario_char.jumpDirection = -1; // Jump backward
+                } else {
+                    marioMovement(MOVE_LEFT);
+                }
+                break;
+            case 'd':
+                if (w_pressed) {
+                    mario_char.jumpDirection = 1; // Jump forward
+                } else {
+                    marioMovement(MOVE_RIGHT);
+                }
                 break;
             case 's':
                 marioMovement(CROUCH);
-                break;
-            case 'd':
-                marioMovement(MOVE_RIGHT);
                 break;
             case 'r':
                 reset();
                 break;
             default:
                 break;
+        }
+
+        if (c != 'w' && w_pressed) {
+            w_pressed = 0;
         }
     }
 

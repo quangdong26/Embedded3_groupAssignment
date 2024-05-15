@@ -19,6 +19,7 @@
 #define JUMP_VELOCITY 25  // Higher initial jump velocity, change this if you want mario to jump higher or lower
 #define GRAVITY 1         // Gravity applied each frame, change this if you want mario to fall faster or slower
 
+// define frame delay
 #define FRAME_DELAY 50000  // Update position every 50000 frames
 
 //State define
@@ -73,7 +74,9 @@ typedef struct {
     volatile int height_size;
     int isJumping; // Flag to check if Mario is currently jumping
     int jumpVelocity; // Current jump velocity
+    int jumpDirection; // Direction of the jump: 0 = straight up, -1 = left, 1 = right
 } mario_t;
+
 
 // mario action
 typedef enum {
