@@ -20,38 +20,40 @@
 #define TOP_LEFT_CORNER 0
 #define TOP_RIGHT_CORNER 1
 
-// define top/bot 
+// Define top/bot 
 #define BOTTOM_LEFT_CORNER 0
 #define BOTTOM_RIGHT_CORNER 1
 
-#define JUMP_VELOCITY 25  // Higher initial jump velocity, change this if you want mario to jump higher or lower
-#define GRAVITY 1         // Gravity applied each frame, change this if you want mario to fall faster or slower
+#define JUMP_VELOCITY 25  // Higher initial jump velocity, change this if you want Mario to jump higher or lower
+#define GRAVITY 1         // Gravity applied each frame, change this if you want Mario to fall faster or slower
 
+// Define delay
 #define FRAME_DELAY 50000  // Update position every 50000 frames
+#define INPUT_DELAY 1
 
-//State define
+// State define
 #define DEFAULT 0
 #define GAME_ON 1
 #define GAME_OFF 0
 
-// check if the game is init
+// Check if the game is init
 #define INIT 1
 
-//Define character size
+// Define character size
 #define OBJECT_HEIGHT 203
 #define OBJECT_WIDTH 206
 
 #define OBSTACLE_WIDTH 100
 #define OBSTACLE_HEIGHT 100
 
-// hitbox offset
+// Hitbox offset
 #define HITBOX_OFFSET 20
 
-//Define ground position
+// Define ground position
 #define GND_X_POS 0
 #define GND_Y_POS 600
 
-// plus or minus new value
+// Plus or minus new value
 #define INCREMENT_VAL 1
 #define DECREMENT_VAL -1
 
@@ -62,13 +64,13 @@
 extern volatile int gameState;
 extern volatile int isGameInit;
 
-// coordinate struct
+// Coordinate struct
 typedef struct {
     volatile int X;
     volatile int Y;
 } coordinate_t;
 
-// hitbox struct
+// Hitbox struct
 typedef struct {
     coordinate_t top_left_corner;
     coordinate_t top_right_corner;
@@ -78,7 +80,7 @@ typedef struct {
     volatile int width;
 } hitbox_t;
 
-// mario struct
+// Mario struct
 typedef struct {
     coordinate_t currentPos;
     coordinate_t pastPos;
@@ -87,25 +89,29 @@ typedef struct {
     volatile int height_size;
     int isJumping; // Flag to check if Mario is currently jumping
     int jumpVelocity; // Current jump velocity
+    int jumpDirection; // Direction of the jump: 0 = straight up, -1 = left, 1 = right
+    float horizontalSpeed; // Horizontal speed for smooth movement
+    int canDoubleJump; // Flag for double jump
 } mario_t;
 
-// mario action
+// Mario action
 typedef enum {
     MOVE_LEFT,
     MOVE_RIGHT,
+    MOVE_LEFT_JUMP,
+    MOVE_RIGHT_JUMP,
     JUMP,
     CROUCH
 } MarioAction;
 
-//ground struct
+// Ground struct
 typedef struct {
     coordinate_t groundPos;
     volatile int width;
     volatile int height;
-
 } ground_t;
 
-//obstacle
+// Obstacle struct
 typedef struct {
     coordinate_t obstaclePos;
     hitbox_t obstacleHitBox;
@@ -118,7 +124,7 @@ extern mario_t mario_char;
 extern ground_t ground_obj;
 extern obstacle_t mario_obstacle;
 
-// Function prototype
+// Function prototypes
 void gameOn(void);
 void setHitBox(int objLen);
 void drawGround(void);
