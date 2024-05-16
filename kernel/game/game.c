@@ -241,6 +241,7 @@ void changeBoxSize(coordinate_t *dat, coordinate_t object_pos, int width_size, i
 }
 
 void setHitBox(int objLen) {
+    // Set hitbox for the testing object
     switch (objLen) {
         case sizeof(mario_char):
             changeBoxSize(&mario_char.marioHitBox.bottom_left_corner, mario_char.currentPos, OBJECT_WIDTH, OBJECT_HEIGHT, TOP_LEFT_CORNER);
@@ -256,6 +257,9 @@ void setHitBox(int objLen) {
         default:
             break;
     }
+
+    // for future use if we want to add more objects
+    
 }
 
 void gameOn(void) {
