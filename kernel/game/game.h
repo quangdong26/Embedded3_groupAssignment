@@ -13,6 +13,9 @@
 #define MAX_OBSTACLE_X (WINDOW_WIDTH - 150)
 #define MIN_OBSTACLE_X (WINDOW_WIDTH / 2)
 
+//define transition offset
+#define TRANSITION_OFF 5
+
 // define Left/right coordinate
 #define TOP_LEFT_CORNER 0
 #define TOP_RIGHT_CORNER 1
@@ -52,7 +55,7 @@
 #define INCREMENT_VAL 1
 #define DECREMENT_VAL -1
 
-#define SCENE_TRANSITION_X 800  // Transition point
+#define SCENE_TRANSITION_X 350  // Transition point
 
 
 // game state
@@ -108,6 +111,7 @@ typedef struct {
     hitbox_t obstacleHitBox;
     volatile int width;
     volatile int height;
+    volatile int isRightToMario;
 } obstacle_t;
 
 extern mario_t mario_char;

@@ -1,6 +1,7 @@
 #include "./game.h"
 volatile int gameState = GAME_OFF;
 volatile int isGameInit = DEFAULT;
+volatile int isReachTransition = 0;
 int frameCounter = 0;
 
 mario_t mario_char;
@@ -32,8 +33,13 @@ void drawObstacle(void) {
 
     mario_obstacle.obstaclePos.X = randomX;
     mario_obstacle.obstaclePos.Y = ground_obj.groundPos.Y - OBSTACLE_HEIGHT;
-    uart_puts(" Obstacle coordinate: ");
-    uart_dec(mario_obstacle.obstaclePos.Y);
+    mario_obstacle.height = OBSTACLE_HEIGHT;
+    mario_obstacle.width = OBSTACLE_WIDTH;
+    setHitBox(sizeof(mario_obstacle));
+    uart_puts("\nObstacle coordinate X: ");
+    uart_dec(mario_obstacle.obstacleHitBox.top_left_corner.X);
+    uart_puts(" Obstacle coordinate Y: ");
+    uart_dec(mario_obstacle.obstacleHitBox.bottom_left_corner.Y);
     uart_puts("\n");
     drawArrayPixel(mario_obstacle.obstaclePos.X,  mario_obstacle.obstaclePos.Y, 0x00FF00, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
 }
@@ -136,9 +142,11 @@ void marioMovement(MarioAction action) {
     if (delta_x != 0) {
         mario_char.pastPos.X = mario_char.currentPos.X;
         mario_char.currentPos.X += delta_x;
-
-        deleteImage(mario_char.pastPos.X, mario_char.currentPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
-        displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+        setHitBox(sizeof(mario_char));
+        if(isReachTransition == 0) { // if the mario not reach the transition point, keep working
+            deleteImage(mario_char.pastPos.X, mario_char.currentPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
+            displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+        }
         //drawArrayPixel(mario_char.marioHitBox.top_left_corner.X, mario_char.marioHitBox.top_left_corner.Y, 0x00FF00, OBJECT_WIDTH, OBJECT_HEIGHT);
     }
 
@@ -156,16 +164,39 @@ void reset(void) {
     drawObstacle();
 }
 
+/**
+ * @brief check if the current object is on the right or left of the mario
+*/
+int updateAbsolutePosition(int objLen) {
+    switch (objLen)
+    {
+    case sizeof(mario_obstacle):
+        if(mario_char.marioHitBox.bottom_right_corner.X <= mario_obstacle.obstacleHitBox.top_left_corner.X) {
+            mario_obstacle.isRightToMario = 1;
+        }
+        return mario_obstacle.isRightToMario;
+        break;
+    
+    default:
+        break;
+    }
+}
+
+
 /** @brief this function check if 2 boject collision or not
  * It will check 
+ * mario_char.marioHitBox.bottom_right_corner.Y >= mario_obstacle.obstaclePos.Y + 20 ||
+           mario_char.marioHitBox.bottom_left_corner.X <= mario_obstacle.obstacleHitBox.top_right_corner.X &&
+           mario_char.marioHitBox.bottom_left_corner.Y >= mario_obstacle.obstacleHitBox.top_right_corner.Y + 20
 */
 int checkCollision(int obj1, int obj2) {
     //if the comparing object are mario and obstacle
     if(obj1 == sizeof(mario_char) && obj2 == sizeof(mario_obstacle)) {
-        if(mario_char.marioHitBox.bottom_right_corner.X >= mario_obstacle.obstaclePos.X &&
-           mario_char.marioHitBox.bottom_right_corner.Y >= mario_obstacle.obstaclePos.Y + 20 ||
+        updateAbsolutePosition(sizeof(mario_obstacle)); // check if the obstacle on the right or left of the mario
+        if(mario_char.marioHitBox.bottom_right_corner.X >= mario_obstacle.obstacleHitBox.top_left_corner.X &&
+           mario_char.marioHitBox.bottom_right_corner.Y <= mario_obstacle.obstacleHitBox.top_left_corner.Y && mario_obstacle.isRightToMario ||
            mario_char.marioHitBox.bottom_left_corner.X <= mario_obstacle.obstacleHitBox.top_right_corner.X &&
-           mario_char.marioHitBox.bottom_left_corner.Y >= mario_obstacle.obstacleHitBox.top_right_corner.Y + 20) { // check colision mario
+           mario_char.marioHitBox.bottom_left_corner.Y <= mario_obstacle.obstacleHitBox.top_right_corner.Y && !mario_obstacle.isRightToMario) { // check colision mario
             return 1;
         }
     }
@@ -207,10 +238,10 @@ void setHitBox(int objLen) {
         mario_char.marioHitBox.height = mario_char.marioHitBox.bottom_left_corner.Y - mario_char.marioHitBox.top_left_corner.Y;
         break;
     case sizeof(mario_obstacle):
-        changeBoxSize(&mario_obstacle.obstacleHitBox.bottom_left_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBJECT_HEIGHT, TOP_LEFT_CORNER);
-        changeBoxSize(&mario_obstacle.obstacleHitBox.bottom_right_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBJECT_HEIGHT, TOP_RIGHT_CORNER);
-        changeBoxSize(&mario_obstacle.obstacleHitBox.top_left_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBJECT_HEIGHT, BOTTOM_LEFT_CORNER);
-        changeBoxSize(&mario_obstacle.obstacleHitBox.top_right_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBJECT_HEIGHT, BOTTOM_RIGHT_CORNER);
+        changeBoxSize(&mario_obstacle.obstacleHitBox.bottom_left_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBSTACLE_HEIGHT, TOP_LEFT_CORNER);
+        changeBoxSize(&mario_obstacle.obstacleHitBox.bottom_right_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBSTACLE_HEIGHT, TOP_RIGHT_CORNER);
+        changeBoxSize(&mario_obstacle.obstacleHitBox.top_left_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBSTACLE_HEIGHT, BOTTOM_LEFT_CORNER);
+        changeBoxSize(&mario_obstacle.obstacleHitBox.top_right_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBSTACLE_HEIGHT, BOTTOM_RIGHT_CORNER);
     default:
         break;
     }
@@ -255,6 +286,8 @@ void gameOn(void) {
     // Apply gravity and handle jumping every cycle
     handleJumping();
     applyGravity();
+    //handle the scene scroller
+    handleSceneTransition();
 
     // Check for collisions
     if (checkCollision(sizeof(mario_char), sizeof(mario_obstacle))) {
@@ -265,8 +298,21 @@ void gameOn(void) {
     frameCounter++;
 }
 
+void moveObstacleToLeft(void) {
+    deleteImage(mario_obstacle.obstaclePos.X, mario_obstacle.obstaclePos.Y, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
+    mario_obstacle.obstaclePos.X = mario_obstacle.obstaclePos.X - TRANSITION_OFF;
+    setHitBox(sizeof(mario_obstacle)); // set the hitbox again
+    drawArrayPixel(mario_obstacle.obstaclePos.X,  mario_obstacle.obstaclePos.Y, 0x00FF00, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
+}
+
+
 void handleSceneTransition(void) {
-    if (mario_char.marioHitBox.top_right_corner.X >= SCENE_TRANSITION_X) {
-        //resetScene();
+    if (mario_char.currentPos.X > SCENE_TRANSITION_X) {
+        isReachTransition = 1;
+        mario_char.currentPos.X = SCENE_TRANSITION_X;  // stick the mario position to the define pos  
+        setHitBox(sizeof(mario_char)); // define new hitbox
+        moveObstacleToLeft(); // move the asset to the left
+    } else {
+        isReachTransition = 0;
     }
 }
