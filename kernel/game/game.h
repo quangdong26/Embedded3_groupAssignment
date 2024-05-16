@@ -3,10 +3,15 @@
 #include "../image/mario.h"
 #include "../uart/uart0.h"
 #include "../uart/uart1.h"
+#include "../utils/utils.h"
 
 #define BACKGROUND1_HEIGHT 224
 #define BACKGROUND1_WIDTH 3268
 #define ENTIRE_SCREEN 3000
+
+// Define obstacle position interval
+#define MAX_OBSTACLE_X (WINDOW_WIDTH - 150)
+#define MIN_OBSTACLE_X (WINDOW_WIDTH / 2)
 
 // define Left/right coordinate
 #define TOP_LEFT_CORNER 0
@@ -32,8 +37,9 @@
 //Define character size
 #define OBJECT_HEIGHT 203
 #define OBJECT_WIDTH 206
-#define OBSTACLE_WIDTH 150
-#define OBSTACLE_HEIGHT 150
+
+#define OBSTACLE_WIDTH 100
+#define OBSTACLE_HEIGHT 100
 
 // hitbox offset
 #define HITBOX_OFFSET 20

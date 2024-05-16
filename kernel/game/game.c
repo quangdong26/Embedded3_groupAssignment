@@ -26,12 +26,16 @@ void drawGround(void) {
 }
 
 void drawObstacle(void) {
-    mario_obstacle.obstaclePos.X = WINDOW_WIDTH - OBJECT_WIDTH;
-    mario_obstacle.obstaclePos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT;
+    // randomly generate obstacle
+    unsigned int range = MAX_OBSTACLE_X - MIN_OBSTACLE_X + 1;
+    unsigned int randomX = MIN_OBSTACLE_X + (lcg_random() % range);
+
+    mario_obstacle.obstaclePos.X = randomX;
+    mario_obstacle.obstaclePos.Y = ground_obj.groundPos.Y - OBSTACLE_HEIGHT;
     uart_puts(" Obstacle coordinate: ");
     uart_dec(mario_obstacle.obstaclePos.Y);
     uart_puts("\n");
-    drawArrayPixel(mario_obstacle.obstaclePos.X,  mario_obstacle.obstaclePos.Y, 0x00FF00, OBJECT_WIDTH, OBJECT_HEIGHT);
+    drawArrayPixel(mario_obstacle.obstaclePos.X,  mario_obstacle.obstaclePos.Y, 0x00FF00, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
 }
 
 void renderPlayerInitPoint(void) {
@@ -263,6 +267,6 @@ void gameOn(void) {
 
 void handleSceneTransition(void) {
     if (mario_char.marioHitBox.top_right_corner.X >= SCENE_TRANSITION_X) {
-        resetScene();
+        //resetScene();
     }
 }

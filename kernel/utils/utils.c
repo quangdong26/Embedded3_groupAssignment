@@ -1,3 +1,4 @@
+#include "./utils.h"
 // #include "font.h"
 // #include "../uart/uart0.h"
 // /* Functions to display text on the screen */
@@ -98,3 +99,10 @@
 //         } while(r < expiredTime);
 //     }
 // }
+
+static unsigned int lcg_seed = 123456789; // Initial seed
+
+unsigned int lcg_random() {
+    lcg_seed = (LCG_A * lcg_seed + LCG_C) % LCG_M;
+    return lcg_seed;
+}
