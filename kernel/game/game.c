@@ -95,8 +95,6 @@ int checkCollision(int obj1, int obj2) {
     return 0; // No collision
 }
 
-
-
 void gameOn(void) {
     static int delayCounter = 0; // Add delay counter
 
@@ -125,19 +123,11 @@ void gameOn(void) {
                 w_pressed = 1;
                 break;
             case 'a':
-                if (!w_pressed) {
-                    marioMovement(MOVE_LEFT);
-                } else {
-                    marioMovement(MOVE_LEFT_JUMP);
-                }
+                marioMovement(MOVE_LEFT);
                 a_pressed = 1;
                 break;
             case 'd':
-                if (!w_pressed) {
-                    marioMovement(MOVE_RIGHT);
-                } else {
-                    marioMovement(MOVE_RIGHT_JUMP);
-                }
+                marioMovement(MOVE_RIGHT);
                 d_pressed = 1;
                 break;
             case 's':

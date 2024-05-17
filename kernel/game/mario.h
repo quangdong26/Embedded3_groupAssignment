@@ -4,13 +4,13 @@
 #define OBJECT_HEIGHT 203
 #define OBJECT_WIDTH 206
 
-#define JUMP_VELOCITY 25  // Higher initial jump velocity, change this if you want Mario to jump higher or lower
-#define GRAVITY 1         // Gravity applied each frame, change this if you want Mario to fall faster or slower
+// Define constants for parabolic trajectory
+#define MAX_HORIZONTAL_DISTANCE 200 // Maximum horizontal distance Mario can travel in a jump
+#define JUMP_INITIAL_VELOCITY 17 // Initial velocity for the jump
+#define GRAVITY 1 // Gravity affecting the jump
 
 // Define delay
 #define FRAME_DELAY 50000  // Update position every 50000 frames
-
-
 
 // Mario action
 typedef enum {

@@ -11,15 +11,25 @@ volatile int frameCounter = 0;
 void handleJumping(void) {
     if (mario_char.isJumping) { // If Mario is jumping
         if (frameCounter % FRAME_DELAY == 0) {
+            // Update vertical position
             mario_char.pastPos.Y = mario_char.currentPos.Y;
             mario_char.currentPos.Y -= mario_char.jumpVelocity; // Move Mario up
             mario_char.jumpVelocity -= GRAVITY; // Reduce jump velocity by gravity
 
-            // Apply horizontal movement
+            // Calculate the parabolic trajectory
+            int totalTime = (2 * JUMP_INITIAL_VELOCITY) / GRAVITY; // Total time of the jump
+            int elapsedTime = totalTime - mario_char.jumpVelocity; // Elapsed time since the start of the jump
+
+            // Calculate maximum horizontal speed
+            int maxHorizontalSpeed = MAX_HORIZONTAL_DISTANCE / totalTime;
+
+            // Apply horizontal movement based on key presses
             if (a_pressed) {
-                mario_char.horizontalSpeed = -5;
+                mario_char.horizontalSpeed = -maxHorizontalSpeed;
             } else if (d_pressed) {
-                mario_char.horizontalSpeed = 5;
+                mario_char.horizontalSpeed = maxHorizontalSpeed;
+            } else {
+                mario_char.horizontalSpeed = 0;
             }
 
             mario_char.pastPos.X = mario_char.currentPos.X;
@@ -41,36 +51,38 @@ void handleJumping(void) {
     }
 }
 
-
 void handleHorizontalMovement(MarioAction action) {
-    float maxSpeed = 15.0;
+    // Movement during jump is handled in handleJumping for parabolic trajectory
+    if (!mario_char.isJumping) {
+        int maxSpeed = 15;
 
-    switch (action) {
-        case MOVE_RIGHT:
-            mario_char.horizontalSpeed = maxSpeed; // Set to max speed instantly
-            d_pressed = 1;
-            a_pressed = 0; // Reset opposite direction
-            break;
-        case MOVE_LEFT:
-            mario_char.horizontalSpeed = -maxSpeed; // Set to max speed instantly
-            a_pressed = 1;
-            d_pressed = 0; // Reset opposite direction
-            break;
-        default:
-            mario_char.horizontalSpeed = 0; // Stop movement if no direction is pressed
-            a_pressed = 0;
-            d_pressed = 0;
-            break;
-    }
+        switch (action) {
+            case MOVE_RIGHT:
+                mario_char.horizontalSpeed = maxSpeed; // Set to max speed instantly
+                d_pressed = 1;
+                a_pressed = 0; // Reset opposite direction
+                break;
+            case MOVE_LEFT:
+                mario_char.horizontalSpeed = -maxSpeed; // Set to max speed instantly
+                a_pressed = 1;
+                d_pressed = 0; // Reset opposite direction
+                break;
+            default:
+                mario_char.horizontalSpeed = 0; // Stop movement if no direction is pressed
+                a_pressed = 0;
+                d_pressed = 0;
+                break;
+        }
 
-    if (mario_char.horizontalSpeed != 0) { // Update position if moving
-        mario_char.pastPos.X = mario_char.currentPos.X;
-        mario_char.pastPos.Y = mario_char.currentPos.Y;
-        mario_char.currentPos.X += mario_char.horizontalSpeed;
-        setMarioHitBox();
-        if(isReachTransition == 0) {
-            deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
-            displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+        if (mario_char.horizontalSpeed != 0) { // Update position if moving
+            mario_char.pastPos.X = mario_char.currentPos.X;
+            mario_char.pastPos.Y = mario_char.currentPos.Y;
+            mario_char.currentPos.X += mario_char.horizontalSpeed;
+            setMarioHitBox();
+            if(isReachTransition == 0) {
+                deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
+                displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+            }
         }
     }
 }
@@ -95,12 +107,11 @@ void applyGravity(void) {
     }
 }
 
-
 void marioMovement(MarioAction action) {
     if (action == JUMP || action == MOVE_RIGHT_JUMP || action == MOVE_LEFT_JUMP) {
         if (!mario_char.isJumping && mario_char.currentPos.Y == ground_obj.groundPos.Y - OBJECT_HEIGHT) {
             mario_char.isJumping = 1;
-            mario_char.jumpVelocity = JUMP_VELOCITY;
+            mario_char.jumpVelocity = JUMP_INITIAL_VELOCITY;
 
             if (action == MOVE_RIGHT_JUMP) {
                 mario_char.jumpDirection = 1; // Jump to the right
@@ -116,7 +127,7 @@ void marioMovement(MarioAction action) {
                 mario_char.jumpDirection = 0; // Jump straight up
             }
         } else if (mario_char.canDoubleJump && mario_char.isJumping) {
-            mario_char.jumpVelocity = JUMP_VELOCITY; // Double jump
+            mario_char.jumpVelocity = JUMP_INITIAL_VELOCITY; // Double jump
             mario_char.canDoubleJump = 0; // Disable further double jumps
         }
     } else {
@@ -137,11 +148,11 @@ void initStatMario(void) {
 }
 
 void setMarioHitBox(void) {
-    changeBoxSize(&mario_char.marioHitBox.bottom_left_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, TOP_LEFT_CORNER);
-    changeBoxSize(&mario_char.marioHitBox.bottom_right_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, TOP_RIGHT_CORNER);
-    changeBoxSize(&mario_char.marioHitBox.top_left_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, BOTTOM_LEFT_CORNER);
-    changeBoxSize(&mario_char.marioHitBox.top_right_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, BOTTOM_RIGHT_CORNER);
-        // set size of the hitbox
+    changeBoxSize(&mario_char.marioHitBox.bottom_left_corner, mario_char.currentPos, OBJECT_WIDTH, OBJECT_HEIGHT, TOP_LEFT_CORNER);
+    changeBoxSize(&mario_char.marioHitBox.bottom_right_corner, mario_char.currentPos, OBJECT_WIDTH, OBJECT_HEIGHT, TOP_RIGHT_CORNER);
+    changeBoxSize(&mario_char.marioHitBox.top_left_corner, mario_char.currentPos, OBJECT_WIDTH, OBJECT_HEIGHT, BOTTOM_LEFT_CORNER);
+    changeBoxSize(&mario_char.marioHitBox.top_right_corner, mario_char.currentPos, OBJECT_WIDTH, OBJECT_HEIGHT, BOTTOM_RIGHT_CORNER);
+    // set size of the hitbox
     mario_char.marioHitBox.width = mario_char.marioHitBox.top_right_corner.X - mario_char.marioHitBox.top_left_corner.X;
     mario_char.marioHitBox.height = mario_char.marioHitBox.bottom_left_corner.Y - mario_char.marioHitBox.top_left_corner.Y;
 }
