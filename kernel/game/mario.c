@@ -15,6 +15,13 @@ void handleJumping(void) {
             mario_char.currentPos.Y -= mario_char.jumpVelocity; // Move Mario up
             mario_char.jumpVelocity -= GRAVITY; // Reduce jump velocity by gravity
 
+            // Apply horizontal movement
+            if (a_pressed) {
+                mario_char.horizontalSpeed = -5;
+            } else if (d_pressed) {
+                mario_char.horizontalSpeed = 5;
+            }
+
             mario_char.pastPos.X = mario_char.currentPos.X;
             mario_char.currentPos.X += mario_char.horizontalSpeed; // Apply horizontal movement
 
@@ -22,7 +29,7 @@ void handleJumping(void) {
                 mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Snap back to ground level
                 mario_char.isJumping = 0; // End the jump
                 mario_char.jumpVelocity = 0; // Reset jump velocity
-                mario_char.horizontalSpeed = 0; // Reset horizontal speed
+                mario_char.horizontalSpeed = 0; // Reset horizontal speed if standing still
                 mario_char.jumpDirection = 0; // Reset jump direction
                 mario_char.canDoubleJump = 1; // Reset double jump
             }
@@ -36,38 +43,21 @@ void handleJumping(void) {
 
 
 void handleHorizontalMovement(MarioAction action) {
-    float acceleration = 1.0; // Increased acceleration
     float maxSpeed = 15.0;
-    float deceleration = 3.0; // Increased deceleration
-    float threshold = 1.5; // Speed threshold for sharper turns
 
     switch (action) {
         case MOVE_RIGHT:
-            if (mario_char.horizontalSpeed < -threshold) {
-                mario_char.horizontalSpeed += deceleration; // Decelerate if moving left
-            } else {
-                mario_char.horizontalSpeed += acceleration; // Accelerate right
-            }
-            if (mario_char.horizontalSpeed > maxSpeed) mario_char.horizontalSpeed = maxSpeed; // Cap speed
+            mario_char.horizontalSpeed = maxSpeed; // Set to max speed instantly
             d_pressed = 1;
+            a_pressed = 0; // Reset opposite direction
             break;
         case MOVE_LEFT:
-            if (mario_char.horizontalSpeed > threshold) {
-                mario_char.horizontalSpeed -= deceleration; // Decelerate if moving right
-            } else {
-                mario_char.horizontalSpeed -= acceleration; // Accelerate left
-            }
-            if (mario_char.horizontalSpeed < -maxSpeed) mario_char.horizontalSpeed = -maxSpeed; // Cap speed
+            mario_char.horizontalSpeed = -maxSpeed; // Set to max speed instantly
             a_pressed = 1;
+            d_pressed = 0; // Reset opposite direction
             break;
         default:
-            if (mario_char.horizontalSpeed > 0) {
-                mario_char.horizontalSpeed -= deceleration; // Decelerate to stop
-                if (mario_char.horizontalSpeed < 0) mario_char.horizontalSpeed = 0;
-            } else if (mario_char.horizontalSpeed < 0) {
-                mario_char.horizontalSpeed += deceleration; // Decelerate to stop
-                if (mario_char.horizontalSpeed > 0) mario_char.horizontalSpeed = 0;
-            }
+            mario_char.horizontalSpeed = 0; // Stop movement if no direction is pressed
             a_pressed = 0;
             d_pressed = 0;
             break;
@@ -107,20 +97,23 @@ void applyGravity(void) {
 
 
 void marioMovement(MarioAction action) {
-    if (action == JUMP || action == MOVE_RIGHT_JUMP || action == MOVE_LEFT_JUMP) { // Handle jumping
+    if (action == JUMP || action == MOVE_RIGHT_JUMP || action == MOVE_LEFT_JUMP) {
         if (!mario_char.isJumping && mario_char.currentPos.Y == ground_obj.groundPos.Y - OBJECT_HEIGHT) {
             mario_char.isJumping = 1;
             mario_char.jumpVelocity = JUMP_VELOCITY;
 
             if (action == MOVE_RIGHT_JUMP) {
                 mario_char.jumpDirection = 1; // Jump to the right
-                mario_char.horizontalSpeed = 5; // Adjust horizontal speed
+                if (mario_char.horizontalSpeed == 0) {
+                    mario_char.horizontalSpeed = 5; // Set initial horizontal speed if standing still
+                }
             } else if (action == MOVE_LEFT_JUMP) {
                 mario_char.jumpDirection = -1; // Jump to the left
-                mario_char.horizontalSpeed = -5; // Adjust horizontal speed
+                if (mario_char.horizontalSpeed == 0) {
+                    mario_char.horizontalSpeed = -5; // Set initial horizontal speed if standing still
+                }
             } else {
                 mario_char.jumpDirection = 0; // Jump straight up
-                mario_char.horizontalSpeed = 0; // No horizontal movement
             }
         } else if (mario_char.canDoubleJump && mario_char.isJumping) {
             mario_char.jumpVelocity = JUMP_VELOCITY; // Double jump
@@ -129,7 +122,6 @@ void marioMovement(MarioAction action) {
     } else {
         handleHorizontalMovement(action); // Handle horizontal movement
     }
-
 }
 
 void initStatMario(void) {

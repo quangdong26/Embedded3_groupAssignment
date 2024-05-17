@@ -127,12 +127,16 @@ void gameOn(void) {
             case 'a':
                 if (!w_pressed) {
                     marioMovement(MOVE_LEFT);
+                } else {
+                    marioMovement(MOVE_LEFT_JUMP);
                 }
                 a_pressed = 1;
                 break;
             case 'd':
                 if (!w_pressed) {
                     marioMovement(MOVE_RIGHT);
+                } else {
+                    marioMovement(MOVE_RIGHT_JUMP);
                 }
                 d_pressed = 1;
                 break;
