@@ -47,7 +47,7 @@ void drawObstacle(void) {
     // randomly generate obstacle
     unsigned int range = MAX_OBSTACLE_X - MIN_OBSTACLE_X + 1;
     unsigned int randomX = MIN_OBSTACLE_X + (lcg_random() % range);
-
+    // assigned the value for position
     mario_obstacle.obstaclePos.X = randomX;
     mario_obstacle.obstaclePos.Y = ground_obj.groundPos.Y - OBSTACLE_HEIGHT;
     mario_obstacle.height = OBSTACLE_HEIGHT;
