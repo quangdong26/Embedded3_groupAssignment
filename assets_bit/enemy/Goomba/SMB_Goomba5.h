@@ -1,0 +1,1 @@
+extern const unsigned long SMB_Goomba5_SMB_Goomba5 [];

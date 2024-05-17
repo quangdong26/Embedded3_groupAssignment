@@ -1,0 +1,1 @@
+extern const unsigned long SMB_Bowser2_SMB_Bowser2 [];
