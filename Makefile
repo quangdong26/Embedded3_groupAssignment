@@ -1,6 +1,6 @@
 #--------------------------------------Makefile-------------------------------------
 include .env
-OBJECT = ./build/background1.o ./build/background2.o ./build/game.o ./build/delay.o ./build/framebf.o ./build/image.o ./build/font.o ./build/mario.o ./build/mbox.o ./build/utils.o ./build/kernel.o
+OBJECT = ./build/background1.o ./build/background2.o ./build/game.o ./build/delay.o ./build/obstacle.o ./build/marioImg.o ./build/hitbox.o ./build/framebf.o ./build/image.o ./build/font.o ./build/mario.o ./build/ground.o ./build/mbox.o ./build/utils.o ./build/kernel.o
 CFILES = $(wildcard ./kernel/*.c)
 OFILES = $(CFILES:./kernel/%.c=./build/%.o)
 GCCFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib
@@ -30,9 +30,9 @@ delay_build: ./kernel/delay/delay.c
 frame_build: ./kernel/framebuffer/framebf.c
 	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/framebuffer/framebf.c -o ./build/framebf.o
 
-image_build: ./kernel/image/image.c ./kernel/image/mario.c
+image_build: ./kernel/image/image.c ./kernel/image/marioImg.c
 	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/image/image.c -o ./build/image.o
-	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/image/mario.c -o ./build/mario.o
+	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/image/marioImg.c -o ./build/marioImg.o
 
 mailbox_build: ./kernel/mailbox/mbox.c
 	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/mailbox/mbox.c -o ./build/mbox.o
@@ -43,8 +43,12 @@ utils_build: ./kernel/utils/utils.c
 font_build: ./kernel/font/font.c
 	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/font/font.c -o ./build/font.o
 
-game_build: ./kernel/game/game.c 
+game_build: ./kernel/game/game.c ./kernel/game/ground.c ./kernel/game/hitbox.c ./kernel/game/mario.c ./kernel/game/obstacle.c
 	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/game/game.c -o ./build/game.o
+	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/game/ground.c -o ./build/ground.o
+	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/game/hitbox.c -o ./build/hitbox.o
+	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/game/mario.c -o ./build/mario.o
+	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/game/obstacle.c -o ./build/obstacle.o
 
 ./build/boot.o: ./kernel/boot.S
 	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/boot.S -o ./build/boot.o
