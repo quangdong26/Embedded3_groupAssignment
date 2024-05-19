@@ -79,8 +79,9 @@ void handleHorizontalMovement(MarioAction action) {
         mario_char.currentPos.X += mario_char.horizontalSpeed;
         setMarioHitBox();
         if(isReachTransition == 0) {
-            deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
-            displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+            deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT); //delete this 
+            displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT); //delete this 
+            //smallMarioRightAnimation () ;
         }
     }
 }
