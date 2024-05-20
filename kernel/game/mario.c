@@ -40,9 +40,15 @@ void handleJumping(void) {
 }
 
 void smallMarioJumpAnimation () {
-    // if (isReachTransition == 1) {
-    //     deleteAnimationFrame (extra_shadow,mario_char.pastPos.Y, mario_jump, OBJECT_WIDTH, OBJECT_HEIGHT);
-    // }
+    if (mario_char.currentPos.X > 350) { // to handle the case when mario reach transition point, you can delete this if to see what happen without it
+        deleteAnimationFrame (mario_char.pastPos.X,mario_char.pastPos.Y, mario_jump, OBJECT_WIDTH, OBJECT_HEIGHT);
+        displayObject(350,mario_char.currentPos.Y, mario_jump, OBJECT_WIDTH, OBJECT_HEIGHT);
+        if (mario_char.currentPos.Y == ground_obj.groundPos.Y - OBJECT_HEIGHT){
+            deleteAnimationFrame (mario_char.currentPos.X,mario_char.currentPos.Y, mario_jump, OBJECT_WIDTH, OBJECT_HEIGHT);
+            displayObject(mario_char.currentPos.X,mario_char.currentPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);
+        }
+        return;
+    }
     deleteAnimationFrame (mario_char.pastPos.X,mario_char.pastPos.Y, mario_jump, OBJECT_WIDTH, OBJECT_HEIGHT);
     displayObject(mario_char.currentPos.X,mario_char.currentPos.Y, mario_jump, OBJECT_WIDTH, OBJECT_HEIGHT);
     if (mario_char.currentPos.Y == ground_obj.groundPos.Y - OBJECT_HEIGHT){

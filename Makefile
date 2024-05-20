@@ -65,7 +65,7 @@ kernel8.img: ./build/boot.o ./build/uart.o ./build/video.o  $(OBJECT)
 	aarch64-none-elf-objcopy -O binary ./build/kernel8.elf kernel8.img
 
 clean:
-	rm -f ./build/kernel8.elf ./build/*.o *.img
+	del .\build\kernel8.elf .\build\*.o *.img
 
 # Run emulation with QEMU
 run1: 
