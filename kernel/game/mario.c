@@ -45,10 +45,11 @@ void smallMarioJumpAnimation () {
         displayObject(350,mario_char.currentPos.Y, mario_jump, OBJECT_WIDTH, OBJECT_HEIGHT);
         if (mario_char.currentPos.Y == ground_obj.groundPos.Y - OBJECT_HEIGHT){
             deleteAnimationFrame (mario_char.currentPos.X,mario_char.currentPos.Y, mario_jump, OBJECT_WIDTH, OBJECT_HEIGHT);
-            displayObject(mario_char.currentPos.X,mario_char.currentPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);
+            displayObject(350,mario_char.currentPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);
         }
         return;
     }
+
     deleteAnimationFrame (mario_char.pastPos.X,mario_char.pastPos.Y, mario_jump, OBJECT_WIDTH, OBJECT_HEIGHT);
     displayObject(mario_char.currentPos.X,mario_char.currentPos.Y, mario_jump, OBJECT_WIDTH, OBJECT_HEIGHT);
     if (mario_char.currentPos.Y == ground_obj.groundPos.Y - OBJECT_HEIGHT){
@@ -58,7 +59,19 @@ void smallMarioJumpAnimation () {
 }
 
 void smallMarioRightAnimation () {
+            if (mario_char.currentPos.X > 350) { // to handle the case when mario reach transition point, you can delete this if to see what happen without it
             if (mario_char.isJumping) {
+                smallMarioJumpAnimation ();
+            }
+            // delete Mario in old position // 
+            deleteAnimationFrame (mario_char.pastPos.X,mario_char.pastPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);          
+            // display Mario in new position + moving animation 
+            displayAnimation (350,mario_char.currentPos.Y, mario_forward_allArray,OBJECT_WIDTH, OBJECT_HEIGHT, 3);
+            // display default Mario when stop
+            displayObject(350,mario_char.currentPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);
+            return;
+            }
+            else if (mario_char.isJumping) {
                 smallMarioJumpAnimation ();
                 return;
             }
