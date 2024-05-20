@@ -1,4 +1,7 @@
 #include "mario.h"
+#include "../image/defaultMario.h"
+#include "../image/mariojump.h"
+#include "../image/mariofw.h"
 
 mario_t mario_char;
 volatile int isReachTransition = 0;
@@ -27,11 +30,38 @@ void handleJumping(void) {
                 mario_char.canDoubleJump = 1; // Reset double jump
             }
 
-            deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
-            displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT); // Update Mario's position
+            //deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
+            //displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, default_mario , OBJECT_WIDTH, OBJECT_HEIGHT); // Update Mario's position
+            deleteAnimationFrame (mario_char.pastPos.X,mario_char.pastPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);
+            smallMarioJumpAnimation ();
             setMarioHitBox(); // Update hitbox
         }
     }
+}
+
+void smallMarioJumpAnimation () {
+    // if (isReachTransition == 1) {
+    //     deleteAnimationFrame (extra_shadow,mario_char.pastPos.Y, mario_jump, OBJECT_WIDTH, OBJECT_HEIGHT);
+    // }
+    deleteAnimationFrame (mario_char.pastPos.X,mario_char.pastPos.Y, mario_jump, OBJECT_WIDTH, OBJECT_HEIGHT);
+    displayObject(mario_char.currentPos.X,mario_char.currentPos.Y, mario_jump, OBJECT_WIDTH, OBJECT_HEIGHT);
+    if (mario_char.currentPos.Y == ground_obj.groundPos.Y - OBJECT_HEIGHT){
+        deleteAnimationFrame (mario_char.currentPos.X,mario_char.currentPos.Y, mario_jump, OBJECT_WIDTH, OBJECT_HEIGHT);
+        displayObject(mario_char.currentPos.X,mario_char.currentPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);
+    }
+}
+
+void smallMarioRightAnimation () {
+            if (mario_char.isJumping) {
+                smallMarioJumpAnimation ();
+                return;
+            }
+            // delete Mario in old position // 
+            deleteAnimationFrame (mario_char.pastPos.X,mario_char.pastPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);          
+            // display Mario in new position + moving animation 
+            displayAnimation (mario_char.currentPos.X,mario_char.currentPos.Y, mario_forward_allArray,OBJECT_WIDTH, OBJECT_HEIGHT, 3);
+            // display default Mario when stop
+            displayObject(mario_char.currentPos.X,mario_char.currentPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);
 }
 
 
@@ -79,9 +109,7 @@ void handleHorizontalMovement(MarioAction action) {
         mario_char.currentPos.X += mario_char.horizontalSpeed;
         setMarioHitBox();
         if(isReachTransition == 0) {
-            deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT); //delete this 
-            displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT); //delete this 
-            //smallMarioRightAnimation () ;
+            smallMarioRightAnimation () ;
         }
     }
 }

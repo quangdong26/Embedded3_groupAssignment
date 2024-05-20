@@ -1,9 +1,11 @@
 #include "./game.h"
-//#include "../image/defaultMario.h"
-//#include "../image/mariofw.h"
+#include "../image/defaultMario.h"
+#include "../image/mariofw.h"
+#include "../image/terrian1.h"
 
 volatile int gameState = GAME_OFF;
 volatile int isGameInit = DEFAULT;
+//int extra_shadow = 0;
 
 void clearScreen(void) {
     deleteImage(DEFAULT, DEFAULT, 3000, 3000); // Clear the screen
@@ -16,7 +18,8 @@ void renderBackGround(void) {
 
 void drawGround(void) {
     setGroundObject();
-    drawArrayPixel(ground_obj.groundPos.X, ground_obj.groundPos.Y, 0xFFA500, ground_obj.width, ground_obj.height); // Draw ground
+    displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64); // Draw ground
+    displayObject(ground_obj.groundPos.X + 480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64); // Draw ground
 }
 
 void drawObstacle(void) {
@@ -33,18 +36,10 @@ void drawObstacle(void) {
 void drawMario(void) {
     renderPlayerInitPoint(); 
     uart_dec(mario_char.marioHitBox.bottom_right_corner.Y); 
-    displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+    displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);
     //drawArrayPixel(mario_char.marioHitBox.top_left_corner.X, mario_char.marioHitBox.top_left_corner.Y, 0x00FF00, OBJECT_WIDTH, OBJECT_HEIGHT);
 }
 
-// void smallMarioRightAnimation () {
-//             // delete Mario in old position // 
-//             deleteAnimationFrame (mario_char.pastPos.X,mario_char.pastPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);
-//             // display Mario in new position + moving animation 
-//             displayAnimation (mario_char.currentPos.X,mario_char.currentPos.Y, mario_forward_allArray,OBJECT_WIDTH, OBJECT_HEIGHT, moveRightTotalAnimationFrame);
-//             // display default Mario when stop
-//             displayObject(mario_char.currentPos.X,mario_char.currentPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);
-// }
 
 void updateObject(int objLen, int offsetX, int offsetY) {
     if (objLen == sizeof(mario_char)) { // Check if the object is Mario
@@ -196,6 +191,7 @@ void moveObstacleToLeft(void) {
 void handleSceneTransition(void) {
     if (mario_char.currentPos.X > SCENE_TRANSITION_X) {
         isReachTransition = 1;
+        //extra_shadow = mario_char.currentPos.X - SCENE_TRANSITION_X;
         mario_char.currentPos.X = SCENE_TRANSITION_X;  // stick the mario position to the define pos  
         setMarioHitBox(); // define new hitbox
         moveObstacleToLeft(); // move the asset to the left

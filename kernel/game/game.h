@@ -28,6 +28,7 @@
 // game state
 extern volatile int gameState;
 extern volatile int isGameInit;
+//extern int extra_shadow;
 
 // Function prototypes
 void gameOn(void);

@@ -1,8 +1,8 @@
 #include "./hitbox.h"
 
 // Define character size
-#define OBJECT_HEIGHT 203 //change as below for the small mario
-#define OBJECT_WIDTH 206 //change as below for the small mario
+#define OBJECT_HEIGHT 32 //change as below for the small mario
+#define OBJECT_WIDTH 32 //change as below for the small mario
 // #define OBJECT_HEIGHT 32
 // #define OBJECT_WIDTH 32
 
