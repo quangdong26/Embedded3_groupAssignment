@@ -5,7 +5,7 @@
 
 volatile int gameState = GAME_OFF;
 volatile int isGameInit = DEFAULT;
-//int extra_shadow = 0;
+
 
 void clearScreen(void) {
     deleteImage(DEFAULT, DEFAULT, 3000, 3000); // Clear the screen
@@ -182,16 +182,23 @@ void gameOn(void) {
 
 void moveObstacleToLeft(void) {
     deleteImage(mario_obstacle.obstaclePos.X, mario_obstacle.obstaclePos.Y, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
+    deleteAnimationFrame (ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
+    deleteAnimationFrame (ground_obj.groundPos.X+480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
+
     mario_obstacle.obstaclePos.X = mario_obstacle.obstaclePos.X - TRANSITION_OFF;
     setObstacleHitBox(); // set the hitbox again
     drawArrayPixel(mario_obstacle.obstaclePos.X,  mario_obstacle.obstaclePos.Y, 0x00FF00, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
+
+    ground_obj.groundPos.X = ground_obj.groundPos.X - TRANSITION_OFF;
+    displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64); // Draw ground
+    displayObject(ground_obj.groundPos.X+480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
+
 }
 
 
 void handleSceneTransition(void) {
     if (mario_char.currentPos.X > SCENE_TRANSITION_X) {
         isReachTransition = 1;
-        //extra_shadow = mario_char.currentPos.X - SCENE_TRANSITION_X;
         mario_char.currentPos.X = SCENE_TRANSITION_X;  // stick the mario position to the define pos  
         setMarioHitBox(); // define new hitbox
         moveObstacleToLeft(); // move the asset to the left

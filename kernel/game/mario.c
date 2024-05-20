@@ -3,6 +3,7 @@
 #include "../image/mariojump.h"
 #include "../image/mariofw.h"
 
+
 mario_t mario_char;
 volatile int isReachTransition = 0;
 int w_pressed = 0;

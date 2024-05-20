@@ -4,6 +4,7 @@
 #include "obstacle.h"
 
 
+
 //define transition offset
 #define TRANSITION_OFF 5
 
