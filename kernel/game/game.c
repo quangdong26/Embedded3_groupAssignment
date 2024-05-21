@@ -1,4 +1,6 @@
 #include "./game.h"
+//#include "../image/defaultMario.h"
+//#include "../image/mariofw.h"
 
 volatile int gameState = GAME_OFF;
 volatile int isGameInit = DEFAULT;
@@ -29,11 +31,20 @@ void drawObstacle(void) {
 }
 
 void drawMario(void) {
-    renderPlayerInitPoint();
-    uart_dec(mario_char.marioHitBox.bottom_right_corner.Y);
+    renderPlayerInitPoint(); 
+    uart_dec(mario_char.marioHitBox.bottom_right_corner.Y); 
     displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
     //drawArrayPixel(mario_char.marioHitBox.top_left_corner.X, mario_char.marioHitBox.top_left_corner.Y, 0x00FF00, OBJECT_WIDTH, OBJECT_HEIGHT);
 }
+
+// void smallMarioRightAnimation () {
+//             // delete Mario in old position // 
+//             deleteAnimationFrame (mario_char.pastPos.X,mario_char.pastPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);
+//             // display Mario in new position + moving animation 
+//             displayAnimation (mario_char.currentPos.X,mario_char.currentPos.Y, mario_forward_allArray,OBJECT_WIDTH, OBJECT_HEIGHT, moveRightTotalAnimationFrame);
+//             // display default Mario when stop
+//             displayObject(mario_char.currentPos.X,mario_char.currentPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);
+// }
 
 void updateObject(int objLen, int offsetX, int offsetY) {
     if (objLen == sizeof(mario_char)) { // Check if the object is Mario
@@ -103,7 +114,7 @@ void gameOn(void) {
     // Setting up the initial value for game
     if (isGameInit == DEFAULT) {
         renderBackGround();
-        drawMario();
+        drawMario(); 
         drawObstacle();
         isGameInit = INIT;
     }

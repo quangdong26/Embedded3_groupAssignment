@@ -1,8 +1,10 @@
 #include "./hitbox.h"
 
 // Define character size
-#define OBJECT_HEIGHT 203
-#define OBJECT_WIDTH 206
+#define OBJECT_HEIGHT 203 //change as below for the small mario
+#define OBJECT_WIDTH 206 //change as below for the small mario
+// #define OBJECT_HEIGHT 32
+// #define OBJECT_WIDTH 32
 
 #define JUMP_VELOCITY 25  // Higher initial jump velocity, change this if you want Mario to jump higher or lower
 #define GRAVITY 1         // Gravity applied each frame, change this if you want Mario to fall faster or slower
