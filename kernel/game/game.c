@@ -89,7 +89,7 @@ int checkCollision(int obj1, int obj2) {
            mario_char.marioHitBox.bottom_right_corner.Y <= mario_obstacle.obstacleHitBox.top_left_corner.Y && mario_obstacle.isRightToMario ||
            mario_char.marioHitBox.bottom_left_corner.X <= mario_obstacle.obstacleHitBox.top_right_corner.X &&
            mario_char.marioHitBox.bottom_left_corner.Y <= mario_obstacle.obstacleHitBox.top_right_corner.Y && !mario_obstacle.isRightToMario) { // check colision mario
-            return 1;
+           return 1;
         }
     }
     return 0; // No collision
