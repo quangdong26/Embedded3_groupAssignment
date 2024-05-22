@@ -1,4 +1,4 @@
-#include "./hitbox.h"
+#include "obstacle.h"
 
 // Define character size
 #define OBJECT_HEIGHT 32 //change as below for the small mario
@@ -51,6 +51,9 @@ extern int d_pressed;
 
 // frame counter flag
 extern volatile int frameCounter; // this can be changed in the game logic
+
+// stick on obstacle flag
+extern volatile int isOnObstacle;
 
 // Function declaration
 void setMarioHitBox(void);

@@ -11,24 +11,32 @@ int a_pressed = 0;
 int s_pressed = 0;
 int d_pressed = 0;
 volatile int frameCounter = 0;
+volatile int isOnObstacle = 0;
 
 void handleJumping(void) {
     if (mario_char.isJumping) { // If Mario is jumping
         if (frameCounter % FRAME_DELAY == 0) {
-            mario_char.pastPos.Y = mario_char.currentPos.Y;
-            mario_char.currentPos.Y -= mario_char.jumpVelocity; // Move Mario up
-            mario_char.jumpVelocity -= GRAVITY; // Reduce jump velocity by gravity
+            
 
-            mario_char.pastPos.X = mario_char.currentPos.X;
-            mario_char.currentPos.X += mario_char.horizontalSpeed; // Apply horizontal movement
+            if(isOnObstacle == 0) {
+                mario_char.pastPos.Y = mario_char.currentPos.Y;
+                mario_char.currentPos.Y -= mario_char.jumpVelocity; // Move Mario up
+                mario_char.jumpVelocity -= GRAVITY; // Reduce jump velocity by gravity
 
-            if (mario_char.currentPos.Y >= ground_obj.groundPos.Y - OBJECT_HEIGHT) {
+                mario_char.pastPos.X = mario_char.currentPos.X;
+                mario_char.currentPos.X += mario_char.horizontalSpeed; // Apply horizontal movement
+                
+                if (mario_char.currentPos.Y >= ground_obj.groundPos.Y - OBJECT_HEIGHT) {
                 mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Snap back to ground level
                 mario_char.isJumping = 0; // End the jump
                 mario_char.jumpVelocity = 0; // Reset jump velocity
                 mario_char.horizontalSpeed = 0; // Reset horizontal speed
                 mario_char.jumpDirection = 0; // Reset jump direction
                 mario_char.canDoubleJump = 1; // Reset double jump
+                } 
+            } else if(isOnObstacle == 1) {
+                mario_char.marioHitBox.bottom_left_corner.Y = mario_obstacle.obstaclePos.Y;
+                mario_char.currentPos.Y = mario_char.marioHitBox.bottom_left_corner.Y - HITBOX_OFFSET;
             }
 
             //deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
@@ -194,10 +202,10 @@ void initStatMario(void) {
 }
 
 void setMarioHitBox(void) {
-    changeBoxSize(&mario_char.marioHitBox.bottom_left_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, TOP_LEFT_CORNER);
-    changeBoxSize(&mario_char.marioHitBox.bottom_right_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, TOP_RIGHT_CORNER);
-    changeBoxSize(&mario_char.marioHitBox.top_left_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, BOTTOM_LEFT_CORNER);
-    changeBoxSize(&mario_char.marioHitBox.top_right_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, BOTTOM_RIGHT_CORNER);
+    changeBoxSize(&mario_char.marioHitBox.bottom_left_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, TOP_LEFT_CORNER, HITBOX_OFFSET);
+    changeBoxSize(&mario_char.marioHitBox.bottom_right_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, TOP_RIGHT_CORNER, HITBOX_OFFSET);
+    changeBoxSize(&mario_char.marioHitBox.top_left_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, BOTTOM_LEFT_CORNER, HITBOX_OFFSET);
+    changeBoxSize(&mario_char.marioHitBox.top_right_corner, mario_char.currentPos, OBJECT_WIDTH,OBJECT_HEIGHT, BOTTOM_RIGHT_CORNER, HITBOX_OFFSET);
         // set size of the hitbox
     mario_char.marioHitBox.width = mario_char.marioHitBox.top_right_corner.X - mario_char.marioHitBox.top_left_corner.X;
     mario_char.marioHitBox.height = mario_char.marioHitBox.bottom_left_corner.Y - mario_char.marioHitBox.top_left_corner.Y;
@@ -213,4 +221,4 @@ void renderPlayerInitPoint(void) {
     mario_char.horizontalSpeed = 0;
     mario_char.canDoubleJump = 1; // Allow double jump initially
     setMarioHitBox();
-}
+}   

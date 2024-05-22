@@ -1,4 +1,5 @@
-#include "mario.h"
+
+#include "./hitbox.h"
 
 #define OBSTACLE_WIDTH 100
 #define OBSTACLE_HEIGHT 100

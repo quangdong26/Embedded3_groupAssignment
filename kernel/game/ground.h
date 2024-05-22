@@ -9,12 +9,12 @@
 #define GND_Y_POS 600
 
 // define Left/right coordinate
-#define TOP_LEFT_CORNER 0
-#define TOP_RIGHT_CORNER 1
-
-// Define top/bot 
-#define BOTTOM_LEFT_CORNER 0
-#define BOTTOM_RIGHT_CORNER 1
+enum corner_position {
+    TOP_LEFT_CORNER,
+    TOP_RIGHT_CORNER,
+    BOTTOM_LEFT_CORNER,
+    BOTTOM_RIGHT_CORNER
+};
 
 #define BACKGROUND1_HEIGHT 224
 #define BACKGROUND1_WIDTH 3268

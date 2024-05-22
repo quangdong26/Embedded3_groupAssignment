@@ -14,8 +14,8 @@ void setObStacleObject(void) {
 }
 
 void setObstacleHitBox(void) {
-    changeBoxSize(&mario_obstacle.obstacleHitBox.bottom_left_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBSTACLE_HEIGHT, TOP_LEFT_CORNER);
-    changeBoxSize(&mario_obstacle.obstacleHitBox.bottom_right_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBSTACLE_HEIGHT, TOP_RIGHT_CORNER);
-    changeBoxSize(&mario_obstacle.obstacleHitBox.top_left_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBSTACLE_HEIGHT, BOTTOM_LEFT_CORNER);
-    changeBoxSize(&mario_obstacle.obstacleHitBox.top_right_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBSTACLE_HEIGHT, BOTTOM_RIGHT_CORNER);
+    changeBoxSize(&mario_obstacle.obstacleHitBox.bottom_left_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBSTACLE_HEIGHT, TOP_LEFT_CORNER, DEFAULT);
+    changeBoxSize(&mario_obstacle.obstacleHitBox.bottom_right_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBSTACLE_HEIGHT, TOP_RIGHT_CORNER, DEFAULT);
+    changeBoxSize(&mario_obstacle.obstacleHitBox.top_left_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBSTACLE_HEIGHT, BOTTOM_LEFT_CORNER, DEFAULT);
+    changeBoxSize(&mario_obstacle.obstacleHitBox.top_right_corner, mario_obstacle.obstaclePos, OBSTACLE_WIDTH, OBSTACLE_HEIGHT, BOTTOM_RIGHT_CORNER, DEFAULT);
 }

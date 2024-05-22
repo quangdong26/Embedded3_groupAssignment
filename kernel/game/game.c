@@ -91,11 +91,19 @@ int checkCollision(int obj1, int obj2) {
     //if the comparing object are mario and obstacle
     if(obj1 == sizeof(mario_char) && obj2 == sizeof(mario_obstacle)) {
         updateAbsolutePosition(sizeof(mario_obstacle)); // check if the obstacle on the right or left of the mario
+        // if(mario_char.marioHitBox.bottom_right_corner.X >= mario_obstacle.obstacleHitBox.top_left_corner.X &&
+        //    mario_char.marioHitBox.bottom_right_corner.Y <= mario_obstacle.obstacleHitBox.top_left_corner.Y && mario_obstacle.isRightToMario ||
+        //    mario_char.marioHitBox.bottom_left_corner.X <= mario_obstacle.obstacleHitBox.top_right_corner.X &&
+        //    mario_char.marioHitBox.bottom_left_corner.Y <= mario_obstacle.obstacleHitBox.top_right_corner.Y && !mario_obstacle.isRightToMario) { // check colision mario
+        //    return 1;
+        // }
         if(mario_char.marioHitBox.bottom_right_corner.X >= mario_obstacle.obstacleHitBox.top_left_corner.X &&
-           mario_char.marioHitBox.bottom_right_corner.Y <= mario_obstacle.obstacleHitBox.top_left_corner.Y && mario_obstacle.isRightToMario ||
-           mario_char.marioHitBox.bottom_left_corner.X <= mario_obstacle.obstacleHitBox.top_right_corner.X &&
-           mario_char.marioHitBox.bottom_left_corner.Y <= mario_obstacle.obstacleHitBox.top_right_corner.Y && !mario_obstacle.isRightToMario) { // check colision mario
+           mario_char.marioHitBox.bottom_right_corner.X <= mario_obstacle.obstacleHitBox.top_right_corner.X &&
+           mario_char.marioHitBox.bottom_right_corner.Y >= mario_obstacle.obstacleHitBox.top_right_corner.Y && mario_obstacle.isRightToMario) { // check colision mario
+           isOnObstacle = 1;
            return 1;
+        } else {
+            isOnObstacle = 0;
         }
     }
     return 0; // No collision
@@ -173,7 +181,8 @@ void gameOn(void) {
 
     // Check for collisions
     if (checkCollision(sizeof(mario_char), sizeof(mario_obstacle))) {
-        reset();
+        // mario_char.marioHitBox.bottom_left_corner.Y = mario_obstacle.obstacleHitBox.top_right_corner.Y;
+        // mario_char.currentPos.Y = mario_char.marioHitBox.bottom_left_corner.Y - HITBOX_OFFSET;
     }
 
     // Increment frame counter

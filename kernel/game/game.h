@@ -1,7 +1,7 @@
 
 #include "../uart/uart0.h"
 #include "../uart/uart1.h"
-#include "obstacle.h"
+#include "mario.h"
 
 
 
@@ -11,7 +11,7 @@
 #define INPUT_DELAY 1
 
 // State define
-#define DEFAULT 0
+
 #define GAME_ON 1
 #define GAME_OFF 0
 
