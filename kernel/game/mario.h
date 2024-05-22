@@ -12,6 +12,8 @@
 // Define delay
 #define FRAME_DELAY 50000  // Update position every 50000 frames
 
+#define INITIAL_POSITION_X 0
+
 
 
 // Mario action
