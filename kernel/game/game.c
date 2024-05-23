@@ -187,10 +187,13 @@ void moveObstacleToLeft(void) {
 void handleSceneTransition(void) {
     if (mario_char.currentPos.X > SCENE_TRANSITION_X) {
         isReachTransition = 1;
-        mario_char.currentPos.X = SCENE_TRANSITION_X;  // stick the mario position to the defined pos  
-        setMarioHitBox(); // define new hitbox
-        moveObstacleToLeft(); // move the asset to the left
-    }  else {
-        isReachTransition = 0;
+        mario_char.currentPos.X = SCENE_TRANSITION_X;
+        setMarioHitBox();
+        moveObstacleToLeft(); 
+    } else { // This 'else' handles BOTH scenarios
+        if (mario_char.currentPos.X < INITIAL_POSITION_X) {
+            mario_char.currentPos.X = INITIAL_POSITION_X;
+        }
+        isReachTransition = 0; // Reset only if Mario isn't transitioning
     }
 }
