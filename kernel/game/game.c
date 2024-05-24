@@ -2,6 +2,7 @@
 #include "../image/defaultMario.h"
 #include "../image/mariofw.h"
 #include "../image/terrian1.h"
+#include "../image/terrian2.h"
 
 volatile int gameState = GAME_OFF;
 volatile int isGameInit = DEFAULT;
@@ -169,18 +170,29 @@ void gameOn(void) {
 }
 
 void moveObstacleToLeft(void) {
+    // Clear the previous obstacle and ground frames
     deleteImage(mario_obstacle.obstaclePos.X, mario_obstacle.obstaclePos.Y, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
-    deleteAnimationFrame (ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
-    deleteAnimationFrame (ground_obj.groundPos.X+480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
+    deleteAnimationFrame(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
+    deleteAnimationFrame(ground_obj.groundPos.X + 480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
 
-    mario_obstacle.obstaclePos.X = mario_obstacle.obstaclePos.X - TRANSITION_OFF;
-    setObstacleHitBox(); // set the hitbox again
-    drawArrayPixel(mario_obstacle.obstaclePos.X,  mario_obstacle.obstaclePos.Y, 0x00FF00, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
-
-    ground_obj.groundPos.X = ground_obj.groundPos.X - TRANSITION_OFF;
-    displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64); // Draw ground
-    displayObject(ground_obj.groundPos.X+480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
-
+   if ((mario_obstacle.obstaclePos.X - TRANSITION_OFF >= 0) && (ground_obj.groundPos.X - TRANSITION_OFF >= -480)) {
+        // Move obstacle
+        mario_obstacle.obstaclePos.X -= TRANSITION_OFF;
+        setObstacleHitBox(); // Reset the hitbox
+        drawArrayPixel(mario_obstacle.obstaclePos.X, mario_obstacle.obstaclePos.Y, 0x00FF00, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
+        displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
+        displayObject(ground_obj.groundPos.X + 480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
+    } else {
+        //displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian2_terrian2, 480, 64);
+                // Move the ground
+        ground_obj.groundPos.X -= TRANSITION_OFF;
+        int new_ground_x = GND_X_POS;
+        int new_ground_y = GND_Y_POS;
+        int new_terr[480][160];
+        convert1DTo2D(terrian2_terrian2, 480, 160, new_terr);
+        displayObject(new_ground_x, new_ground_y, new_terr, 480, 200);
+        // displayObject(new_ground_x + 480, new_ground_y, terrian1_terrian1, 480, 64);
+    }
 }
 
 

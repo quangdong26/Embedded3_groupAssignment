@@ -106,3 +106,12 @@ unsigned int lcg_random() {
     lcg_seed = (LCG_A * lcg_seed + LCG_C) % LCG_M;
     return lcg_seed;
 }
+
+void convert1DTo2D(int *one_d_array, int rows, int cols, int two_d_array[rows][cols]) {
+    // Fill the 2D array from the 1D array
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            two_d_array[i][j] = one_d_array[i * cols + j];
+        }
+    }
+}

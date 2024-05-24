@@ -7,7 +7,7 @@
 #define PIXEL_ORDER 0
 //Screen info
 unsigned int width, height, pitch;
-unsigned int win_wid = 1024; //window width
+unsigned int win_wid = 1024 ; //window width
 unsigned int win_hei = 768; // window height
 /* Frame buffer address
 * (declare as pointer of unsigned char to access each byte) */
