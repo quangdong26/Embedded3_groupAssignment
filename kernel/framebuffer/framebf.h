@@ -18,3 +18,6 @@ void drawChar(unsigned char ch, int x, int y, unsigned int attr, int zoom);
 void drawString(int x, int y, char *str, unsigned int attr, int zoom);
 void drawWhiteSquare(int x, int y, int size);
 void drawArrayPixel(int x, int y, unsigned int color, int width, int height);
+// mario animation
+void deleteAnimationFrame(int x, int y, const unsigned long *image, int width, int height);
+void displayAnimation (int x, int y, const unsigned long *animation, int width, int height, int totalFrame);

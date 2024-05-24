@@ -1,7 +1,11 @@
 #include "./game.h"
+#include "../image/defaultMario.h"
+#include "../image/mariofw.h"
+#include "../image/terrian1.h"
 
 volatile int gameState = GAME_OFF;
 volatile int isGameInit = DEFAULT;
+
 
 void clearScreen(void) {
     deleteImage(DEFAULT, DEFAULT, 3000, 3000); // Clear the screen
@@ -14,7 +18,8 @@ void renderBackGround(void) {
 
 void drawGround(void) {
     setGroundObject();
-    drawArrayPixel(ground_obj.groundPos.X, ground_obj.groundPos.Y, 0xFFA500, ground_obj.width, ground_obj.height); // Draw ground
+    displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64); // Draw ground
+    displayObject(ground_obj.groundPos.X + 480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64); // Draw ground
 }
 
 void drawObstacle(void) {
@@ -29,11 +34,12 @@ void drawObstacle(void) {
 }
 
 void drawMario(void) {
-    renderPlayerInitPoint();
-    uart_dec(mario_char.marioHitBox.bottom_right_corner.Y);
-    displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
+    renderPlayerInitPoint(); 
+    uart_dec(mario_char.marioHitBox.bottom_right_corner.Y); 
+    displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);
     //drawArrayPixel(mario_char.marioHitBox.top_left_corner.X, mario_char.marioHitBox.top_left_corner.Y, 0x00FF00, OBJECT_WIDTH, OBJECT_HEIGHT);
 }
+
 
 void updateObject(int objLen, int offsetX, int offsetY) {
     if (objLen == sizeof(mario_char)) { // Check if the object is Mario
@@ -89,7 +95,7 @@ int checkCollision(int obj1, int obj2) {
            mario_char.marioHitBox.bottom_right_corner.Y <= mario_obstacle.obstacleHitBox.top_left_corner.Y && mario_obstacle.isRightToMario ||
            mario_char.marioHitBox.bottom_left_corner.X <= mario_obstacle.obstacleHitBox.top_right_corner.X &&
            mario_char.marioHitBox.bottom_left_corner.Y <= mario_obstacle.obstacleHitBox.top_right_corner.Y && !mario_obstacle.isRightToMario) { // check colision mario
-            return 1;
+           return 1;
         }
     }
     return 0; // No collision
@@ -101,7 +107,7 @@ void gameOn(void) {
     // Setting up the initial value for game
     if (isGameInit == DEFAULT) {
         renderBackGround();
-        drawMario();
+        drawMario(); 
         drawObstacle();
         isGameInit = INIT;
     }
@@ -170,9 +176,17 @@ void gameOn(void) {
 
 void moveObstacleToLeft(void) {
     deleteImage(mario_obstacle.obstaclePos.X, mario_obstacle.obstaclePos.Y, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
+    deleteAnimationFrame (ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
+    deleteAnimationFrame (ground_obj.groundPos.X+480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
+
     mario_obstacle.obstaclePos.X = mario_obstacle.obstaclePos.X - TRANSITION_OFF;
     setObstacleHitBox(); // set the hitbox again
     drawArrayPixel(mario_obstacle.obstaclePos.X,  mario_obstacle.obstaclePos.Y, 0x00FF00, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
+
+    ground_obj.groundPos.X = ground_obj.groundPos.X - TRANSITION_OFF;
+    displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64); // Draw ground
+    displayObject(ground_obj.groundPos.X+480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
+
 }
 
 

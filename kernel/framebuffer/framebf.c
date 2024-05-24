@@ -193,3 +193,28 @@ void drawArrayPixel(int x, int y, unsigned int color, int width, int height) {
         }
     }
 }
+
+void deleteAnimationFrame(int x, int y, const unsigned long *image, int width, int height) {
+    for (int j = 0; j < height; j++) {
+        for (int i = 0; i < width; i++) {
+            // Calculate the index for the pixel data
+            int index = j * width + i;
+            if (image[index] != 0x00000000) {
+                drawPixelARGB32(x + i, y + j, 0x00000000);
+            }
+        }
+    }
+}
+
+
+void displayAnimation (int x, int y,const unsigned long *animation, int width, int height, int totalFrame) {
+    wait_msec(2500);
+    displayObject(x, y, animation[0] ,width, height);
+    for (int i = 1; i < totalFrame; i++)
+    {
+        wait_msec(60000);
+        deleteAnimationFrame(x, y, animation[i-1] ,width, height);
+        displayObject(x, y, animation[i] ,width, height);
+    }
+    deleteAnimationFrame(x, y, animation[totalFrame-1] ,width, height);
+}

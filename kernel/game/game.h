@@ -3,6 +3,8 @@
 #include "../uart/uart1.h"
 #include "obstacle.h"
 
+
+
 //define transition offset
 #define TRANSITION_OFF 5
 
@@ -16,15 +18,18 @@
 // Check if the game is init
 #define INIT 1
 
+
 // Plus or minus new value
 #define INCREMENT_VAL 1
 #define DECREMENT_VAL -1
 
 #define SCENE_TRANSITION_X 350  // Transition point
 
+
 // game state
 extern volatile int gameState;
 extern volatile int isGameInit;
+//extern int extra_shadow;
 
 // Function prototypes
 void gameOn(void);
