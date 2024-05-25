@@ -23,7 +23,7 @@
 #define INCREMENT_VAL 1
 #define DECREMENT_VAL -1
 
-#define SCENE_TRANSITION_X 350  // Transition point
+
 
 
 // game state

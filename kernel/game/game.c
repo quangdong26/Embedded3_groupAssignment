@@ -169,6 +169,22 @@ void gameOn(void) {
     frameCounter++;
 }
 
+// Function to find the y-coordinate of the line of pixels equal to 0x00 and just above 0x00ffcec6
+int findLineAboveColor(unsigned long image[480][160], int width, int height, unsigned long color, unsigned long target) {
+    // Traverse the image from the second row to the last row
+    for (int j = 1; j < height; j++) {
+        // Check each pixel in the current row
+        for (int i = 0; i < width; i++) {
+            // Check if the current pixel is the target color and the pixel above is the specified color
+            if (image[j][i] == target && image[j-1][i] == color) {
+                return j - 1;
+            }
+        }
+    }
+    // Return -1 if the pattern is not found
+    return -1;
+}
+
 void moveObstacleToLeft(void) {
     // Clear the previous obstacle and ground frames
     deleteImage(mario_obstacle.obstaclePos.X, mario_obstacle.obstaclePos.Y, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
@@ -190,7 +206,7 @@ void moveObstacleToLeft(void) {
         int new_ground_y = GND_Y_POS;
         int new_terr[480][160];
         convert1DTo2D(terrian2_terrian2, 480, 160, new_terr);
-        displayObject(new_ground_x, new_ground_y, new_terr, 480, 200);
+        displayObject(new_ground_x, new_ground_y - 90, terrian2_terrian2, 480, 150);
         // displayObject(new_ground_x + 480, new_ground_y, terrian1_terrian1, 480, 64);
     }
 }

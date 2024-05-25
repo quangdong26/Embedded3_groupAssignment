@@ -8,6 +8,8 @@
 #define GND_X_POS 0
 #define GND_Y_POS 600
 
+#define SCENE_TRANSITION_X 480  // Transition point
+
 // define Left/right coordinate
 enum corner_position {
     TOP_LEFT_CORNER,
