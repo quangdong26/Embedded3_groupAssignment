@@ -3,6 +3,7 @@
 #include "../image/mariofw.h"
 #include "../image/terrian1.h"
 #include "../image/terrian2.h"
+#include "../image/terrian3.h"
 
 volatile int gameState = GAME_OFF;
 volatile int isGameInit = DEFAULT;
@@ -21,6 +22,7 @@ void drawGround(void) {
     setGroundObject();
     displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64); // Draw ground
     displayObject(ground_obj.groundPos.X + 480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64); // Draw ground
+    displayObject(ground_obj.groundPos.X + 480 + 480, ground_obj.groundPos.Y - 90, terrian2_terrian2, 480, TERRIAN2_HEIGHT);
 }
 
 void drawObstacle(void) {
@@ -162,7 +164,7 @@ void gameOn(void) {
     if (checkCollision(mario_char.marioHitBox, mario_obstacle.obstacleHitBox)) {
         // mario_char.marioHitBox.bottom_left_corner.Y = mario_obstacle.obstacleHitBox.top_right_corner.Y;
         // mario_char.currentPos.Y = mario_char.marioHitBox.bottom_left_corner.Y - HITBOX_OFFSET;
-        reset();
+        //reset();
     }
 
     // Increment frame counter
@@ -188,36 +190,34 @@ int findLineAboveColor(unsigned long image[480][160], int width, int height, uns
 void moveObstacleToLeft(void) {
     // Clear the previous obstacle and ground frames
     deleteImage(mario_obstacle.obstaclePos.X, mario_obstacle.obstaclePos.Y, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
-    // deleteAnimationFrame(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
-    deleteAnimationFrame(ground_obj.groundPos.X + 480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
+    deleteAnimationFrame(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
+    deleteAnimationFrame(ground_obj.groundPos.X + TERRIAN1_WIDTH, ground_obj.groundPos.Y, terrian1_terrian1,TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
+    deleteAnimationFrame(ground_obj.groundPos.X + TERRIAN1_WIDTH + TERRIAN1_WIDTH, ground_obj.groundPos.Y - 90, terrian2_terrian2,TERRIAN2_WIDTH, TERRIAN2_HEIGHT);
+    deleteAnimationFrame(ground_obj.groundPos.X + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH, ground_obj.groundPos.Y - 90, terrian3_terrian3,TERRIAN3_WIDTH, TERRIAN3_HEIGHT);
 
-    // delete the passed ground image 
-    unsigned long *new_terrian1;
-    new_terrian1 = terrian1_terrian1;
-    int old_ground_pos = GND_X_POS;
-    old_ground_pos -= TRANSITION_OFF;
-    int numberOfCol = getNumberOfColumns(new_terrian1, 64);
-    deleteAnimationFrame(ground_obj.groundPos.X, ground_obj.groundPos.Y, new_terrian1,numberOfCol, 64);
-    deleteColumns(new_terrian1, new_terrian1, numberOfCol, 64, 0, abs(old_ground_pos));
 
-   if ((mario_obstacle.obstaclePos.X - TRANSITION_OFF >= 0) && (ground_obj.groundPos.X - TRANSITION_OFF >= -480)) {
+//    if ((mario_obstacle.obstaclePos.X - TRANSITION_OFF >= 0) && (ground_obj.groundPos.X - TRANSITION_OFF >= -480)) {
         // Move obstacle
         mario_obstacle.obstaclePos.X -= TRANSITION_OFF;
         setObstacleHitBox(); // Reset the hitbox
         drawArrayPixel(mario_obstacle.obstaclePos.X, mario_obstacle.obstaclePos.Y, 0x00FF00, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
-        //displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, new_terrian1, numberOfCol, 64);
-        //displayObject(ground_obj.groundPos.X + 480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
-    } else {
-        //displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian2_terrian2, 480, 64);
-                // Move the ground
         ground_obj.groundPos.X -= TRANSITION_OFF;
-        int new_ground_x = GND_X_POS;
-        int new_ground_y = GND_Y_POS;
-        int new_terr[480][160];
-        convert1DTo2D(terrian2_terrian2, 480, 160, new_terr);
-        displayObject(new_ground_x, new_ground_y - 90, terrian2_terrian2, 480, 150);
-        // displayObject(new_ground_x + 480, new_ground_y, terrian1_terrian1, 480, 64);
-    }
+        displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1,TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
+        displayObject(ground_obj.groundPos.X + TERRIAN1_WIDTH, ground_obj.groundPos.Y, terrian1_terrian1, TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
+        displayObject(ground_obj.groundPos.X + TERRIAN1_WIDTH + TERRIAN1_WIDTH,ground_obj.groundPos.Y - 90, terrian2_terrian2,TERRIAN2_WIDTH, TERRIAN2_HEIGHT);
+        displayObject(ground_obj.groundPos.X + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH, ground_obj.groundPos.Y - 90, terrian3_terrian3, TERRIAN3_WIDTH, TERRIAN3_HEIGHT);
+    // } else {
+    //     //displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian2_terrian2, 480, 64);
+    //             // Move the ground
+    //     ground_obj.groundPos.X -= TRANSITION_OFF;
+    //     int new_ground_x = GND_X_POS;
+    //     int new_ground_y = GND_Y_POS;
+    //     int new_terr[480][160];
+    //     convert1DTo2D(terrian2_terrian2, TERRIAN2_WIDTH, TERRIAN2_HEIGHT, new_terr);
+    //     displayObject(new_ground_x, new_ground_y - 90, terrian2_terrian2, TERRIAN2_WIDTH, TERRIAN2_HEIGHT);
+    //     displayObject(new_ground_x + TERRIAN2_WIDTH, new_ground_y - 90, terrian3_terrian3, TERRIAN3_WIDTH, TERRIAN3_HEIGHT);
+    //     displayObject(new_ground_x + TERRIAN2_WIDTH + TERRIAN2_WIDTH, new_ground_y - 90, terrian2_terrian2, TERRIAN2_WIDTH, TERRIAN2_HEIGHT);
+    // }
 }
 
 
