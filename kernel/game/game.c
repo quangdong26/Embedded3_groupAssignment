@@ -188,16 +188,25 @@ int findLineAboveColor(unsigned long image[480][160], int width, int height, uns
 void moveObstacleToLeft(void) {
     // Clear the previous obstacle and ground frames
     deleteImage(mario_obstacle.obstaclePos.X, mario_obstacle.obstaclePos.Y, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
-    deleteAnimationFrame(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
+    // deleteAnimationFrame(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
     deleteAnimationFrame(ground_obj.groundPos.X + 480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
+
+    // delete the passed ground image 
+    unsigned long *new_terrian1;
+    new_terrian1 = terrian1_terrian1;
+    int old_ground_pos = GND_X_POS;
+    old_ground_pos -= TRANSITION_OFF;
+    int numberOfCol = getNumberOfColumns(new_terrian1, 64);
+    deleteAnimationFrame(ground_obj.groundPos.X, ground_obj.groundPos.Y, new_terrian1,numberOfCol, 64);
+    deleteColumns(new_terrian1, new_terrian1, numberOfCol, 64, 0, abs(old_ground_pos));
 
    if ((mario_obstacle.obstaclePos.X - TRANSITION_OFF >= 0) && (ground_obj.groundPos.X - TRANSITION_OFF >= -480)) {
         // Move obstacle
         mario_obstacle.obstaclePos.X -= TRANSITION_OFF;
         setObstacleHitBox(); // Reset the hitbox
         drawArrayPixel(mario_obstacle.obstaclePos.X, mario_obstacle.obstaclePos.Y, 0x00FF00, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
-        displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
-        displayObject(ground_obj.groundPos.X + 480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
+        //displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, new_terrian1, numberOfCol, 64);
+        //displayObject(ground_obj.groundPos.X + 480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
     } else {
         //displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian2_terrian2, 480, 64);
                 // Move the ground
@@ -210,6 +219,7 @@ void moveObstacleToLeft(void) {
         // displayObject(new_ground_x + 480, new_ground_y, terrian1_terrian1, 480, 64);
     }
 }
+
 
 
 void handleSceneTransition(void) {

@@ -115,3 +115,33 @@ void convert1DTo2D(int *one_d_array, int rows, int cols, int two_d_array[rows][c
         }
     }
 }
+
+void deleteColumns(unsigned long original[][6], unsigned long edited[][3], int rows, int cols, int colStart, int colEnd) {
+    for (int i = 0; i < rows; i++) {
+        int newCol = 0; // Column index for the new array
+        for (int j = 0; j < cols; j++) {
+            // Check if the current column is within the range to delete
+            if (j < colStart || j > colEnd) {
+                edited[i][newCol] = original[i][j];
+                newCol++;
+            }
+        }
+    }
+}
+
+// Function to get the number of columns in a 2D array
+int getNumberOfColumns(unsigned long array[][5], int rows) {
+    // Since the array is passed with a fixed second dimension (5 in this case),
+    // we can use the size of one row to calculate the number of columns.
+    int cols = sizeof(array[0]) / sizeof(array[0][0]);
+    return cols;
+}
+
+int abs(int x) {
+    if (x < 0) {
+        return -x;
+    } else {
+        return x;
+    }
+}
+
