@@ -5,8 +5,8 @@
 #define OBSTACLE_HEIGHT 100
 
 // Define obstacle position interval
-#define MAX_OBSTACLE_X (WINDOW_WIDTH - 150)
-#define MIN_OBSTACLE_X (WINDOW_WIDTH / 2)
+#define MAX_OBSTACLE_X (PHYSICAL_WINDOW_WIDTH - 150)
+#define MIN_OBSTACLE_X (PHYSICAL_WINDOW_WIDTH / 2)
 
 // Obstacle struct
 typedef struct {
