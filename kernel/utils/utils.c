@@ -101,6 +101,9 @@
 // }
 
 static unsigned int lcg_seed = 123456789; // Initial seed
+int obstacle_ctr = 0;
+int obstacle_width = 0;
+int obstacle_height = 0;
 
 unsigned int lcg_random() {
     lcg_seed = (LCG_A * lcg_seed + LCG_C) % LCG_M;
@@ -143,5 +146,63 @@ int abs(int x) {
     } else {
         return x;
     }
+}
+
+// Function to check if a pixel is the background color
+int is_background(unsigned long pixel) {
+    return pixel == 0x00000000;
+}
+
+
+// Function to detect obstacles in the image and return their dimensions
+int detect_obstacles(const unsigned long *image, int width, int height) {
+    int max_row = 0;
+    int detected[height][width];
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            detected[i][j] = 0;
+        }
+    }
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            int index = y * width + x;
+            if (!is_background(image[index]) && !detected[y][x] &&
+                (image[index] == GREEN_PIXEL || image[index] == LIGHT_GREEN_PIXEL)) {
+
+                int start_x = x, start_y = y;
+                int end_x = x, end_y = y;
+
+                detected[y][x] = 1;
+
+                // Mark the entire obstacle as detected and find its bounds
+                for (int j = y; j < height; j++) {
+                    for (int i = x; i < width; i++) {
+                        int new_index = j * width + i;
+                        if (!is_background(image[new_index]) &&
+                            (image[new_index] == GREEN_PIXEL || image[new_index] == LIGHT_GREEN_PIXEL)) {
+                            detected[j][i] = 1;
+                            obstacle_ctr++;
+                            if (i > end_x) end_x = i;
+                            if (j > end_y) end_y = j;
+                        } else {
+                            if(obstacle_ctr > max_row) {
+                                max_row = obstacle_ctr;
+                            }
+                            obstacle_ctr = 0;
+                            obstacle_height++;
+                            break;
+                        }
+                    }
+                    if (is_background(image[j * width + x]) ||
+                        !(image[j * width + x] == GREEN_PIXEL || image[j * width + x] == LIGHT_GREEN_PIXEL)) {
+                        break;
+                    }
+                }
+                obstacle_width = end_x - start_x + 1;
+            }
+        }
+    }
+    return max_row;
 }
 

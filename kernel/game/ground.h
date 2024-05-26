@@ -8,7 +8,7 @@
 #define GND_X_POS 0
 #define GND_Y_POS 600
 
-#define SCENE_TRANSITION_X 350  // Transition point
+#define SCENE_TRANSITION_X 480  // Transition point
 
 // define Left/right coordinate
 enum corner_position {
@@ -22,6 +22,9 @@ enum corner_position {
 #define BACKGROUND1_WIDTH 3268
 #define ENTIRE_SCREEN 3000
 
+// define ground length
+#define GND_LENGTH 480
+
 // Coordinate struct
 typedef struct {
     volatile int X;
@@ -34,6 +37,8 @@ typedef struct {
     volatile int width;
     volatile int height;
 } ground_t;
-extern ground_t ground_obj;
 
-void setGroundObject(void);
+extern ground_t ground_obj;
+extern ground_t terrian2;
+
+void setGroundObject(ground_t *tmp, int x, int y, int width, int height);
