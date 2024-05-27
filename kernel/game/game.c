@@ -2,9 +2,13 @@
 #include "../image/defaultMario.h"
 #include "../image/mariofw.h"
 #include "../image/terrian1.h"
+#include "../image/terrian2.h"
+#include "../image/terrian3.h"
 
 volatile int gameState = GAME_OFF;
 volatile int isGameInit = DEFAULT;
+
+volatile int isHitObstacle = 0;
 
 
 void clearScreen(void) {
@@ -17,67 +21,58 @@ void renderBackGround(void) {
 }
 
 void drawGround(void) {
-    setGroundObject();
-    displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64); // Draw ground
-    displayObject(ground_obj.groundPos.X + 480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64); // Draw ground
-}
+    int ground_width = PHYSICAL_WINDOW_WIDTH - ground_obj.groundPos.X;
+    int ground_height = PHYSICAL_WINDOW_HEIGHT - ground_obj.groundPos.Y;
+    setGroundObject(&ground_obj, GND_X_POS, GND_Y_POS, ground_width, ground_height); // create base ground object instance of
 
-void drawObstacle(void) {
-    
-    setObStacleObject();
-    uart_puts("\nObstacle coordinate X: ");
-    uart_dec(mario_obstacle.obstacleHitBox.top_left_corner.X);
-    uart_puts(" Obstacle coordinate Y: ");
-    uart_dec(mario_obstacle.obstacleHitBox.bottom_left_corner.Y);
-    uart_puts("\n");
-    drawArrayPixel(mario_obstacle.obstaclePos.X,  mario_obstacle.obstaclePos.Y, 0x00FF00, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
+    displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, TERRIAN1_WIDTH, TERRIAN1_HEIGHT); // Draw ground
+    displayObject(ground_obj.groundPos.X + GND_LENGTH, ground_obj.groundPos.Y, terrian1_terrian1, TERRIAN1_WIDTH, TERRIAN1_HEIGHT); // Draw ground
+
+    // set ground instance for terrian 2:
+    setGroundObject(&terrian2, ground_obj.groundPos.X + 2 * GND_LENGTH, GND_Y_POS - 90, TERRIAN2_WIDTH, TERRIAN2_HEIGHT); // the terrian2 is 90 before the base ground
+    displayObject(terrian2.groundPos.X, terrian2.groundPos.Y, terrian2_terrian2, TERRIAN2_WIDTH, TERRIAN2_HEIGHT);
 }
 
 void drawMario(void) {
-    renderPlayerInitPoint(); 
-    uart_dec(mario_char.marioHitBox.bottom_right_corner.Y); 
+    renderPlayerInitPoint();
+    int bottom_right_y = mario_char.marioHitBox.top_left_corner.Y + mario_char.marioHitBox.height;
     displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);
     //drawArrayPixel(mario_char.marioHitBox.top_left_corner.X, mario_char.marioHitBox.top_left_corner.Y, 0x00FF00, OBJECT_WIDTH, OBJECT_HEIGHT);
 }
 
-
-void updateObject(int objLen, int offsetX, int offsetY) {
-    if (objLen == sizeof(mario_char)) { // Check if the object is Mario
-        mario_char.currentPos.X += offsetX;
-        mario_char.currentPos.Y += offsetY;
-        mario_char.marioHitBox.top_left_corner.X += offsetX;
-        mario_char.marioHitBox.top_right_corner.X += offsetX;
-        mario_char.marioHitBox.bottom_left_corner.X += offsetX;
-        mario_char.marioHitBox.bottom_right_corner.X += offsetX;
-        mario_char.marioHitBox.top_left_corner.Y += offsetY;
-        mario_char.marioHitBox.top_right_corner.Y += offsetY;
-        mario_char.marioHitBox.bottom_left_corner.Y += offsetY;
-        mario_char.marioHitBox.bottom_right_corner.Y += offsetY;
-    }
+/**
+ * @brief define all the instances of the terrian object
+ * @details This function should be called in the initialization of the game
+*/
+void defineObstacles(void) {
+    setObStacleObject(&terrian2_obstacle, terrian2.groundPos.X + TERRIAN2_OBSTACLE_X_OFFSET, terrian2.groundPos.Y + TERRIAN2_OBSTACLE_Y_OFFSET, OBJECT_WIDTH, OBJECT_HEIGHT);
+    setObStacleObject(&terrian2_stair, terrian2.groundPos.X + TERRIAN2_STAIR_X_OFFSET, terrian2.groundPos.Y + TERRIAN2_STAIR_Y_OFFSET, STAIR_WIDTH, STAIR_HEIGHT);
 }
+
 
 void reset(void) {
     renderBackGround(); // Render the background
     drawMario();
-    drawObstacle(); // Draw the obstacle
+    defineObstacles(); // after reset, define obstacle again
 }
 
 /**
  * @brief check if the current object is on the right or left of the mario
 */
 int updateAbsolutePosition(int objLen) {
-    switch (objLen)
-    {
-    case sizeof(mario_obstacle):
-        if(mario_char.marioHitBox.bottom_right_corner.X <= mario_obstacle.obstacleHitBox.top_left_corner.X) {
-            mario_obstacle.isRightToMario = 1;
-        }
-        return mario_obstacle.isRightToMario;
-        break;
+    // int bot_right_hoz = mario_char.marioHitBox.top_left_corner.X + mario_char.marioHitBox.width;
+    // switch (objLen)
+    // {
+    // case sizeof(mario_obstacle):
+    //     if(bot_right_hoz <= mario_obstacle.obstacleHitBox.top_left_corner.X) {
+    //         mario_obstacle.isRightToMario = 1;
+    //     }
+    //     return mario_obstacle.isRightToMario;
+    //     break;
     
-    default:
-        break;
-    }
+    // default:
+    //     break;
+    // }
 }
 
 
@@ -87,31 +82,36 @@ int updateAbsolutePosition(int objLen) {
            mario_char.marioHitBox.bottom_left_corner.X <= mario_obstacle.obstacleHitBox.top_right_corner.X &&
            mario_char.marioHitBox.bottom_left_corner.Y >= mario_obstacle.obstacleHitBox.top_right_corner.Y + 20
 */
-int checkCollision(int obj1, int obj2) {
-    //if the comparing object are mario and obstacle
-    if(obj1 == sizeof(mario_char) && obj2 == sizeof(mario_obstacle)) {
-        updateAbsolutePosition(sizeof(mario_obstacle)); // check if the obstacle on the right or left of the mario
-        if(mario_char.marioHitBox.bottom_right_corner.X >= mario_obstacle.obstacleHitBox.top_left_corner.X &&
-           mario_char.marioHitBox.bottom_right_corner.Y <= mario_obstacle.obstacleHitBox.top_left_corner.Y && mario_obstacle.isRightToMario ||
-           mario_char.marioHitBox.bottom_left_corner.X <= mario_obstacle.obstacleHitBox.top_right_corner.X &&
-           mario_char.marioHitBox.bottom_left_corner.Y <= mario_obstacle.obstacleHitBox.top_right_corner.Y && !mario_obstacle.isRightToMario) { // check colision mario
-           return 1;
-        }
-    }
-    return 0; // No collision
+int checkCollisionObstacle(mario_t tmp_char, obstacle_t des_obstacle) {
+    // Check if Mario's hitbox and the obstacle's hitbox overlap
+    int marioLeft = tmp_char.marioHitBox.top_left_corner.X;
+    int marioRight = tmp_char.marioHitBox.top_left_corner.X + tmp_char.marioHitBox.width;
+    int marioTop = tmp_char.marioHitBox.top_left_corner.Y;
+    int marioBottom = tmp_char.marioHitBox.top_left_corner.Y + tmp_char.marioHitBox.height;
+
+    int obstacleLeft = des_obstacle.obstacleHitBox.top_left_corner.X;
+    int obstacleRight = des_obstacle.obstacleHitBox.top_left_corner.X + des_obstacle.width;
+    int obstacleTop = des_obstacle.obstacleHitBox.top_left_corner.Y;
+    int obstacleBottom = des_obstacle.obstacleHitBox.top_left_corner.Y + des_obstacle.height;
+
+    // Collision conditions
+    int collisionX = (marioRight >= obstacleLeft) && (marioLeft <= obstacleRight);
+    int collisionY = (marioBottom >= obstacleTop) && (marioTop <= obstacleBottom);
+
+    return collisionX && collisionY; // If both true, there's a collision
 }
+
 
 void gameOn(void) {
     static int delayCounter = 0; // Add delay counter
-
     // Setting up the initial value for game
     if (isGameInit == DEFAULT) {
         renderBackGround();
+        defineObstacles();
         drawMario(); 
-        drawObstacle();
         isGameInit = INIT;
     }
-
+    
     // Handle input
     if (delayCounter > 0) {
         delayCounter--; // Decrement delay counter
@@ -129,11 +129,15 @@ void gameOn(void) {
                 w_pressed = 1;
                 break;
             case 'a':
-                marioMovement(MOVE_LEFT);
+                if (!w_pressed) {
+                    marioMovement(MOVE_LEFT);
+                }
                 a_pressed = 1;
                 break;
             case 'd':
-                marioMovement(MOVE_RIGHT);
+                if (!w_pressed) {
+                    marioMovement(MOVE_RIGHT);
+                }
                 d_pressed = 1;
                 break;
             case 's':
@@ -166,37 +170,83 @@ void gameOn(void) {
     handleSceneTransition();
 
     // Check for collisions
-    if (checkCollision(sizeof(mario_char), sizeof(mario_obstacle))) {
-        reset();
+    if (checkCollisionObstacle(mario_char, terrian2_stair) || checkCollisionObstacle(mario_char, terrian2_obstacle)) {
+        // reset();
+        isHitObstacle = 1;
+    } else {
+        isHitObstacle = 0; // to set the flag to freeze mario
     }
 
     // Increment frame counter
     frameCounter++;
 }
 
-void moveObstacleToLeft(void) {
-    deleteImage(mario_obstacle.obstaclePos.X, mario_obstacle.obstaclePos.Y, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
-    deleteAnimationFrame (ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
-    deleteAnimationFrame (ground_obj.groundPos.X+480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
-
-    mario_obstacle.obstaclePos.X = mario_obstacle.obstaclePos.X - TRANSITION_OFF;
-    setObstacleHitBox(); // set the hitbox again
-    drawArrayPixel(mario_obstacle.obstaclePos.X,  mario_obstacle.obstaclePos.Y, 0x00FF00, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
-
-    ground_obj.groundPos.X = ground_obj.groundPos.X - TRANSITION_OFF;
-    displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64); // Draw ground
-    displayObject(ground_obj.groundPos.X+480, ground_obj.groundPos.Y, terrian1_terrian1, 480, 64);
-
+void marioFreezing(void) {
+    if(isReachTransition) {
+        isHitObstacle = 1;
+    }
 }
 
+// Function to find the y-coordinate of the line of pixels equal to 0x00 and just above 0x00ffcec6
+int findLineAboveColor(unsigned long image[480][160], int width, int height, unsigned long color, unsigned long target) {
+    // Traverse the image from the second row to the last row
+    for (int j = 1; j < height; j++) {
+        // Check each pixel in the current row
+        for (int i = 0; i < width; i++) {
+            // Check if the current pixel is the target color and the pixel above is the specified color
+            if (image[j][i] == target && image[j-1][i] == color) {
+                return j - 1;
+            }
+        }
+    }
+    // Return -1 if the pattern is not found
+    return -1;
+}
+
+/**
+ * @brief to display the terrian after updating
+*/
+void ground_transition_handle(void) {
+    displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1,TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
+    displayObject(ground_obj.groundPos.X + TERRIAN1_WIDTH, ground_obj.groundPos.Y, terrian1_terrian1, TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
+    displayObject(terrian2.groundPos.X, terrian2.groundPos.Y, terrian2_terrian2, TERRIAN2_WIDTH, TERRIAN2_HEIGHT);
+    displayObject(ground_obj.groundPos.X + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH, ground_obj.groundPos.Y - 90, terrian3_terrian3, TERRIAN3_WIDTH, TERRIAN3_HEIGHT);
+}
+
+/**
+ * @brief to update the terrian based on base ground
+*/
+void update_terrian_base(void) {
+    ground_obj.groundPos.X -= TRANSITION_OFF;
+    setGroundObject(&terrian2, ground_obj.groundPos.X + 2 * GND_LENGTH, GND_Y_POS - 90, TERRIAN2_WIDTH, TERRIAN2_HEIGHT); // update terrian 2 based on terrian 1
+    defineObstacles(); //redefine obstacle based on the terrian 2 
+}
+
+void moveObstacleToLeft(void) {
+    deleteAnimationFrame(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
+    deleteAnimationFrame(ground_obj.groundPos.X + TERRIAN1_WIDTH, ground_obj.groundPos.Y, terrian1_terrian1,TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
+    deleteAnimationFrame(terrian2.groundPos.X, terrian2.groundPos.Y, terrian2_terrian2,TERRIAN2_WIDTH, TERRIAN2_HEIGHT);
+    deleteAnimationFrame(ground_obj.groundPos.X + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH, ground_obj.groundPos.Y - 90, terrian3_terrian3,TERRIAN3_WIDTH, TERRIAN3_HEIGHT);
+
+
+    // handle ground transition
+    update_terrian_base();
+    ground_transition_handle();
+    
+}
 
 void handleSceneTransition(void) {
     if (mario_char.currentPos.X > SCENE_TRANSITION_X) {
         isReachTransition = 1;
-        mario_char.currentPos.X = SCENE_TRANSITION_X;  // stick the mario position to the define pos  
-        setMarioHitBox(); // define new hitbox
-        moveObstacleToLeft(); // move the asset to the left
-    } else {
-        isReachTransition = 0;
+        mario_char.currentPos.X = SCENE_TRANSITION_X;
+        setMarioHitBox();
+        if(isHitObstacle == 0) {
+            moveObstacleToLeft(); 
+        }
+    } else { // This 'else' handles BOTH scenarios
+        if (mario_char.currentPos.X < INITIAL_POSITION_X) {
+            mario_char.currentPos.X = INITIAL_POSITION_X;
+        }
+        isReachTransition = 0; // Reset only if Mario isn't transitioning
     }
 }

@@ -1,4 +1,4 @@
-#include "./hitbox.h"
+#include "obstacle.h"
 
 // Define character size
 #define OBJECT_HEIGHT 32 //change as below for the small mario
@@ -6,13 +6,15 @@
 // #define OBJECT_HEIGHT 32
 // #define OBJECT_WIDTH 32
 
-// Define constants for parabolic trajectory
-#define MAX_HORIZONTAL_DISTANCE 200 // Maximum horizontal distance Mario can travel in a jump
-#define JUMP_INITIAL_VELOCITY 17 // Initial velocity for the jump
-#define GRAVITY 1 // Gravity affecting the jump
+#define JUMP_VELOCITY 25  // Higher initial jump velocity, change this if you want Mario to jump higher or lower
+#define GRAVITY 1         // Gravity applied each frame, change this if you want Mario to fall faster or slower
 
 // Define delay
 #define FRAME_DELAY 50000  // Update position every 50000 frames
+
+#define INITIAL_POSITION_X 0
+
+
 
 // Mario action
 typedef enum {
@@ -51,6 +53,9 @@ extern int d_pressed;
 
 // frame counter flag
 extern volatile int frameCounter; // this can be changed in the game logic
+
+// stick on obstacle flag
+extern volatile int isOnObstacle;
 
 // Function declaration
 void setMarioHitBox(void);

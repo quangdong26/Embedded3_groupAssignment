@@ -1,7 +1,7 @@
 
 #include "../uart/uart0.h"
 #include "../uart/uart1.h"
-#include "obstacle.h"
+#include "mario.h"
 
 
 
@@ -11,7 +11,7 @@
 #define INPUT_DELAY 1
 
 // State define
-#define DEFAULT 0
+
 #define GAME_ON 1
 #define GAME_OFF 0
 
@@ -23,7 +23,12 @@
 #define INCREMENT_VAL 1
 #define DECREMENT_VAL -1
 
-#define SCENE_TRANSITION_X 350  // Transition point
+// Define he offset of obstacle position in the array bit
+#define TERRIAN2_OBSTACLE_X_OFFSET 194
+#define TERRIAN2_OBSTACLE_Y_OFFSET 37
+
+#define TERRIAN2_STAIR_X_OFFSET 385
+#define TERRIAN2_STAIR_Y_OFFSET 0
 
 
 // game state

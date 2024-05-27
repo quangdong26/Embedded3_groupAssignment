@@ -7,8 +7,8 @@
 #define PIXEL_ORDER 0
 //Screen info
 unsigned int width, height, pitch;
-unsigned int win_wid = 1024; //window width
-unsigned int win_hei = 768; // window height
+// unsigned int win_wid = 1024 ; //window width
+// unsigned int win_hei = 768; // window height
 /* Frame buffer address
 * (declare as pointer of unsigned char to access each byte) */
 unsigned char *fb;
@@ -22,14 +22,14 @@ mBuf[1] = MBOX_REQUEST;
 mBuf[2] = MBOX_TAG_SETPHYWH; //Set physical width-height
 mBuf[3] = 8; // Value size in bytes
 mBuf[4] = 0; // REQUEST CODE = 0
-mBuf[5] = win_wid; // Value(width)
-mBuf[6] = win_hei; // Value(height)
+mBuf[5] = PHYSICAL_WINDOW_WIDTH; // Value(physical width)
+mBuf[6] = PHYSICAL_WINDOW_HEIGHT; // Value(physical height)
 mBuf[7] = MBOX_TAG_SETVIRTWH; //Set virtual width-height
 
 mBuf[8] = 8;
 mBuf[9] = 0;
-mBuf[10] = win_wid;
-mBuf[11] = win_hei;
+mBuf[10] = VIRTUAL_WINDOW_WIDTH;
+mBuf[11] = PHYSICAL_WINDOW_HEIGHT;
 mBuf[12] = MBOX_TAG_SETVIRTOFF; //Set virtual offset
 mBuf[13] = 8;
 mBuf[14] = 0;

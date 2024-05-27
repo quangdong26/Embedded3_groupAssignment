@@ -1,9 +1,10 @@
 #include "ground.h"
 ground_t ground_obj;
+ground_t terrian2;
 
-void setGroundObject(void) {
-    ground_obj.groundPos.X = GND_X_POS;
-    ground_obj.groundPos.Y = GND_Y_POS;
-    ground_obj.width = WINDOW_WIDTH - ground_obj.groundPos.X;
-    ground_obj.height = WINDOW_HEIGHT - ground_obj.groundPos.Y;
+void setGroundObject(ground_t *tmp, int x, int y, int width, int height) {
+    tmp->groundPos.X = x;
+    tmp->groundPos.Y = y;
+    tmp->width = width;
+    tmp->height = height;
 }

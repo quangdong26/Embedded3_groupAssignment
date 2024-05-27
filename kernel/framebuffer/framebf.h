@@ -4,8 +4,9 @@
 #include "../uart/uart1.h"
 #include "../image/image.h"
 #include "../font/font.h"
-#define WINDOW_HEIGHT 768
-#define WINDOW_WIDTH 1024
+#define PHYSICAL_WINDOW_HEIGHT 768
+#define PHYSICAL_WINDOW_WIDTH 1024
+#define VIRTUAL_WINDOW_WIDTH 3840
 void framebf_init();
 void drawPixelARGB32(int x, int y, unsigned int attr);
 void drawRectARGB32(int x1, int y1, int x2, int y2, unsigned int attr, int fill);
