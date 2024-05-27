@@ -8,6 +8,8 @@
 volatile int gameState = GAME_OFF;
 volatile int isGameInit = DEFAULT;
 
+volatile int isHitObstacle = 0;
+
 
 void clearScreen(void) {
     deleteImage(DEFAULT, DEFAULT, 3000, 3000); // Clear the screen
@@ -51,6 +53,7 @@ void defineObstacles(void) {
 void reset(void) {
     renderBackGround(); // Render the background
     drawMario();
+    defineObstacles(); // after reset, define obstacle again
 }
 
 /**
@@ -79,23 +82,23 @@ int updateAbsolutePosition(int objLen) {
            mario_char.marioHitBox.bottom_left_corner.X <= mario_obstacle.obstacleHitBox.top_right_corner.X &&
            mario_char.marioHitBox.bottom_left_corner.Y >= mario_obstacle.obstacleHitBox.top_right_corner.Y + 20
 */
-int checkCollision(hitbox_t marioHitbox, hitbox_t obstacleHitbox) {
-    // // Check if Mario's hitbox and the obstacle's hitbox overlap
-    // int marioLeft = mario_char.marioHitBox.top_left_corner.X;
-    // int marioRight = mario_char.marioHitBox.top_left_corner.X; + marioHitbox.width;
-    // int marioTop = mario_char.marioHitBox.top_left_corner.Y;
-    // int marioBottom = mario_char.marioHitBox.top_left_corner.Y + marioHitbox.height;
+int checkCollisionObstacle(mario_t tmp_char, obstacle_t des_obstacle) {
+    // Check if Mario's hitbox and the obstacle's hitbox overlap
+    int marioLeft = tmp_char.marioHitBox.top_left_corner.X;
+    int marioRight = tmp_char.marioHitBox.top_left_corner.X + tmp_char.marioHitBox.width;
+    int marioTop = tmp_char.marioHitBox.top_left_corner.Y;
+    int marioBottom = tmp_char.marioHitBox.top_left_corner.Y + tmp_char.marioHitBox.height;
 
-    // int obstacleLeft = mario_obstacle.obstacleHitBox.top_left_corner.X;
-    // int obstacleRight = mario_obstacle.obstacleHitBox.top_left_corner.X + obstacleHitbox.width;
-    // int obstacleTop = mario_obstacle.obstacleHitBox.top_left_corner.Y;
-    // int obstacleBottom = mario_obstacle.obstacleHitBox.top_left_corner.Y + obstacleHitbox.height;
+    int obstacleLeft = des_obstacle.obstacleHitBox.top_left_corner.X;
+    int obstacleRight = des_obstacle.obstacleHitBox.top_left_corner.X + des_obstacle.width;
+    int obstacleTop = des_obstacle.obstacleHitBox.top_left_corner.Y;
+    int obstacleBottom = des_obstacle.obstacleHitBox.top_left_corner.Y + des_obstacle.height;
 
-    // // Collision conditions
-    // int collisionX = (marioRight >= obstacleLeft) && (marioLeft <= obstacleRight);
-    // int collisionY = (marioBottom >= obstacleTop) && (marioTop <= obstacleBottom);
+    // Collision conditions
+    int collisionX = (marioRight >= obstacleLeft) && (marioLeft <= obstacleRight);
+    int collisionY = (marioBottom >= obstacleTop) && (marioTop <= obstacleBottom);
 
-    // return collisionX && collisionY; // If both true, there's a collision
+    return collisionX && collisionY; // If both true, there's a collision
 }
 
 
@@ -167,12 +170,21 @@ void gameOn(void) {
     handleSceneTransition();
 
     // Check for collisions
-    if (mario_char.marioHitBox.top_left_corner.X + mario_char.marioHitBox.width >= terrian2_stair.obstaclePos.X) {
-        reset();
+    if (checkCollisionObstacle(mario_char, terrian2_stair) || checkCollisionObstacle(mario_char, terrian2_obstacle)) {
+        // reset();
+        isHitObstacle = 1;
+    } else {
+        isHitObstacle = 0; // to set the flag to freeze mario
     }
 
     // Increment frame counter
     frameCounter++;
+}
+
+void marioFreezing(void) {
+    if(isReachTransition) {
+        isHitObstacle = 1;
+    }
 }
 
 // Function to find the y-coordinate of the line of pixels equal to 0x00 and just above 0x00ffcec6
@@ -228,7 +240,9 @@ void handleSceneTransition(void) {
         isReachTransition = 1;
         mario_char.currentPos.X = SCENE_TRANSITION_X;
         setMarioHitBox();
-        moveObstacleToLeft(); 
+        if(isHitObstacle == 0) {
+            moveObstacleToLeft(); 
+        }
     } else { // This 'else' handles BOTH scenarios
         if (mario_char.currentPos.X < INITIAL_POSITION_X) {
             mario_char.currentPos.X = INITIAL_POSITION_X;
