@@ -4,6 +4,7 @@
 #include "../background/background2.h"
 #include "../image/marioImg.h"
 
+
 // Define ground position
 #define GND_X_POS 0
 #define GND_Y_POS 600
@@ -40,5 +41,6 @@ typedef struct {
 
 extern ground_t ground_obj;
 extern ground_t terrian2;
+extern ground_t terrian3;
 
 void setGroundObject(ground_t *tmp, int x, int y, int width, int height);

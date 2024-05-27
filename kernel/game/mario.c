@@ -12,6 +12,7 @@ int s_pressed = 0;
 int d_pressed = 0;
 volatile int frameCounter = 0;
 volatile int isOnObstacle = 0;
+volatile int isEnterValley = 0;
 
 void handleJumping(void) {
     if (mario_char.isJumping) { // If Mario is jumping
@@ -177,6 +178,7 @@ void applyGravity(void) {
             setMarioHitBox(); // Update hitbox
         }
     }
+
 }
 
 

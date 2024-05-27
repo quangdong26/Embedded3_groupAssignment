@@ -1,0 +1,91 @@
+[33m5bbbc9f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mtopic-minh_upgrade_scene_trans[m[33m)[m resolve conflict
+[33m139ec16[m[33m ([m[1;31morigin/hotfix-animation_error[m[33m, [m[1;32mhotfix-animation_error[m[33m)[m ground
+[33m617447c[m[33m ([m[1;31morigin/topic-minh_upgrade_scene_trans[m[33m)[m feat: determine the position of the obstacle in terrian2
+[33mf4bfe83[m feat: add terrian 6,7,8,9,10,11 to the image folder
+[33m70f9527[m resolved conflict
+[33md9d9578[m commit
+[33m439e1b3[m feat: add ground of a whole level
+[33m4be2e1e[m topic: update new scene
+[33m331678a[m commit
+[33md90e890[m fix: animation no longer broken
+[33m289d45f[m fix: temporilly fix animation
+[33m53c37d8[m bug: animation frame
+[33ma0d4545[m commit
+[33mae3d0be[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m Merge remote-tracking branch 'origin/Dong'
+[33mfabe509[m Merge branch 'main' of https://github.com/quangdong26/task_3_groupAssignment
+[33m530ce55[m Update game.c
+[33mcbfdc78[m[33m ([m[1;31morigin/Dong[m[33m)[m feat: add moving ground
+[33m24cf6da[m fix: delete Mario excess animation frames
+[33mdce4f57[m fix: delete Mario shadow when he come near the transition line
+[33mf0cfefe[m feat: add mario Animation
+[33mb3fd98a[m feat: mario move right animation
+[33mdd98962[m Merge pull request #14 from Railroad-Wrecker/main
+[33maa508fa[m Merge branch 'main' of https://github.com/Railroad-Wrecker/EEET2490-Assignment-3
+[33m3450efa[m refactor: project structure reorginaztion divided into different files
+[33m00241ed[m Merge branch 'main' of https://github.com/quangdong26/task_3_groupAssignment
+[33md436861[m feat: update screen scroller
+[33m14703f5[m feat: rendered images
+[33ma887d7b[m resolve conflict
+[33m1fc9a32[m feat: add screen scoller
+[33m9697936[m chore: miscellaneous
+[33mf50a40c[m handle scene transition
+[33mdd0646c[m Merge pull request #13 from Railroad-Wrecker/main
+[33mdcaf9f1[m feat: fully implemented character movement.
+[33m72e4ea4[m feat: implement forward and backward jumping
+[33mc9c3129[m resolve conflict
+[33m0865518[m commit
+[33mc386507[m Merge pull request #12 from Railroad-Wrecker/main
+[33mf58251f[m fix: fixed jumping loop
+[33m1f72b8a[m fix: fixed the broken movement
+[33m0c94119[m fix
+[33m1b17b67[m commit
+[33mfb00e7b[m resolve conflict
+[33m0f377ac[m Merge pull request #11 from Railroad-Wrecker/main
+[33m53e6cbb[m Merge branch 'quangdong26:main' into main
+[33m48ed295[m fix: hitbox in 2 sides + put the game in a loop
+[33m5f6a8c0[m style: fixing name spelling
+[33me95f2d8[m Merge pull request #9 from Railroad-Wrecker/main
+[33m1f4d9dd[m feat: implement jumping prototype
+[33md1c871f[m style: code formatting and adding function prototype
+[33m8626daf[m update the resolve
+[33m4d7e6ce[m resolved conflict
+[33m9998bed[m feat: collision added+ memcpy function
+[33m12f2762[m Merge pull request #6 from Railroad-Wrecker/luong-development-branch
+[33mef174cc[m feat: optimised mario's movement, excluding crouching
+[33m2374067[m Delete Assets directory
+[33mba84dd0[m Merge pull request #5 from Railroad-Wrecker/luong-development-branch
+[33m1b04dfd[m feat: added essential development asets
+[33mb3795bb[m Merge pull request #4 from Railroad-Wrecker/luong-development-branch
+[33m1af2ea8[m Merge pull request #3 from Railroad-Wrecker/main
+[33m31387e1[m feat: added essential assets
+[33m2a82ec6[m Merge branch 'fix-render_element_seperately' into minh-topic_develop_collision
+[33mc7c3632[m commit
+[33m976b20b[m resolve
+[33m02b7b80[m fixed ground for mario + jump method
+[33mef8b88e[m bug: the image element needed to be rendered with fixed size
+[33m4cb01f6[m bug: mario character is unresizable
+[33md8bec16[m Update .gitignore
+[33m3b31349[m 2nd attempt
+[33maca9041[m finalize env
+[33m288a0fc[m topic: update environment file
+[33m50491ef[m fix image bug, put video in a seperated folder
+[33m2f345d7[m hehe moving mario
+[33m086110e[m add mario image into background
+[33m2ba8c5b[m fix image bug, add some variable for window size for later use
+[33md016ab1[m add background of lv 2
+[33maf58064[m add background
+[33m99cfa32[m base code
+[33m040aac6[m add moving left and right with 'a' and 'd'
+[33m959b740[m delete an irrelevant folder
+[33md0871d7[m add delete welcome screen (full screen delete)
+[33m9e2d013[m make the total frame variable more readable
+[33mf48d6b0[m change fps to make the video smoother
+[33mb12214a[m basic video display
+[33md666bf6[m fixed colors and stuff + added square to surround
+[33m3e86c2c[m fixed and done
+[33m2306618[m shirin
+[33m2884b62[m add delay.c, try to make a small video with 2 frames (type 'v' to play the video)
+[33m2fec63f[m can scroll up and down using 'w' and 's'
+[33m3726217[m change the image, input the correct width and height
+[33ma97df15[m loaded image, but not in order
+[33m549e9d8[m start code for task 1

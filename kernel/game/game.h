@@ -3,7 +3,11 @@
 #include "../uart/uart1.h"
 #include "mario.h"
 
-
+#include "../image/defaultMario.h"
+#include "../image/mariofw.h"
+#include "../image/terrian1.h"
+#include "../image/terrian2.h"
+#include "../image/terrian3.h"
 
 //define transition offset
 #define TRANSITION_OFF 5
@@ -29,6 +33,13 @@
 
 #define TERRIAN2_STAIR_X_OFFSET 385
 #define TERRIAN2_STAIR_Y_OFFSET 0
+
+#define TERRIAN3_STAIR_X_OFFSET 170 // position (1924, 0) of the 
+#define TERRIAN3_STAIR_Y_OFFSET 0
+
+// define the valley in the terrian 3
+#define TERRIAN3_VALLEY_X 0
+#define TERRIAN3_VALLEY_Y 162
 
 
 // game state

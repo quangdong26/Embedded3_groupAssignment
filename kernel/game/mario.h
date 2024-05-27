@@ -57,6 +57,9 @@ extern volatile int frameCounter; // this can be changed in the game logic
 // stick on obstacle flag
 extern volatile int isOnObstacle;
 
+//check if enter the valley
+extern volatile int isEnterValley;
+
 // Function declaration
 void setMarioHitBox(void);
 void renderPlayerInitPoint(void);

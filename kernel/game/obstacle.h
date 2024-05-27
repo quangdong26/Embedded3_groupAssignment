@@ -33,3 +33,4 @@ void setObStacleObject(obstacle_t *tmp, int x, int y, int width, int height);
 // function declaration
 extern obstacle_t terrian2_obstacle;
 extern obstacle_t terrian2_stair;
+extern obstacle_t terrian3_stair;
