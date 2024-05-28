@@ -13,6 +13,8 @@ int d_pressed = 0;
 volatile int frameCounter = 0;
 volatile int isOnObstacle = 0;
 volatile int isEnterValley = 0;
+volatile int new_ground_y = 0;
+volatile int isFallingHole = 0;
 
 void handleJumping(void) {
     if (mario_char.isJumping) { // If Mario is jumping
@@ -160,26 +162,41 @@ void handleHorizontalMovement(MarioAction action) {
     }
 }
 
-void applyGravity(void) {
-    if (!mario_char.isJumping && mario_char.currentPos.Y < ground_obj.groundPos.Y - OBJECT_HEIGHT) { // Apply gravity if not jumping
-        if (frameCounter % FRAME_DELAY == 0) {
+/**
+ * @brief handle the falling event of mario
+ * @param tmp_ground: to set the ground reference of mario to be landing on
+*/
+void handleFalling(int tmp_ground) {
+    if (frameCounter % FRAME_DELAY == 0) {
             mario_char.pastPos.Y = mario_char.currentPos.Y;
             mario_char.currentPos.Y += GRAVITY;
 
             // mario_char.pastPos.X = mario_char.currentPos.X;
             // mario_char.currentPos.X += mario_char.horizontalSpeed;
 
-            if (mario_char.currentPos.Y > ground_obj.groundPos.Y - OBJECT_HEIGHT) {
-                mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Snap back to ground level
+            if (mario_char.currentPos.Y > tmp_ground - OBJECT_HEIGHT) {
+                mario_char.currentPos.Y = tmp_ground - OBJECT_HEIGHT; // Snap back to ground level
             }
-
+ 
             deleteImage(mario_char.pastPos.X, mario_char.pastPos.Y, OBJECT_WIDTH, OBJECT_HEIGHT);
             displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, marioImg, OBJECT_WIDTH, OBJECT_HEIGHT);
             setMarioHitBox(); // Update hitbox
         }
+}
+
+void applyGravity(void) {
+    if (!mario_char.isJumping && mario_char.currentPos.Y < ground_obj.groundPos.Y - OBJECT_HEIGHT) { // Apply gravity if not jumping
+        handleFalling(ground_obj.groundPos.Y);
     }
 
+    if(isEnterValley && mario_char.currentPos.Y < terrian3.groundPos.Y + TERRIAN3_VALLEY_Y - OBJECT_HEIGHT) {
+        if(mario_char.currentPos.Y >= ground_obj.groundPos.Y - OBJECT_HEIGHT) {
+            //handleFalling(terrian3.groundPos.Y + TERRIAN3_VALLEY_Y);
+            isFallingHole = 1;
+        }       
+    }
 }
+
 
 
 void marioMovement(MarioAction action) {

@@ -55,6 +55,7 @@ void reset(void) {
     renderBackGround(); // Render the background
     drawMario();
     defineObstacles(); // after reset, define obstacle again
+    isFallingHole = 0;
 }
 
 
@@ -77,6 +78,7 @@ int checkCollisionObstacle(mario_t tmp_char, obstacle_t des_obstacle) {
     int obstacleTop = des_obstacle.obstacleHitBox.top_left_corner.Y;
     int obstacleBottom = des_obstacle.obstacleHitBox.top_left_corner.Y + des_obstacle.height;
 
+
     // Collision conditions
     int collisionX = (marioRight >= obstacleLeft) && (marioLeft <= obstacleRight);
     int collisionY = (marioBottom >= obstacleTop) && (marioTop <= obstacleBottom);
@@ -84,6 +86,14 @@ int checkCollisionObstacle(mario_t tmp_char, obstacle_t des_obstacle) {
     return collisionX && collisionY; // If both true, there's a collision
 }
 
+/**
+ * @brief to check if the mario is entering the valley zone or not
+*/
+int checkEnterValley(mario_t tmp_char) {
+    return tmp_char.marioHitBox.top_left_corner.X + tmp_char.marioHitBox.width >= terrian3.groundPos.X + TERRIAN3_VALLEY_X &&
+            tmp_char.marioHitBox.top_left_corner.X + tmp_char.marioHitBox.width <= terrian3.groundPos.X + TERRIAN3_STAIR_X_OFFSET &&
+            tmp_char.marioHitBox.top_left_corner.Y  < terrian3.groundPos.Y + TERRIAN3_VALLEY_Y - OBJECT_HEIGHT;
+}
 
 void gameOn(void) {
     static int delayCounter = 0; // Add delay counter
@@ -152,43 +162,30 @@ void gameOn(void) {
     //handle the scene scroller
     handleSceneTransition();
 
-    // Check for collisions
-    // if (checkCollisionObstacle(mario_char, terrian2_stair) || checkCollisionObstacle(mario_char, terrian2_obstacle) || checkCollisionObstacle(mario_char, terrian3_stair)) {
-    //     // reset();
-    //     isHitObstacle = 1;
-    // } else {
-    //     isHitObstacle = 0; // to set the flag to freeze mario
-    // }
+    if (checkCollisionObstacle(mario_char, terrian2_stair) || checkCollisionObstacle(mario_char, terrian2_obstacle) || checkCollisionObstacle(mario_char, terrian3_stair)) {
+        isHitObstacle = 1;
+    } else {
+        isHitObstacle = 0; // to set the flag to freeze mario
+    }
 
-    // if (checkCollisionObstacle(mario_char, terrian3_stair)) {
+    // if (isEnterValley && mario_char.marioHitBox.top_left_corner.X + OBJECT_WIDTH >= terrian3.groundPos.X + 170) {
     //     reset();
     //     //isHitObstacle = 1;
     // }
 
-    if(mario_char.marioHitBox.top_left_corner.X + mario_char.marioHitBox.width >= terrian3.groundPos.X + TERRIAN3_VALLEY_X &&
-       mario_char.marioHitBox.top_left_corner.X + mario_char.marioHitBox.width >= terrian3.groundPos.X + TERRIAN3_STAIR_X_OFFSET &&
-       mario_char.marioHitBox.top_left_corner.Y + mario_char.marioHitBox.height <= terrian3.groundPos.Y + TERRIAN3_VALLEY_Y) {
+    if(checkEnterValley(mario_char)) {
+        isEnterValley = 1;
+        //reset();
+    } else {
+        isEnterValley = 0;
+    }
+
+    if(isFallingHole) {
         reset();
-       }
+    }
 
     // Increment frame counter
     frameCounter++;
-}
-
-// Function to find the y-coordinate of the line of pixels equal to 0x00 and just above 0x00ffcec6
-int findLineAboveColor(unsigned long image[480][160], int width, int height, unsigned long color, unsigned long target) {
-    // Traverse the image from the second row to the last row
-    for (int j = 1; j < height; j++) {
-        // Check each pixel in the current row
-        for (int i = 0; i < width; i++) {
-            // Check if the current pixel is the target color and the pixel above is the specified color
-            if (image[j][i] == target && image[j-1][i] == color) {
-                return j - 1;
-            }
-        }
-    }
-    // Return -1 if the pattern is not found
-    return -1;
 }
 
 /**

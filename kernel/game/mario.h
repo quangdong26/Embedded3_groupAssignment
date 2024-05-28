@@ -14,6 +14,10 @@
 
 #define INITIAL_POSITION_X 0
 
+// define the valley in the terrian 3
+#define TERRIAN3_VALLEY_X 0
+#define TERRIAN3_VALLEY_Y 168
+
 
 
 // Mario action
@@ -59,6 +63,9 @@ extern volatile int isOnObstacle;
 
 //check if enter the valley
 extern volatile int isEnterValley;
+
+// check if fallin the hole
+extern volatile int isFallingHole;
 
 // Function declaration
 void setMarioHitBox(void);
