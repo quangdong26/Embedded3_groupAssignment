@@ -4,12 +4,16 @@
 #include "../image/terrian1.h"
 #include "../image/terrian2.h"
 #include "../image/terrian3.h"
+#include "../image/terrian10.h"
+#include "../image/terrian11.h"
 
 volatile int gameState = GAME_OFF;
 volatile int isGameInit = DEFAULT;
 
 volatile int isHitObstacle = 0;
 
+const int groundY[6] = {0, 0, 0, -90,-250,-90}; // use this array to modify the Y dimension of each terrian
+const int groundX[6] = {0, 2*480, 3*480, 4*480, 5*480}; // use this array to modify the Y dimension of each terrian
 
 void clearScreen(void) {
     deleteImage(DEFAULT, DEFAULT, 3000, 3000); // Clear the screen
@@ -31,6 +35,18 @@ void drawGround(void) {
     // set ground instance for terrian 2:
     setGroundObject(&terrian2, ground_obj.groundPos.X + 2 * GND_LENGTH, GND_Y_POS - 90, TERRIAN2_WIDTH, TERRIAN2_HEIGHT); // the terrian2 is 90 before the base ground
     displayObject(terrian2.groundPos.X, terrian2.groundPos.Y, terrian2_terrian2, TERRIAN2_WIDTH, TERRIAN2_HEIGHT);
+
+    // set ground instance for terrian 3:
+    setGroundObject(&terrian3, ground_obj.groundPos.X + 3 * GND_LENGTH, GND_Y_POS + 10, TERRIAN3_WIDTH, TERRIAN3_HEIGHT); // the terrian2 is 90 before the base ground
+    displayObject(terrian3.groundPos.X, terrian3.groundPos.Y, terrian3_terrian3, TERRIAN3_WIDTH, TERRIAN3_HEIGHT);
+
+    // set ground instance for terrian 10:
+    setGroundObject(&terrian10, ground_obj.groundPos.X + 4 * GND_LENGTH, GND_Y_POS - 150, TERRIAN10_WIDTH, TERRIAN10_HEIGHT); // the terrian2 is 90 before the base ground
+    displayObject(terrian10.groundPos.X, terrian10.groundPos.Y, terrian10_terrian10, TERRIAN10_WIDTH, TERRIAN10_HEIGHT);
+
+    // set ground instance for terrian 11:
+    setGroundObject(&terrian11, ground_obj.groundPos.X + 5 * GND_LENGTH, GND_Y_POS - 95, TERRIAN11_WIDTH, TERRIAN11_HEIGHT); // the terrian2 is 90 before the base ground
+    displayObject(terrian11.groundPos.X, terrian11.groundPos.Y, terrian11_terrian11, TERRIAN11_WIDTH, TERRIAN11_HEIGHT);
 }
 
 void drawMario(void) {
@@ -47,6 +63,7 @@ void drawMario(void) {
 void defineObstacles(void) {
     setObStacleObject(&terrian2_obstacle, terrian2.groundPos.X + TERRIAN2_OBSTACLE_X_OFFSET, terrian2.groundPos.Y + TERRIAN2_OBSTACLE_Y_OFFSET, OBJECT_WIDTH, OBJECT_HEIGHT);
     setObStacleObject(&terrian2_stair, terrian2.groundPos.X + TERRIAN2_STAIR_X_OFFSET, terrian2.groundPos.Y + TERRIAN2_STAIR_Y_OFFSET, STAIR_WIDTH, STAIR_HEIGHT);
+    setObStacleObject(&terrian11_square, ground_obj.groundPos.X + TERRIAN11_SQUARE_X_START_OFFSET, ground_obj.groundPos.Y + TERRIAN11_SQUARE_Y_START_OFFSET, 654, 32);
 }
 
 
@@ -177,6 +194,10 @@ void gameOn(void) {
         isHitObstacle = 0; // to set the flag to freeze mario
     }
 
+    if (checkCollisionObstacle(mario_char, terrian11_square)) {
+        reset();
+        //isHitObstacle = 1;
+    }
     // Increment frame counter
     frameCounter++;
 }
@@ -210,7 +231,9 @@ void ground_transition_handle(void) {
     displayObject(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1,TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
     displayObject(ground_obj.groundPos.X + TERRIAN1_WIDTH, ground_obj.groundPos.Y, terrian1_terrian1, TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
     displayObject(terrian2.groundPos.X, terrian2.groundPos.Y, terrian2_terrian2, TERRIAN2_WIDTH, TERRIAN2_HEIGHT);
-    displayObject(ground_obj.groundPos.X + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH, ground_obj.groundPos.Y - 90, terrian3_terrian3, TERRIAN3_WIDTH, TERRIAN3_HEIGHT);
+    displayObject(ground_obj.groundPos.X + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH, ground_obj.groundPos.Y + groundY[3], terrian3_terrian3, TERRIAN3_WIDTH, TERRIAN3_HEIGHT);
+    displayObject(ground_obj.groundPos.X + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH, ground_obj.groundPos.Y + groundY[4], terrian10_terrian10,TERRIAN10_WIDTH, TERRIAN10_HEIGHT);
+    displayObject(ground_obj.groundPos.X + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH, ground_obj.groundPos.Y + groundY[5], terrian11_terrian11,TERRIAN11_WIDTH, TERRIAN11_HEIGHT);
 }
 
 /**
@@ -223,11 +246,12 @@ void update_terrian_base(void) {
 }
 
 void moveObstacleToLeft(void) {
-    deleteAnimationFrame(ground_obj.groundPos.X, ground_obj.groundPos.Y, terrian1_terrian1, TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
-    deleteAnimationFrame(ground_obj.groundPos.X + TERRIAN1_WIDTH, ground_obj.groundPos.Y, terrian1_terrian1,TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
-    deleteAnimationFrame(terrian2.groundPos.X, terrian2.groundPos.Y, terrian2_terrian2,TERRIAN2_WIDTH, TERRIAN2_HEIGHT);
-    deleteAnimationFrame(ground_obj.groundPos.X + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH, ground_obj.groundPos.Y - 90, terrian3_terrian3,TERRIAN3_WIDTH, TERRIAN3_HEIGHT);
-
+    deleteAnimationFrame(ground_obj.groundPos.X + groundX[0], ground_obj.groundPos.Y + groundY[0], terrian1_terrian1, TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
+    deleteAnimationFrame(ground_obj.groundPos.X + groundX[1], ground_obj.groundPos.Y + groundY[1], terrian1_terrian1,TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
+    deleteAnimationFrame(terrian2.groundPos.X, terrian2.groundPos.Y + groundY[2], terrian2_terrian2,TERRIAN2_WIDTH, TERRIAN2_HEIGHT);
+    deleteAnimationFrame(ground_obj.groundPos.X + groundX[2], ground_obj.groundPos.Y + groundY[3], terrian3_terrian3,TERRIAN3_WIDTH, TERRIAN3_HEIGHT);
+    deleteAnimationFrame(ground_obj.groundPos.X + groundX[3], ground_obj.groundPos.Y + groundY[4], terrian10_terrian10,TERRIAN10_WIDTH, TERRIAN10_HEIGHT);
+    deleteAnimationFrame(ground_obj.groundPos.X + groundX[4], ground_obj.groundPos.Y + groundY[5], terrian11_terrian11,TERRIAN11_WIDTH, TERRIAN11_HEIGHT);
 
     // handle ground transition
     update_terrian_base();

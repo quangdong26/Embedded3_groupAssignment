@@ -40,5 +40,8 @@ typedef struct {
 
 extern ground_t ground_obj;
 extern ground_t terrian2;
+extern ground_t terrian3;
+extern ground_t terrian10;
+extern ground_t terrian11;
 
 void setGroundObject(ground_t *tmp, int x, int y, int width, int height);
