@@ -1,6 +1,5 @@
 #include "./game.h"
 
-
 volatile int gameState = GAME_OFF;
 volatile int isGameInit = DEFAULT;
 
@@ -38,6 +37,13 @@ void drawMario(void) {
     int bottom_right_y = mario_char.marioHitBox.top_left_corner.Y + mario_char.marioHitBox.height;
     displayObject(mario_char.currentPos.X, mario_char.currentPos.Y, default_mario, OBJECT_WIDTH, OBJECT_HEIGHT);
     //drawArrayPixel(mario_char.marioHitBox.top_left_corner.X, mario_char.marioHitBox.top_left_corner.Y, 0x00FF00, OBJECT_WIDTH, OBJECT_HEIGHT);
+}
+
+
+void drawGoomba(void) {
+    renderGoombaInitPoint();
+    // int bottom_right_y = goomba_char.goombaHitBox.top_left_corner.Y + goomba_char.goombaHitBox.height;
+    displayObject(goomba_char.currentPos.X, goomba_char.currentPos.Y, defaultGoomba, OBJECT_WIDTH, OBJECT_HEIGHT);
 }
 
 /**
@@ -102,6 +108,7 @@ void gameOn(void) {
         renderBackGround();
         defineObstacles();
         drawMario(); 
+        drawGoomba();
         isGameInit = INIT;
     }
     

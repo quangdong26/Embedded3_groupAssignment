@@ -1,13 +1,16 @@
 
 #include "../uart/uart0.h"
 #include "../uart/uart1.h"
-#include "mario.h"
+#include "goomba.h"
+
 
 #include "../image/defaultMario.h"
 #include "../image/mariofw.h"
 #include "../image/terrian1.h"
 #include "../image/terrian2.h"
 #include "../image/terrian3.h"
+#include "../image/defaultGoomba.h"
+
 
 //define transition offset
 #define TRANSITION_OFF 5
