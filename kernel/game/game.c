@@ -1,5 +1,6 @@
 #include "./game.h"
 #include "../image/defaultMario.h"
+#include "../image/defaultGoomba.h"
 #include "../image/mariofw.h"
 #include "../image/terrian1.h"
 
@@ -40,6 +41,20 @@ void drawMario(void) {
     //drawArrayPixel(mario_char.marioHitBox.top_left_corner.X, mario_char.marioHitBox.top_left_corner.Y, 0x00FF00, OBJECT_WIDTH, OBJECT_HEIGHT);
 }
 
+void drawGoomba(void) {
+    renderGoombaInitPoint();
+    // int bottom_right_y = goomba_char.goombaHitBox.top_left_corner.Y + goomba_char.goombaHitBox.height;
+    displayObject(goomba_char.currentPos.X, goomba_char.currentPos.Y, defaultGoomba, OBJECT_WIDTH, OBJECT_HEIGHT);
+}
+
+/**
+ * @brief define all the instances of the terrian object
+ * @details This function should be called in the initialization of the game
+*/
+void defineObstacles(void) {
+    setObStacleObject(&terrian2_obstacle, terrian2.groundPos.X + TERRIAN2_OBSTACLE_X_OFFSET, terrian2.groundPos.Y + TERRIAN2_OBSTACLE_Y_OFFSET, OBJECT_WIDTH, OBJECT_HEIGHT);
+    setObStacleObject(&terrian2_stair, terrian2.groundPos.X + TERRIAN2_STAIR_X_OFFSET, terrian2.groundPos.Y + TERRIAN2_STAIR_Y_OFFSET, STAIR_WIDTH, STAIR_HEIGHT);
+}
 
 void updateObject(int objLen, int offsetX, int offsetY) {
     if (objLen == sizeof(mario_char)) { // Check if the object is Mario
@@ -111,6 +126,7 @@ void gameOn(void) {
         renderBackGround();
         drawMario(); 
         drawObstacle();
+        // drawGoomba();
         isGameInit = INIT;
     }
 

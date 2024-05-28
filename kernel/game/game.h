@@ -2,6 +2,8 @@
 #include "../uart/uart0.h"
 #include "../uart/uart1.h"
 #include "obstacle.h"
+#include "mario.h"
+#include "goomba.h"
 
 
 
