@@ -39,8 +39,14 @@ typedef struct {
     volatile int height;
 } ground_t;
 
-extern ground_t ground_obj;
+extern ground_t ground_obj; //terrian 1 (= terrian 30)
 extern ground_t terrian2;
 extern ground_t terrian3;
+
+extern ground_t terrian22;
+extern ground_t terrian23;
+extern ground_t terrian25;
+extern ground_t terrian28;
+extern ground_t terrian29;
 
 void setGroundObject(ground_t *tmp, int x, int y, int width, int height);

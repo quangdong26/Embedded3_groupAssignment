@@ -11,6 +11,12 @@
 #include "../image/terrian3.h"
 #include "../image/defaultGoomba.h"
 
+#include "../image/terrian22.h"
+#include "../image/terrian23.h"
+#include "../image/terrian25.h"
+#include "../image/terrian28.h"
+#include "../image/terrian29.h"
+
 
 //define transition offset
 #define TRANSITION_OFF 5
