@@ -9,6 +9,8 @@
 #include "../image/terrian1.h"
 #include "../image/terrian2.h"
 #include "../image/terrian3.h"
+#include "../image/terrian10.h"
+#include "../image/terrian11.h"
 #include "../image/defaultGoomba.h"
 
 
@@ -42,6 +44,11 @@
 
 
 
+#define TERRIAN10_STAIR_X_OFFSET 288
+#define TERRIAN10_STAIR_Y_OFFSET 131
+
+#define TERRIAN11_SQUARE_X_START_OFFSET 2038
+#define TERRIAN11_SQUARE_Y_START_OFFSET 3
 
 // game state
 extern volatile int gameState;

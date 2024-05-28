@@ -31,7 +31,9 @@ extern obstacle_t terrian2_stair;
 extern obstacle_t terrian3_stair;
 
 
+
 void setObstacleHitBox(obstacle_t *tmp);
 
 void setObStacleObject(obstacle_t *tmp, int x, int y, int width, int height);
+
 
