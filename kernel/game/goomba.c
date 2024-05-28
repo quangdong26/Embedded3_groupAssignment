@@ -2,10 +2,11 @@
 #include "../image/defaultGoomba.h"
 
 goomba_t goomba_char;
+volatile int goomba_frame_counter = 0;
 // volatile int frameCounter = 0;
 
 void handleLeftMovement(void) {
-    float speed = -1.0; // Speed at which the Goomba moves left
+    float speed = -2.0; // Speed at which the Goomba moves left
 
     if (frameCounter % FRAME_DELAY == 0) {
         goomba_char.pastPos.X = goomba_char.currentPos.X;
@@ -34,7 +35,13 @@ void setGoombaHitBox(void) {
 void renderGoombaInitPoint(void) {
     goomba_char.height_size = OBJECT_HEIGHT;
     goomba_char.width_size = OBJECT_WIDTH;
-    goomba_char.currentPos.X = mario_char.currentPos.X + 100;
+    goomba_char.currentPos.X = terrian2_obstacle.obstaclePos.X - 80;
     goomba_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Goomba starts on the ground
+    
+}
+
+void renderGoombaCurrentPoint(int x) {
+    goomba_char.pastPos.X = goomba_char.currentPos.X;
+    goomba_char.currentPos.X -= x;
     setGoombaHitBox();
 }

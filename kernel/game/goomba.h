@@ -17,6 +17,7 @@ typedef struct {
 } goomba_t;
 
 extern goomba_t goomba_char;
+extern volatile int goomba_frame_counter;
 
 
 // // frame counter flag
@@ -28,3 +29,4 @@ void setGoombaHitBox(void);
 void renderGoombaInitPoint(void);
 void handleLeftMovement(void);
 void initStatGoomba(void);
+void renderGoombaCurrentPoint(int x);
