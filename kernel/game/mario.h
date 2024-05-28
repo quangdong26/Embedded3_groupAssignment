@@ -14,9 +14,7 @@
 
 #define INITIAL_POSITION_X 0
 
-// define the valley in the terrian 3
-#define TERRIAN3_VALLEY_X 0
-#define TERRIAN3_VALLEY_Y 168
+
 
 
 

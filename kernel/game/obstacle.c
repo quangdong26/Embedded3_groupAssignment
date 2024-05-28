@@ -3,6 +3,7 @@ obstacle_t terrian2_obstacle;
 obstacle_t terrian2_stair;
 obstacle_t terrian3_stair;
 obstacle_t terrian11_square;
+obstacle_t terrian10_stair;
 
 void setObStacleObject(obstacle_t *tmp, int x, int y, int width, int height) {
     // assigned the value for position

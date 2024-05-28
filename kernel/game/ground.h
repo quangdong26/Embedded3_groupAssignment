@@ -11,6 +11,12 @@
 
 #define SCENE_TRANSITION_X 480  // Transition point
 
+// define terrian 10 starting y
+#define TERRIAN10_SCENE_Y 187
+
+// define terrian 11 starting y
+#define TERRIAN11_SCENE_Y 25
+
 // define Left/right coordinate
 enum corner_position {
     TOP_LEFT_CORNER,
