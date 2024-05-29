@@ -4,11 +4,18 @@
 #include "../background/background2.h"
 #include "../image/marioImg.h"
 
+
 // Define ground position
 #define GND_X_POS 0
 #define GND_Y_POS 600
 
 #define SCENE_TRANSITION_X 480  // Transition point
+
+// define terrian 10 starting y
+#define TERRIAN10_SCENE_Y 187
+
+// define terrian 11 starting y
+#define TERRIAN11_SCENE_Y 25
 
 // define Left/right coordinate
 enum corner_position {
@@ -40,5 +47,8 @@ typedef struct {
 
 extern ground_t ground_obj;
 extern ground_t terrian2;
+extern ground_t terrian3;
+extern ground_t terrian10;
+extern ground_t terrian11;
 
 void setGroundObject(ground_t *tmp, int x, int y, int width, int height);
