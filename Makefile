@@ -11,11 +11,11 @@ uart0: clean uart0_build kernel8.img run0
 #./build/uart.o: ./uart/uart1.c
 #	aarch64-none-elf-gcc $(GCCFLAGS) -c ./uart/uart1.c -o ./build/uart.o
 
-timer_build: ./timer/sys_timer.c
-	aarch64-none-elf-gcc $(GCCFLAGS) -c ./timer/sys_timer.c -o ./build/sys_timer.o
+timer_build: ./kernel/timer/sys_timer.c
+	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/timer/sys_timer.c -o ./build/sys_timer.o
 
-irq_build: ./irq/irq.c
-	aarch64-none-elf-gcc $(GCCFLAGS) -c ./irq/irq.c -o ./build/irq.o
+irq_build: ./kernel/irq/irq.c
+	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/irq/irq.c -o ./build/irq.o
 
 video_build: ./video/video.c
 	aarch64-none-elf-gcc $(GCCFLAGS) -c ./video/video.c -o ./build/video.o

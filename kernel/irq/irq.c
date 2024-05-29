@@ -1,5 +1,5 @@
 //----------------------------------irq.c------------------------------------//
-#include "../kernel/irq/irq.h"
+#include "../irq/irq.h"
 
 // Enable Interrupt for timer 1
 void enable_irq() { //enable for timer 1

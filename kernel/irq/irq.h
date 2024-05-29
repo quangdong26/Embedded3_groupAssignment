@@ -2,7 +2,7 @@
 #ifndef IRQ_H
 #define IRQ_H
 
-#include "../kernel/timer/sys_timer.h"
+#include "../timer/sys_timer.h"
 
 #define IRQ_BASE            0x3F00B000
 

@@ -4,7 +4,7 @@
 
 #include "../uart/uart1.h"
 #include "../uart/uart0.h"
-#include "../kernel/gpio/gpio.h"
+#include "../gpio/gpio.h"
 #include "../irq/irq.h"
 
 #define CLK_HZ 1000000

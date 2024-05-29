@@ -1,5 +1,5 @@
 //--------------------------------sys_timer.c----------------------------------//
-#include "../kernel/timer/sys_timer.h"
+#include "../timer/sys_timer.h"
 
 
 const uint32_t interval_1 = CLK_HZ;
