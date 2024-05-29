@@ -1,6 +1,6 @@
 #--------------------------------------Makefile-------------------------------------
 include .env
-OBJECT = ./build/background1.o ./build/background2.o ./build/game.o ./build/delay.o ./build/goomba.o ./build/obstacle.o ./build/marioImg.o ./build/defaultMario.o ./build/mariojump.o ./build/mariofw.o ./build/terrian1.o ./build/terrian2.o ./build/terrian3.o ./build/terrian10.o ./build/terrian11.o  ./build/hitbox.o ./build/framebf.o ./build/image.o ./build/font.o ./build/mario.o ./build/ground.o ./build/mbox.o ./build/utils.o ./build/kernel.o ./build/defaultGoomba.o
+OBJECT = ./build/background1.o ./build/background2.o ./build/goomba.o ./build/game.o ./build/delay.o ./build/obstacle.o ./build/marioImg.o ./build/defaultMario.o ./build/mariojump.o ./build/mariofw.o ./build/terrian1.o ./build/terrian2.o ./build/terrian3.o ./build/terrian10.o ./build/terrian11.o ./build/terrian22.o ./build/terrian23.o ./build/terrian25.o ./build/terrian28.o ./build/terrian29.o ./build/hitbox.o ./build/framebf.o ./build/image.o ./build/font.o ./build/mario.o ./build/ground.o ./build/mbox.o ./build/utils.o ./build/kernel.o ./build/defaultGoomba.o
 CFILES = $(wildcard ./kernel/*.c)
 OFILES = $(CFILES:./kernel/%.c=./build/%.o)
 GCCFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib
@@ -30,7 +30,7 @@ delay_build: ./kernel/delay/delay.c
 frame_build: ./kernel/framebuffer/framebf.c
 	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/framebuffer/framebf.c -o ./build/framebf.o
 
-image_build: ./kernel/image/image.c ./kernel/image/marioImg.c ./kernel/image/defaultMario.c ./kernel/image/mariofw.c ./kernel/image/mariojump.c ./kernel/image/terrian1.c  ./kernel/image/terrian2.c ./kernel/image/terrian3.c ./kernel/image/terrian10.c ./kernel/image/terrian11.c ./kernel/image/defaultGoomba.c 
+image_build: ./kernel/image/image.c ./kernel/image/marioImg.c ./kernel/image/defaultMario.c ./kernel/image/mariofw.c ./kernel/image/mariojump.c ./kernel/image/terrian1.c  ./kernel/image/terrian2.c ./kernel/image/terrian3.c ./kernel/image/defaultGoomba.c ./kernel/image/terrian22.c ./kernel/image/terrian23.c ./kernel/image/terrian25.c ./kernel/image/terrian28.c ./kernel/image/terrian29.c
 	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/image/image.c -o ./build/image.o
 	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/image/marioImg.c -o ./build/marioImg.o
 	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/image/defaultMario.c -o ./build/defaultMario.o
@@ -42,6 +42,11 @@ image_build: ./kernel/image/image.c ./kernel/image/marioImg.c ./kernel/image/def
 	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/image/defaultGoomba.c  -o ./build/defaultGoomba.o
 	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/image/terrian10.c -o ./build/terrian10.o
 	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/image/terrian11.c -o ./build/terrian11.o
+	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/image/terrian22.c -o ./build/terrian22.o
+	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/image/terrian23.c -o ./build/terrian23.o
+	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/image/terrian25.c -o ./build/terrian25.o
+	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/image/terrian28.c -o ./build/terrian28.o
+	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/image/terrian29.c -o ./build/terrian29.o
 
 mailbox_build: ./kernel/mailbox/mbox.c
 	aarch64-none-elf-gcc $(GCCFLAGS) -c ./kernel/mailbox/mbox.c -o ./build/mbox.o

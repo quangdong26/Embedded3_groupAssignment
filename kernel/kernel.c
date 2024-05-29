@@ -10,8 +10,8 @@
 
 
 // #define MAX_CMD_SIZE 100
-#define IMAGE_WIDTH 732
-#define IMAGE_HEIGHT 578
+#define IMAGE_WIDTH 2000
+#define IMAGE_HEIGHT 1333
 #define VIDEO_WIDTH 320
 #define VIDEO_HEIGHT 240
 
@@ -41,7 +41,30 @@ void printTeamName(void) {
     drawString(350, 400, "Huynh Quang Dong", 0x0000FF00, 3);   // Green color, zoom factor of 3
     drawString(350, 500, "Dinh Ngoc Minh", 0x00FFFF00, 3);    // Yellow color, zoom factor of 3
 }
+void displayWelcomeMessage(void) {
+   
 
+    // Define colors
+    uint32_t black = 0x00000000;   // Black color
+    uint32_t brown = 0xb16002;  // Orange color for the title box
+    uint32_t white = 0xFFFFFFFF;   // White color for text
+
+    // Draw black background
+    //drawFilledRect(0, 0, 1000, 600, black);
+
+    // Draw title box
+    //drawFilledRect(70, 50, 900, 200, brown); // Orange box for title background
+
+    // Draw title text
+    drawString(150, 120, "SUPER MARIO ", white, 6); // White color, zoom factor of 6
+    drawString(150, 180, "BROS.", white, 6); // White color, zoom factor of 6
+    
+
+
+    // Draw menu options
+    drawString(150, 400, "PRESS 'B' TO START GAME", white, 4); // White color, zoom factor of 4
+    
+}
 void cli()
 {
     // static char cli_buffer[MAX_CMD_SIZE];
@@ -99,7 +122,12 @@ void cli()
         }
         else if (c == 'm') 
         {
-            gameState = GAME_ON;
+            clearScreen();
+            deleteImage(currentX, currentY, ENTIRE_SCREEN, ENTIRE_SCREEN);
+            displayWelcomeMessage();
+        }
+        else if (c=='b'){
+             gameState = GAME_ON;
             // MpastX = McurrentX;
             // McurrentX += 100;
             // deleteImage(pastX, pastY, ENTIRE_SCREEN, ENTIRE_SCREEN);

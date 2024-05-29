@@ -6,6 +6,8 @@ volatile int isGameInit = DEFAULT;
 
 volatile int isHitObstacle = 0;
 
+volatile int isReachTheFinal = 0;
+
 const int groundY[6] = {0, 0, 0, -90,-250,-90}; // use this array to modify the Y dimension of each terrian
 const int groundX[6] = {0, 2*480, 3*480, 4*480, 5*480}; // use this array to modify the Y dimension of each terrian
 
@@ -77,6 +79,7 @@ void reset(void) {
     renderGoombaInitPoint();
     isFallingHole = 0;
     isOnObstacle = 0;
+    isReachTheFinal = 0;
 }
 
 
@@ -107,6 +110,13 @@ int checkCollisionObstacle(mario_t tmp_char, obstacle_t des_obstacle) {
     return collisionX && collisionY; // If both true, there's a collision
 }
 
+void handle_hit_obstacle_last(void) {
+    if(isHitObstacle) {
+        mario_char.currentPos.X = terrian10_stair.obstacleHitBox.top_left_corner.X - mario_char.marioHitBox.width;
+        setMarioHitBox();
+    }
+}
+
 /**
  * @brief to check if the mario is entering the valley zone or not
 */
@@ -120,7 +130,8 @@ void gameOn(void) {
     static int delayCounter = 0; // Add delay counter
     // Setting up the initial value for game
     if (isGameInit == DEFAULT) {
-        renderBackGround();
+        renderBackGround(); // LEVEL 1
+        //renderBackGround_LV2(); //LEVEL 2
         defineObstacles();
         drawMario(); 
         drawGoomba();
@@ -181,7 +192,12 @@ void gameOn(void) {
     handleJumping(); // belong to mario object
     applyGravity(); // belong to mario object
 
-    //handle the scene scroller
+    //handle the scene scroller if mario did not reach the last terrian
+    // if(mario_char.currentPos.X + mario_char.marioHitBox.width >= terrian10_stair.obstacleHitBox.top_left_corner.X) {
+    //     isReachTheFinal = 1;
+    //     isReachTransition = 0;
+    //     handle_hit_obstacle_last();
+    // }
     handleSceneTransition();
     handleLeftMovement();
 
@@ -260,14 +276,91 @@ void moveObstacleToLeft(void) {
     ground_transition_handle();
     
 }
+void lv2 () {
+    moveObstacleToLeft_LV2();
+}
+
+const int ground2Y[6] = {-181,-180, -229, -180, -183,-22}; // use this array to modify the Y dimension of each terrian
+const int ground2X[6] = {0, 480, 960, 1440, 1920, 2400}; // use this array to modify the X dimension of each terrian
+
+void renderBackGround_LV2(void) {
+    clearScreen(); // Clear the previous frame
+    drawGround_LV2(); // Draw the ground
+}
+
+void reset_LV2(void) {
+    renderBackGround_LV2(); // Render the background
+    drawMario();
+    defineObstacles_LV2(); // after reset, define obstacle again
+    isFallingHole = 0;
+}
+
+void drawGround_LV2(void) {
+    int ground_width = PHYSICAL_WINDOW_WIDTH - terrian22.groundPos.X;
+    int ground_height = PHYSICAL_WINDOW_HEIGHT - terrian22.groundPos.Y;
+
+    // set ground instance for terrian 22:
+    setGroundObject(&terrian22, GND_X_POS, GND_Y_POS, ground_width, ground_height); // create base ground object instance of
+    displayObject(terrian22.groundPos.X, terrian22.groundPos.Y, terrian22_terrian22, TERRIAN22_WIDTH, TERRIAN22_HEIGHT); // Draw ground
+
+    // set ground instance for terrian 23:
+    setGroundObject(&terrian23, terrian22.groundPos.X + ground2X[2], GND_Y_POS - 90, TERRIAN23_WIDTH, TERRIAN23_HEIGHT); // the terrian2 is 90 before the base ground
+    displayObject(terrian23.groundPos.X, terrian23.groundPos.Y, terrian23_terrian23, TERRIAN23_WIDTH, TERRIAN23_HEIGHT);
+
+    // set ground instance for terrian 25:
+    setGroundObject(&terrian25, terrian22.groundPos.X + ground2X[3], GND_Y_POS - 90, TERRIAN25_WIDTH, TERRIAN25_HEIGHT); // the terrian2 is 90 before the base ground
+    displayObject(terrian25.groundPos.X, terrian25.groundPos.Y, terrian25_terrian25, TERRIAN25_WIDTH, TERRIAN25_HEIGHT);
+}
+
+void defineObstacles_LV2(void) {
+    // setObStacleObject(&terrian2_obstacle, terrian2.groundPos.X + TERRIAN2_OBSTACLE_X_OFFSET, terrian2.groundPos.Y + TERRIAN2_OBSTACLE_Y_OFFSET, OBJECT_WIDTH, OBJECT_HEIGHT);
+    // setObStacleObject(&terrian2_stair, terrian2.groundPos.X + TERRIAN2_STAIR_X_OFFSET, terrian2.groundPos.Y + TERRIAN2_STAIR_Y_OFFSET, STAIR_WIDTH, STAIR_HEIGHT);
+    // setObStacleObject(&terrian3_stair, terrian3.groundPos.X + TERRIAN3_STAIR_X_OFFSET, terrian2.groundPos.Y + TERRIAN3_STAIR_Y_OFFSET, STAIR_WIDTH, STAIR_HEIGHT);
+}
+
+void update_terrian_base_LV2(void) {
+    terrian22.groundPos.X -= TRANSITION_OFF;
+    setGroundObject(&terrian23, terrian23.groundPos.X + ground2X [1], GND_Y_POS - 90, TERRIAN23_WIDTH, TERRIAN23_HEIGHT); // update terrian 23 based on terrian 22
+    setGroundObject(&terrian25, terrian25.groundPos.X + ground2X [2], GND_Y_POS - 90, TERRIAN25_WIDTH, TERRIAN25_HEIGHT); // update terrian 25 based on terrian 22
+    setGroundObject(&terrian28, terrian28.groundPos.X + ground2X [3], GND_Y_POS - 90, TERRIAN28_WIDTH, TERRIAN28_HEIGHT); // update terrian 28 based on terrian 22
+    setGroundObject(&terrian29, terrian29.groundPos.X + ground2X [4], GND_Y_POS - 90, TERRIAN29_WIDTH, TERRIAN29_HEIGHT); // update terrian 29 based on terrian 22
+    setGroundObject(&ground_obj, ground_obj.groundPos.X + ground2X [5], GND_Y_POS - 90, TERRIAN1_WIDTH, TERRIAN1_HEIGHT); // update terrian 1 based on terrian 22 (terrian 30 is terrian 1)
+
+    defineObstacles(); //redefine obstacle based on the terrian 2 
+}
+
+void ground_transition_handle_LV2(void) {
+    displayObject(terrian22.groundPos.X + ground2X[0], terrian22.groundPos.Y + ground2Y[0], terrian22_terrian22, TERRIAN22_WIDTH, TERRIAN22_HEIGHT);
+    displayObject(terrian22.groundPos.X + ground2X[1], terrian22.groundPos.Y + ground2Y[1], terrian23_terrian23,TERRIAN23_WIDTH, TERRIAN23_HEIGHT);
+    displayObject(terrian22.groundPos.X + ground2X[2], terrian22.groundPos.Y + ground2Y[2], terrian25_terrian25,TERRIAN25_WIDTH, TERRIAN25_HEIGHT);
+    displayObject(terrian22.groundPos.X + ground2X[3], terrian22.groundPos.Y + ground2Y[3], terrian28_terrian28, TERRIAN28_WIDTH, TERRIAN28_HEIGHT);
+    displayObject(terrian22.groundPos.X + ground2X[4], terrian22.groundPos.Y + ground2Y[4], terrian29_terrian29,TERRIAN29_WIDTH, TERRIAN29_HEIGHT);
+    displayObject(terrian22.groundPos.X + ground2X[5], terrian22.groundPos.Y + ground2Y[5], terrian1_terrian1,TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
+    
+}
+
+void moveObstacleToLeft_LV2(void) {
+    deleteAnimationFrame(terrian22.groundPos.X + ground2X[0], terrian22.groundPos.Y + ground2Y[0], terrian22_terrian22, TERRIAN22_WIDTH, TERRIAN22_HEIGHT);
+    deleteAnimationFrame(terrian22.groundPos.X + ground2X[1], terrian22.groundPos.Y + ground2Y[1], terrian23_terrian23,TERRIAN23_WIDTH, TERRIAN23_HEIGHT);
+    deleteAnimationFrame(terrian22.groundPos.X + ground2X[2], terrian22.groundPos.Y + ground2Y[2], terrian25_terrian25,TERRIAN25_WIDTH, TERRIAN25_HEIGHT);
+    deleteAnimationFrame(terrian22.groundPos.X + ground2X[3], terrian22.groundPos.Y + ground2Y[3], terrian28_terrian28, TERRIAN28_WIDTH, TERRIAN28_HEIGHT);
+    deleteAnimationFrame(terrian22.groundPos.X + ground2X[4], terrian22.groundPos.Y + ground2Y[4], terrian29_terrian29,TERRIAN29_WIDTH, TERRIAN29_HEIGHT);
+    deleteAnimationFrame(terrian22.groundPos.X + ground2X[5], terrian22.groundPos.Y + ground2Y[5], terrian1_terrian1,TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
+
+
+    // handle ground transition
+    update_terrian_base_LV2();
+    ground_transition_handle_LV2();   
+}
 
 void handleSceneTransition(void) {
-    if (mario_char.currentPos.X > SCENE_TRANSITION_X) {
+    if (mario_char.currentPos.X > SCENE_TRANSITION_X && isReachTheFinal == 0) {
         isReachTransition = 1;
         mario_char.currentPos.X = SCENE_TRANSITION_X;
         setMarioHitBox();
         if(isHitObstacle == 0) {
-            moveObstacleToLeft(); 
+            moveObstacleToLeft(); // LEVEL 1
+            //lv2 ();
         }
     } else { // This 'else' handles BOTH scenarios
         if (mario_char.currentPos.X < INITIAL_POSITION_X) {
