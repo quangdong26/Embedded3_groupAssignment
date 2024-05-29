@@ -15,6 +15,7 @@ void handleLeftMovement(void) {
 
         if (goomba_char.currentPos.X < 0) { // Prevent Goomba from moving out of bounds
             goomba_char.currentPos.X = 0;
+            goomba_char.currentPos.Y = -300; //delete this mf by hiding him under the ground (he still there, but burried, no one remember)
         }
 
         deleteAnimationFrame(goomba_char.pastPos.X, goomba_char.pastPos.Y, defaultGoomba, OBJECT_WIDTH, OBJECT_HEIGHT);

@@ -3,8 +3,9 @@
 
 volatile int gameState = GAME_OFF;
 volatile int isGameInit = DEFAULT;
-
+int changeLv = 0;
 volatile int isHitObstacle = 0;
+volatile int isOnNextLevel = 0;
 
 volatile int isReachTheFinal = 0;
 
@@ -71,6 +72,11 @@ void defineObstacles(void) {
     // setObStacleObject(&terrian3_stair, terrian3.groundPos.X + TERRIAN3_STAIR_X_OFFSET, terrian3.groundPos.Y + TERRIAN3_STAIR_Y_OFFSET, STAIR_WIDTH, STAIR_HEIGHT);
     // setObStacleObject(&terrian10_stair, terrian10.groundPos.X + TERRIAN10_STAIR_X_OFFSET, terrian10.groundPos.Y + TERRIAN10_STAIR_Y_OFFSET, STAIR_TERRIAN10_WIDTH, STAIR_TERRIAN10_HEIGHT);
     setObStacleObject(&terrian22_tree, ground_obj.groundPos.X + TERRIAN22_TREE_X, ground_obj.groundPos.Y - TERRIAN22_TREE_Y, TREE_WIDTH, TREE_HEIGHT);
+    //displayObject(goomba_char.currentPos.X, goomba_char.currentPos.Y, defaultGoomba, OBJECT_WIDTH, OBJECT_HEIGHT);
+    setObStacleObject(&terrian2_obstacle, terrian2.groundPos.X + TERRIAN2_OBSTACLE_X_OFFSET, terrian2.groundPos.Y + TERRIAN2_OBSTACLE_Y_OFFSET, OBJECT_WIDTH, OBJECT_HEIGHT);
+    setObStacleObject(&terrian2_stair, terrian2.groundPos.X + TERRIAN2_STAIR_X_OFFSET, terrian2.groundPos.Y + TERRIAN2_STAIR_Y_OFFSET, STAIR_WIDTH, STAIR_HEIGHT);
+    setObStacleObject(&terrian3_stair, terrian3.groundPos.X + TERRIAN3_STAIR_X_OFFSET, terrian3.groundPos.Y + TERRIAN3_STAIR_Y_OFFSET, STAIR_WIDTH, STAIR_HEIGHT);
+    setObStacleObject(&terrian10_stair, terrian10.groundPos.X + TERRIAN10_STAIR_X_OFFSET, terrian10.groundPos.Y + TERRIAN10_STAIR_Y_OFFSET, STAIR_TERRIAN10_WIDTH, STAIR_TERRIAN10_HEIGHT);
 }
 
 
@@ -79,9 +85,11 @@ void reset(void) {
     drawMario();
     defineObstacles(); // after reset, define obstacle again
     renderGoombaInitPoint();
+    changeLv = 0;
     isFallingHole = 0;
     isOnObstacle = 0;
     isReachTheFinal = 0;
+    isOnNextLevel = 0;
 }
 
 
@@ -132,9 +140,12 @@ void gameOn(void) {
     static int delayCounter = 0; // Add delay counter
     // Setting up the initial value for game
     if (isGameInit == DEFAULT) {
-        //renderBackGround(); // LEVEL 1
-        clearGroundObject(&ground_obj);
-        renderBackGround_LV2(); //LEVEL 2
+        if(isOnNextLevel) {
+            clearGroundObject(&ground_obj);
+            renderBackGround_LV2(); //LEVEL 2
+        } else {
+            renderBackGround(); // LEVEL 1
+        }
         defineObstacles();
         drawMario(); 
         drawGoomba();
@@ -199,12 +210,12 @@ void gameOn(void) {
     handleSceneTransition();
     handleLeftMovement();
     handle_stay_on_obstacle(terrian22_tree);
-    // if (checkCollisionObstacle(mario_char, terrian2_stair) || checkCollisionObstacle(mario_char, terrian2_obstacle) || 
-    //     checkCollisionObstacle(mario_char, terrian3_stair) || checkCollisionObstacle(mario_char, terrian10_stair)) {
-    //     isHitObstacle = 1;
-    // } else {
-    //     isHitObstacle = 0; // to set the flag to freeze mario
-    // }
+    if (checkCollisionObstacle(mario_char, terrian2_stair) || checkCollisionObstacle(mario_char, terrian2_obstacle) || 
+        checkCollisionObstacle(mario_char, terrian3_stair) || checkCollisionObstacle(mario_char, terrian10_stair)) {
+        isHitObstacle = 1;
+    } else {
+        isHitObstacle = 0; // to set the flag to freeze mario
+    }
 
     // if (checkCollisionObstacle(mario_char, terrian22_tree)) {
     //     reset_LV2();
@@ -214,7 +225,8 @@ void gameOn(void) {
     if(check_enter_valley(mario_char, terrian3, TERRIAN3_STAIR_X_OFFSET, 0, TERRIAN3_VALLEY_Y) || 
        check_enter_valley(mario_char, terrian10, TERRIAN10_VALLEY_OFF, TERRIAN10_VALLEY_X, TERRIAN10_VALLEY_Y)) {
         isEnterValley = 1;
-        reset_LV2();
+        //reset_LV2();
+        //reset();
     } else {
         isEnterValley = 0;
     }
@@ -237,7 +249,7 @@ void ground_transition_handle(void) {
     displayObject(ground_obj.groundPos.X + TERRIAN1_WIDTH, ground_obj.groundPos.Y, terrian1_terrian1, TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
     displayObject(terrian2.groundPos.X, terrian2.groundPos.Y, terrian2_terrian2, TERRIAN2_WIDTH, TERRIAN2_HEIGHT);
     displayObject(ground_obj.groundPos.X + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH, ground_obj.groundPos.Y - 90, terrian3_terrian3, TERRIAN3_WIDTH, TERRIAN3_HEIGHT);
-    displayObject(goomba_char.currentPos.X, goomba_char.currentPos.Y, defaultGoomba, OBJECT_WIDTH, OBJECT_HEIGHT);
+    //displayObject(goomba_char.currentPos.X, goomba_char.currentPos.Y, defaultGoomba, OBJECT_WIDTH, OBJECT_HEIGHT);
     displayObject(ground_obj.groundPos.X + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH, ground_obj.groundPos.Y - TERRIAN10_SCENE_Y, terrian10_terrian10,TERRIAN10_WIDTH, TERRIAN10_HEIGHT);
     displayObject(ground_obj.groundPos.X + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH + TERRIAN1_WIDTH, ground_obj.groundPos.Y - TERRIAN11_SCENE_Y, terrian11_terrian11,TERRIAN11_WIDTH, TERRIAN11_HEIGHT);
 }
@@ -247,15 +259,26 @@ void ground_transition_handle(void) {
 */
 void update_terrian_base(void) {
     ground_obj.groundPos.X -= TRANSITION_OFF;
+    changeLv += 5;
     setGroundObject(&terrian2, ground_obj.groundPos.X + 2 * GND_LENGTH, GND_Y_POS - 90, TERRIAN2_WIDTH, TERRIAN2_HEIGHT); // update terrian 2 based on terrian 1
     setGroundObject(&terrian3, ground_obj.groundPos.X + 3 * GND_LENGTH, GND_Y_POS - 90, TERRIAN3_WIDTH, TERRIAN3_HEIGHT); // update terrian 3 based on terrian 1
     setGroundObject(&terrian10, ground_obj.groundPos.X + 4 * GND_LENGTH, GND_Y_POS - TERRIAN10_SCENE_Y, TERRIAN10_WIDTH, TERRIAN10_HEIGHT); // the terrian2 is 90 before the base ground
     defineObstacles(); //redefine obstacle based on the terrian 2 
     renderGoombaCurrentPoint(TRANSITION_OFF);
-
+    if (changeLv == 2400) { // 5*480
+        clearScreen ();
+        reset (); // change to level 2 right
+        isOnNextLevel = 1;
+    }
 }
 
 void moveObstacleToLeft(void) {
+    deleteAnimationFrame(goomba_char.currentPos.X + 4*TRANSITION_OFF, goomba_char.currentPos.Y, defaultGoomba, OBJECT_WIDTH, OBJECT_HEIGHT);
+    deleteAnimationFrame(goomba_char.currentPos.X + 3*TRANSITION_OFF, goomba_char.currentPos.Y, defaultGoomba, OBJECT_WIDTH, OBJECT_HEIGHT);
+    deleteAnimationFrame(goomba_char.currentPos.X + 2*TRANSITION_OFF, goomba_char.currentPos.Y, defaultGoomba, OBJECT_WIDTH, OBJECT_HEIGHT);
+    deleteAnimationFrame(goomba_char.currentPos.X + TRANSITION_OFF, goomba_char.currentPos.Y, defaultGoomba, OBJECT_WIDTH, OBJECT_HEIGHT);
+    deleteAnimationFrame(goomba_char.pastPos.X , goomba_char.currentPos.Y, defaultGoomba, OBJECT_WIDTH, OBJECT_HEIGHT);
+
     deleteAnimationFrame(ground_obj.groundPos.X + groundX[0], ground_obj.groundPos.Y + groundY[0], terrian1_terrian1, TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
     deleteAnimationFrame(ground_obj.groundPos.X + groundX[1], ground_obj.groundPos.Y + groundY[1], terrian1_terrian1,TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
     deleteAnimationFrame(terrian2.groundPos.X, terrian2.groundPos.Y + groundY[2], terrian2_terrian2,TERRIAN2_WIDTH, TERRIAN2_HEIGHT);
@@ -352,8 +375,12 @@ void handleSceneTransition(void) {
         mario_char.currentPos.X = SCENE_TRANSITION_X;
         setMarioHitBox();
         if(isHitObstacle == 0) {
-            //moveObstacleToLeft(); // LEVEL 1
-            lv2();
+            if(isOnNextLevel) {
+                lv2();
+            }
+            else {
+                moveObstacleToLeft(); // LEVEL 1
+            }
         }
     } else { // This 'else' handles BOTH scenarios
         if (mario_char.currentPos.X < INITIAL_POSITION_X) {
