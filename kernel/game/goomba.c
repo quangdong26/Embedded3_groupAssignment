@@ -46,3 +46,4 @@ void renderGoombaCurrentPoint(int x) {
     goomba_char.currentPos.X -= x;
     setGoombaHitBox();
 }
+

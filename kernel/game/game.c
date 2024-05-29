@@ -130,11 +130,32 @@ int checkCollisionObstacle(mario_t tmp_char, obstacle_t des_obstacle) {
     return collisionX && collisionY; // If both true, there's a collision
 }
 
-void handle_hit_obstacle_last(void) {
-    if(isHitObstacle) {
-        mario_char.currentPos.X = terrian10_stair.obstacleHitBox.top_left_corner.X - mario_char.marioHitBox.width;
-        setMarioHitBox();
+void checkCollisionAndResetGame(void) {
+    // Check collision between Mario and Goomba
+    if (checkCollisionWithGoomba(mario_char, goomba_char)) {
+        // Collision detected, reset the game
+        reset();
     }
+}
+
+int checkCollisionWithGoomba(mario_t mario, goomba_t goomba) {
+    // Mario's hitbox
+    int marioLeft = mario.marioHitBox.top_left_corner.X;
+    int marioRight = mario.marioHitBox.top_left_corner.X + mario.marioHitBox.width;
+    int marioTop = mario.marioHitBox.top_left_corner.Y;
+    int marioBottom = mario.marioHitBox.top_left_corner.Y + mario.marioHitBox.height;
+
+    // Goomba's hitbox
+    int goombaLeft = goomba.goombaHitBox.top_left_corner.X;
+    int goombaRight = goomba.goombaHitBox.top_left_corner.X + goomba.goombaHitBox.width;
+    int goombaTop = goomba.goombaHitBox.top_left_corner.Y;
+    int goombaBottom = goomba.goombaHitBox.top_left_corner.Y + goomba.goombaHitBox.height;
+
+    // Check for collision
+    int collisionX = (marioRight >= goombaLeft) && (marioLeft <= goombaRight);
+    int collisionY = (marioBottom >= goombaTop) && (marioTop <= goombaBottom);
+
+    return collisionX && collisionY; // If both true, there's a collision
 }
 
 /**
@@ -216,7 +237,8 @@ void gameOn(void) {
     // Apply gravity and handle jumping every cycle
     handleJumping(); // belong to mario object
     applyGravity(); // belong to mario object
-
+    // Check for collision with Goomba and reset game if needed
+    checkCollisionAndResetGame();
     handleSceneTransition();
     handleLeftMovement();
     handle_stay_on_obstacle(terrian22_tree);
