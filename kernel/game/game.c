@@ -176,10 +176,10 @@ void gameOn(void) {
             renderBackGround_LV2(); //LEVEL 2
         } else {
             renderBackGround(); // LEVEL 1
+            drawGoomba();
         }
         defineObstacles();
         drawMario(); 
-        drawGoomba();
         isGameInit = INIT;
     }
     
@@ -365,11 +365,6 @@ void drawGround_LV2(void) {
     displayObject(terrian29.groundPos.X, terrian29.groundPos.Y, terrian29_terrian29, TERRIAN29_WIDTH, TERRIAN29_HEIGHT);
 }
 
-void defineObstacles_LV2(void) {
-    // setObStacleObject(&terrian2_obstacle, terrian2.groundPos.X + TERRIAN2_OBSTACLE_X_OFFSET, terrian2.groundPos.Y + TERRIAN2_OBSTACLE_Y_OFFSET, OBJECT_WIDTH, OBJECT_HEIGHT);
-    // setObStacleObject(&terrian2_stair, terrian2.groundPos.X + TERRIAN2_STAIR_X_OFFSET, terrian2.groundPos.Y + TERRIAN2_STAIR_Y_OFFSET, STAIR_WIDTH, STAIR_HEIGHT);
-    // setObStacleObject(&terrian3_stair, terrian3.groundPos.X + TERRIAN3_STAIR_X_OFFSET, terrian2.groundPos.Y + TERRIAN3_STAIR_Y_OFFSET, STAIR_WIDTH, STAIR_HEIGHT);
-}
 
 void update_terrian_base_LV2(void) {
     ground_obj.groundPos.X -= TRANSITION_OFF;
@@ -421,14 +416,4 @@ void handleSceneTransition(void) {
         }
         isReachTransition = 0; // Reset only if Mario isn't transitioning
     }
-}
-
-int detect_black_pixel(mario_t tmp_char, unsigned long *terrian, ground_t tmp_ground) {
-    int marioLeft = tmp_char.marioHitBox.top_left_corner.X - tmp_ground.groundPos.X;
-    int marioRight = tmp_char.marioHitBox.top_left_corner.X + tmp_char.marioHitBox.width;
-    int marioTop = tmp_char.marioHitBox.top_left_corner.Y;
-    int marioBottom = tmp_char.marioHitBox.top_left_corner.Y + tmp_char.marioHitBox.height - tmp_ground.groundPos.Y;
-    
-    int indx = marioLeft * marioBottom;
-    if(terrian[indx] == 0x00000000000) return 1;
 }

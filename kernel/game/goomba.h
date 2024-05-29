@@ -17,6 +17,7 @@ typedef struct {
 } goomba_t;
 
 extern goomba_t goomba_char;
+extern goomba_t goomba2;
 extern volatile int goomba_frame_counter;
 
 
