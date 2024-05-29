@@ -389,6 +389,7 @@ void ground_transition_handle_LV2(void) {
     // displayObject(ground_obj.groundPos.X + ground2X[3], GND_Y_POS + ground2Y[3], terrian28_terrian28, TERRIAN28_WIDTH, TERRIAN28_HEIGHT);
     displayObject(terrian29.groundPos.X, terrian29.groundPos.Y, terrian29_terrian29,TERRIAN29_WIDTH, TERRIAN29_HEIGHT);
     // displayObject(ground_obj.groundPos.X + ground2X[5], GND_Y_POS + ground2Y[5], terrian1_terrian1,TERRIAN1_WIDTH, TERRIAN1_HEIGHT);
+    displayObject(ground_obj.groundPos.X + 3*GND_LENGTH + 100, GND_Y_POS - TERRIAN29_Y_OFFSET - 95, pole_Flag_Pole_SMB ,40, 270);
     
 }
 
@@ -397,6 +398,7 @@ void moveObstacleToLeft_LV2(void) {
     deleteAnimationFrame(ground_obj.groundPos.X + GND_LENGTH, GND_Y_POS + TERRIAN23_OFFSET, terrian23_terrian23,TERRIAN23_WIDTH, TERRIAN23_HEIGHT);
     deleteAnimationFrame(ground_obj.groundPos.X + 2*GND_LENGTH, GND_Y_POS - TERRIAN25_Y_OFFSET, terrian25_terrian25,TERRIAN25_WIDTH, TERRIAN25_HEIGHT);
     deleteAnimationFrame(ground_obj.groundPos.X + 3*GND_LENGTH, GND_Y_POS - TERRIAN29_Y_OFFSET, terrian29_terrian29,TERRIAN29_WIDTH, TERRIAN29_HEIGHT);
+    deleteAnimationFrame(ground_obj.groundPos.X + 3*GND_LENGTH+ 100, GND_Y_POS - TERRIAN29_Y_OFFSET -95, pole_Flag_Pole_SMB ,40, 270);
     // handle ground transition
     update_terrian_base_LV2();
     ground_transition_handle_LV2();   
