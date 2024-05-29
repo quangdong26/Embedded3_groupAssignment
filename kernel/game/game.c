@@ -6,6 +6,8 @@ volatile int isGameInit = DEFAULT;
 
 volatile int isHitObstacle = 0;
 
+volatile int isReachTheFinal = 0;
+
 const int groundY[6] = {0, 0, 0, -90,-250,-90}; // use this array to modify the Y dimension of each terrian
 const int groundX[6] = {0, 2*480, 3*480, 4*480, 5*480}; // use this array to modify the Y dimension of each terrian
 
@@ -77,6 +79,7 @@ void reset(void) {
     renderGoombaInitPoint();
     isFallingHole = 0;
     isOnObstacle = 0;
+    isReachTheFinal = 0;
 }
 
 
@@ -105,6 +108,13 @@ int checkCollisionObstacle(mario_t tmp_char, obstacle_t des_obstacle) {
     int collisionY = (marioBottom >= obstacleTop) && (marioTop <= obstacleBottom);
 
     return collisionX && collisionY; // If both true, there's a collision
+}
+
+void handle_hit_obstacle_last(void) {
+    if(isHitObstacle) {
+        mario_char.currentPos.X = terrian10_stair.obstacleHitBox.top_left_corner.X - mario_char.marioHitBox.width;
+        setMarioHitBox();
+    }
 }
 
 /**
@@ -181,7 +191,12 @@ void gameOn(void) {
     handleJumping(); // belong to mario object
     applyGravity(); // belong to mario object
 
-    //handle the scene scroller
+    //handle the scene scroller if mario did not reach the last terrian
+    // if(mario_char.currentPos.X + mario_char.marioHitBox.width >= terrian10_stair.obstacleHitBox.top_left_corner.X) {
+    //     isReachTheFinal = 1;
+    //     isReachTransition = 0;
+    //     handle_hit_obstacle_last();
+    // }
     handleSceneTransition();
     handleLeftMovement();
 
@@ -256,7 +271,7 @@ void moveObstacleToLeft(void) {
 }
 
 void handleSceneTransition(void) {
-    if (mario_char.currentPos.X > SCENE_TRANSITION_X) {
+    if (mario_char.currentPos.X > SCENE_TRANSITION_X && isReachTheFinal == 0) {
         isReachTransition = 1;
         mario_char.currentPos.X = SCENE_TRANSITION_X;
         setMarioHitBox();
