@@ -136,3 +136,15 @@ int uart_has_data(void) {
     // Implementation to check if UART has data, return 1 if data is available, 0 otherwise
 	return (AUX_MU_LSR & 0x01);
 }
+
+/**
+ * Display a value in binary format
+ */
+void uart_bi(unsigned int num) {
+	uart_puts("0b");
+	for (int pos = 31; pos >= 0; pos--) {
+		// Get the bit value
+		char bit = (num >> pos) & 0x1;
+		uart_sendc(bit + '0');
+	}
+}
