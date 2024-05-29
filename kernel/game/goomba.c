@@ -2,7 +2,7 @@
 #include "../image/defaultGoomba.h"
 
 goomba_t goomba_char;
-goomba_t goomba2;
+goomba_t goomba_2;
 volatile int goomba_frame_counter = 0;
 // volatile int frameCounter = 0;
 
