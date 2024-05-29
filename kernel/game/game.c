@@ -3,7 +3,7 @@
 
 volatile int gameState = GAME_OFF;
 volatile int isGameInit = DEFAULT;
-
+int changeLv = 0;
 volatile int isHitObstacle = 0;
 
 volatile int isReachTheFinal = 0;
@@ -77,6 +77,7 @@ void reset(void) {
     drawMario();
     defineObstacles(); // after reset, define obstacle again
     renderGoombaInitPoint();
+    changeLv = 0;
     isFallingHole = 0;
     isOnObstacle = 0;
     isReachTheFinal = 0;
@@ -249,12 +250,16 @@ void ground_transition_handle(void) {
 */
 void update_terrian_base(void) {
     ground_obj.groundPos.X -= TRANSITION_OFF;
+    changeLv += 5;
     setGroundObject(&terrian2, ground_obj.groundPos.X + 2 * GND_LENGTH, GND_Y_POS - 90, TERRIAN2_WIDTH, TERRIAN2_HEIGHT); // update terrian 2 based on terrian 1
     setGroundObject(&terrian3, ground_obj.groundPos.X + 3 * GND_LENGTH, GND_Y_POS - 90, TERRIAN3_WIDTH, TERRIAN3_HEIGHT); // update terrian 3 based on terrian 1
     setGroundObject(&terrian10, ground_obj.groundPos.X + 4 * GND_LENGTH, GND_Y_POS - TERRIAN10_SCENE_Y, TERRIAN10_WIDTH, TERRIAN10_HEIGHT); // the terrian2 is 90 before the base ground
     defineObstacles(); //redefine obstacle based on the terrian 2 
     renderGoombaCurrentPoint(TRANSITION_OFF);
-
+    if (changeLv == 2400) { // 5*480
+        clearScreen ();
+        reset (); // change to level 2 right
+    }
 }
 
 void moveObstacleToLeft(void) {
