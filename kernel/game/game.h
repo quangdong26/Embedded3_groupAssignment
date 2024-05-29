@@ -13,6 +13,7 @@
 #include "../image/terrian11.h"
 #include "../image/defaultGoomba.h"
 #include "../image/pole.h"
+#include "../image/end.h"
 
 #include "../image/terrian22.h"
 #include "../image/terrian23.h"

@@ -6,6 +6,7 @@ volatile int isGameInit = DEFAULT;
 int changeLv = 0;
 volatile int isHitObstacle = 0;
 volatile int isOnNextLevel = 0;
+volatile int endGame = 0;
 
 volatile int isReachTheFinal = 0;
 
@@ -378,8 +379,8 @@ void update_terrian_base_LV2(void) {
     // setGroundObject(&terrian28, terrian28.groundPos.X + ground2X [3], GND_Y_POS - 90, TERRIAN28_WIDTH, TERRIAN28_HEIGHT); // update terrian 28 based on terrian 22
     setGroundObject(&terrian29, ground_obj.groundPos.X + 3* GND_LENGTH, GND_Y_POS - TERRIAN29_Y_OFFSET, TERRIAN29_WIDTH, TERRIAN29_HEIGHT); // update terrian 29 based on terrian 22
     // setGroundObject(&ground_obj, ground_obj.groundPos.X + ground2X [5], GND_Y_POS - 90, TERRIAN1_WIDTH, TERRIAN1_HEIGHT); // update terrian 1 based on terrian 22 (terrian 30 is terrian 1)
-
     defineObstacles(); //redefine obstacle based on the terrian 2 
+
 }
 
 void ground_transition_handle_LV2(void) {
@@ -402,6 +403,13 @@ void moveObstacleToLeft_LV2(void) {
     // handle ground transition
     update_terrian_base_LV2();
     ground_transition_handle_LV2();   
+    endGame +=10;
+    if (endGame == 2400) { // 5*480
+        clearScreen ();
+        
+        reset();
+        displayObject(0,0,endG, 1024, 809);
+    }
 }
 
 void handleSceneTransition(void) {
