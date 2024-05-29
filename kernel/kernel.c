@@ -41,6 +41,16 @@ void printTeamName(void) {
     drawString(350, 400, "Huynh Quang Dong", 0x0000FF00, 3);   // Green color, zoom factor of 3
     drawString(350, 500, "Dinh Ngoc Minh", 0x00FFFF00, 3);    // Yellow color, zoom factor of 3
 }
+
+void drawFilledRect(int x, int y, int width, int height, uint32_t color) {
+    // Draw a filled rectangle
+    for (int i = y; i < y + height; i++) {
+        for (int j = x; j < x + width; j++) {
+            drawPixelARGB32(j, i, color);
+        }
+    }
+}
+
 void displayWelcomeMessage(void) {
    
 
@@ -50,10 +60,10 @@ void displayWelcomeMessage(void) {
     uint32_t white = 0xFFFFFFFF;   // White color for text
 
     // Draw black background
-    //drawFilledRect(0, 0, 1000, 600, black);
+    drawFilledRect(0, 0, 1000, 600, black);
 
     // Draw title box
-    //drawFilledRect(70, 50, 900, 200, brown); // Orange box for title background
+    drawFilledRect(70, 50, 900, 200, brown); // Orange box for title background
 
     // Draw title text
     drawString(150, 120, "SUPER MARIO ", white, 6); // White color, zoom factor of 6
