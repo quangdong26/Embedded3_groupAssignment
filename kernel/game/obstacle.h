@@ -42,6 +42,13 @@
 #define TERRIAN3_VALLEY_X 0
 #define TERRIAN3_VALLEY_Y 168
 
+#define TERRIAN22_TREE_X 256
+#define TERRIAN22_TREE_Y 80
+#define TREE_WIDTH 122
+#define TREE_HEIGHT 153
+
+#define TERRIAN25_SQUARE_X 72
+#define TERRIAN25_VALLEY_HEIGHT 207
 
 // Obstacle struct
 typedef struct {
@@ -57,6 +64,7 @@ extern obstacle_t terrian2_obstacle;
 extern obstacle_t terrian2_stair;
 extern obstacle_t terrian3_stair;
 extern obstacle_t terrian10_stair;
+extern obstacle_t terrian22_tree;
 
 
 

@@ -9,6 +9,7 @@
 #define GND_X_POS 0
 #define GND_Y_POS 600
 
+
 #define SCENE_TRANSITION_X 480  // Transition point
 
 // define terrian 10 starting y
@@ -17,6 +18,16 @@
 // define terrian 11 starting y
 #define TERRIAN11_SCENE_Y 25
 
+//define terrian 23 offset
+#define TERRIAN23_OFFSET -50
+
+#define TERRIAN25_Y_OFFSET 84
+
+#define TERRIAN29_Y_OFFSET 165 
+
+#define TERRIAN_23_H_OFFS (TERRIAN23_HEIGHT - (VIRTUAL_WINDOW_HEIGHT - (GND_Y_POS - TERRIAN23_OFFSET)))
+
+#define LV2_MARIO_START_OFF -10
 // define Left/right coordinate
 enum corner_position {
     TOP_LEFT_CORNER,
@@ -58,3 +69,4 @@ extern ground_t terrian28;
 extern ground_t terrian29;
 
 void setGroundObject(ground_t *tmp, int x, int y, int width, int height);
+void clearGroundObject(ground_t *tmp);

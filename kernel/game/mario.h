@@ -67,10 +67,11 @@ extern volatile int isFallingHole;
 
 // Function declaration
 void setMarioHitBox(void);
-void renderPlayerInitPoint(void);
+void renderPlayerInitPoint(ground_t tmp);
 void handleHorizontalMovement(MarioAction action);
 void applyGravity(void);
 void marioMovement(MarioAction action);
 void initStatMario(void);
 void handleJumping(void);
 void handle_stay_on_obstacle(obstacle_t tmp);
+void render_mario_lv2(void);

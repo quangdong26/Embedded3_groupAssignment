@@ -17,3 +17,10 @@ void setGroundObject(ground_t *tmp, int x, int y, int width, int height) {
     tmp->width = width;
     tmp->height = height;
 }
+
+void clearGroundObject(ground_t *tmp) {
+    tmp->groundPos.X = 0;
+    tmp->groundPos.Y = 0;
+    tmp->width = 0;
+    tmp->height = 0;
+}

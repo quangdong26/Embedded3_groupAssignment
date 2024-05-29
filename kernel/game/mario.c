@@ -225,17 +225,6 @@ void marioMovement(MarioAction action) {
 
 }
 
-void initStatMario(void) {
-    mario_char.height_size = OBJECT_HEIGHT;
-    mario_char.width_size = OBJECT_WIDTH;
-    mario_char.currentPos.X = ground_obj.groundPos.X;
-    mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Mario starts on the ground
-    mario_char.isJumping = 0;
-    mario_char.jumpVelocity = 0;
-    mario_char.horizontalSpeed = 0;
-    mario_char.canDoubleJump = 1; // Allow double jump initially
-    setMarioHitBox();
-}
 
 void setMarioHitBox(void) {
     // Set the hitbox to fit Mario's current size
@@ -245,17 +234,29 @@ void setMarioHitBox(void) {
     mario_char.marioHitBox.height = mario_char.height_size;
 }
 
-void renderPlayerInitPoint(void) {
+void renderPlayerInitPoint(ground_t tmp) {
     mario_char.height_size = OBJECT_HEIGHT;
     mario_char.width_size = OBJECT_WIDTH;
-    mario_char.currentPos.X = ground_obj.groundPos.X;
-    mario_char.currentPos.Y = ground_obj.groundPos.Y - OBJECT_HEIGHT; // Mario starts on the ground
+    mario_char.currentPos.X = tmp.groundPos.X;
+    mario_char.currentPos.Y = tmp.groundPos.Y - OBJECT_HEIGHT; // Mario starts on the ground
     mario_char.isJumping = 0;
     mario_char.jumpVelocity = 0;
     mario_char.horizontalSpeed = 0;
     mario_char.canDoubleJump = 1; // Allow double jump initially
     setMarioHitBox();
-}   
+}
+
+void render_mario_lv2(void) {
+    mario_char.height_size = OBJECT_HEIGHT;
+    mario_char.width_size = OBJECT_WIDTH;
+    mario_char.currentPos.X = ground_obj.groundPos.X;
+    mario_char.currentPos.Y = ground_obj.groundPos.Y  - OBJECT_HEIGHT; // Mario starts on the ground
+    mario_char.isJumping = 0;
+    mario_char.jumpVelocity = 0;
+    mario_char.horizontalSpeed = 0;
+    mario_char.canDoubleJump = 1; // Allow double jump initially
+    setMarioHitBox();
+}
 
 /**
  * @brief Check if Mario is above an obstacle and should land on it.
@@ -269,22 +270,21 @@ int checkLandingOnObstacle(mario_t tmp_char, obstacle_t des_obstacle) {
     int obstacleTop = des_obstacle.obstacleHitBox.top_left_corner.Y;
 
     if (marioBottom >= obstacleTop && tmp_char.currentPos.Y <= obstacleTop &&
-        tmp_char.currentPos.X + tmp_char.marioHitBox.width > des_obstacle.obstacleHitBox.top_left_corner.X &&
-        tmp_char.currentPos.X < des_obstacle.obstacleHitBox.top_left_corner.X + des_obstacle.width) {
+        tmp_char.currentPos.X + tmp_char.marioHitBox.width >= des_obstacle.obstacleHitBox.top_left_corner.X &&
+        tmp_char.currentPos.X <= des_obstacle.obstacleHitBox.top_left_corner.X + des_obstacle.width) {
         return 1; // Mario should land on the obstacle
     }
     return 0; // No landing on the obstacle
 }
 
 void handle_stay_on_obstacle(obstacle_t tmp) {
-    if(checkLandingOnObstacle(mario_char, tmp) && isOnObstacle == 0) {
+    if (checkLandingOnObstacle(mario_char, tmp)) {
+        if (isOnObstacle == 0) {
             isOnObstacle = 1;
-            mario_char.currentPos.X = tmp.obstaclePos.X;
-            mario_char.currentPos.Y = tmp.obstaclePos.Y + OBJECT_HEIGHT;
+            mario_char.currentPos.Y = tmp.obstacleHitBox.top_left_corner.Y - mario_char.marioHitBox.height;
             setMarioHitBox();
         }
-        if(checkLandingOnObstacle(mario_char, tmp) == 0 && isOnObstacle == 1) {
-            applyGravity();
-            isOnObstacle = 0;
-        }
+    } else {
+        isOnObstacle = 0;
+    }
 }
