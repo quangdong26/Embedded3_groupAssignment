@@ -158,9 +158,9 @@ void main()
     uart_init();
     // say hello
 
-    // enable interrupt controller
-    enable_irq();
-    timer_init();
+    // // enable interrupt controller
+    // enable_irq();
+    // timer_init();
     
     // Initialize frame buffer
     framebf_init(); // ini() again if you want to set the window screen to another size

@@ -31,3 +31,5 @@ void renderGoombaInitPoint(void);
 void handleLeftMovement(void);
 void initStatGoomba(void);
 void renderGoombaCurrentPoint(int x);
+void renderGoomba2InitPoint(void);
+void handleLeftRightMovement(int ending_offset);

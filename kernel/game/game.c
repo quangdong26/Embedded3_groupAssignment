@@ -59,6 +59,10 @@ void drawGoomba(void) {
     renderGoombaInitPoint();
     // int bottom_right_y = goomba_char.goombaHitBox.top_left_corner.Y + goomba_char.goombaHitBox.height;
     displayObject(goomba_char.currentPos.X, goomba_char.currentPos.Y, defaultGoomba, OBJECT_WIDTH, OBJECT_HEIGHT);
+
+    //render goomba 2
+    renderGoomba2InitPoint();
+    displayObject(goomba_2.currentPos.X, goomba_2.currentPos.Y, defaultGoomba, OBJECT_WIDTH, OBJECT_HEIGHT);
 }
 
 /**
@@ -67,6 +71,7 @@ void drawGoomba(void) {
 */
 void defineObstacles(void) {
     displayObject(goomba_char.currentPos.X, goomba_char.currentPos.Y, defaultGoomba, OBJECT_WIDTH, OBJECT_HEIGHT);
+    displayObject(goomba_2.currentPos.X, goomba_2.currentPos.Y, defaultGoomba, OBJECT_WIDTH, OBJECT_HEIGHT);
     // setObStacleObject(&terrian2_obstacle, terrian2.groundPos.X + TERRIAN2_OBSTACLE_X_OFFSET, terrian2.groundPos.Y + TERRIAN2_OBSTACLE_Y_OFFSET, OBJECT_WIDTH, OBJECT_HEIGHT);
     // setObStacleObject(&terrian2_stair, terrian2.groundPos.X + TERRIAN2_STAIR_X_OFFSET, terrian2.groundPos.Y + TERRIAN2_STAIR_Y_OFFSET, STAIR_WIDTH, STAIR_HEIGHT);
     // setObStacleObject(&terrian3_stair, terrian3.groundPos.X + TERRIAN3_STAIR_X_OFFSET, terrian3.groundPos.Y + TERRIAN3_STAIR_Y_OFFSET, STAIR_WIDTH, STAIR_HEIGHT);
@@ -85,6 +90,7 @@ void reset(void) {
     drawMario();
     defineObstacles(); // after reset, define obstacle again
     renderGoombaInitPoint();
+    renderGoomba2InitPoint();
     changeLv = 0;
     isFallingHole = 0;
     isOnObstacle = 0;
@@ -241,6 +247,7 @@ void gameOn(void) {
     checkCollisionAndResetGame();
     handleSceneTransition();
     handleLeftMovement();
+    handleLeftRightMovement(60);
     handle_stay_on_obstacle(terrian22_tree);
     if (checkCollisionObstacle(mario_char, terrian2_stair) || checkCollisionObstacle(mario_char, terrian2_obstacle) || 
         checkCollisionObstacle(mario_char, terrian3_stair) || checkCollisionObstacle(mario_char, terrian10_stair)) {
