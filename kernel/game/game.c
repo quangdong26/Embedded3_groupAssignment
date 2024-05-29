@@ -85,6 +85,7 @@ void reset(void) {
     drawMario();
     defineObstacles(); // after reset, define obstacle again
     renderGoombaInitPoint();
+    
     changeLv = 0;
     isFallingHole = 0;
     isOnObstacle = 0;
@@ -209,6 +210,8 @@ void gameOn(void) {
 
     handleSceneTransition();
     handleLeftMovement();
+      // Check for collision with Goomba and reset game if needed
+    checkCollisionAndResetGame();
     handle_stay_on_obstacle(terrian22_tree);
     if (checkCollisionObstacle(mario_char, terrian2_stair) || checkCollisionObstacle(mario_char, terrian2_obstacle) || 
         checkCollisionObstacle(mario_char, terrian3_stair) || checkCollisionObstacle(mario_char, terrian10_stair)) {
@@ -398,4 +401,32 @@ int detect_black_pixel(mario_t tmp_char, unsigned long *terrian, ground_t tmp_gr
     
     int indx = marioLeft * marioBottom;
     if(terrian[indx] == 0x00000000000) return 1;
+}
+
+void checkCollisionAndResetGame(void) {
+    // Check collision between Mario and Goomba
+    if (checkCollisionWithGoomba(mario_char, goomba_char)) {
+        // Collision detected, reset the game
+        reset();
+    }
+}
+
+int checkCollisionWithGoomba(mario_t mario, goomba_t goomba) {
+    // Mario's hitbox
+    int marioLeft = mario.marioHitBox.top_left_corner.X;
+    int marioRight = mario.marioHitBox.top_left_corner.X + mario.marioHitBox.width;
+    int marioTop = mario.marioHitBox.top_left_corner.Y;
+    int marioBottom = mario.marioHitBox.top_left_corner.Y + mario.marioHitBox.height;
+
+    // Goomba's hitbox
+    int goombaLeft = goomba.goombaHitBox.top_left_corner.X;
+    int goombaRight = goomba.goombaHitBox.top_left_corner.X + goomba.goombaHitBox.width;
+    int goombaTop = goomba.goombaHitBox.top_left_corner.Y;
+    int goombaBottom = goomba.goombaHitBox.top_left_corner.Y + goomba.goombaHitBox.height;
+
+    // Check for collision
+    int collisionX = (marioRight >= goombaLeft) && (marioLeft <= goombaRight);
+    int collisionY = (marioBottom >= goombaTop) && (marioTop <= goombaBottom);
+
+    return collisionX && collisionY; // If both true, there's a collision
 }
