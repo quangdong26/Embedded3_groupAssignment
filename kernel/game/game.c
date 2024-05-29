@@ -92,6 +92,16 @@ void reset(void) {
     isOnNextLevel = 0;
 }
 
+void reset2NextLevel(void) {
+    renderBackGround_LV2();
+    drawMario();
+    changeLv = 0;
+    isFallingHole = 0;
+    isOnObstacle = 0;
+    isReachTheFinal = 0;
+    isOnNextLevel = 0;
+}
+
 
 
 /** @brief this function check if 2 boject collision or not
@@ -267,7 +277,8 @@ void update_terrian_base(void) {
     renderGoombaCurrentPoint(TRANSITION_OFF);
     if (changeLv == 2400) { // 5*480
         clearScreen ();
-        reset (); // change to level 2 right
+        // reset2NextLevel(); // change to level 2 right
+        isGameInit = DEFAULT;
         isOnNextLevel = 1;
     }
 }
@@ -306,7 +317,7 @@ void renderBackGround_LV2(void) {
 void reset_LV2(void) {
     renderBackGround_LV2(); // Render the background
     drawMario();
-    defineObstacles_LV2(); // after reset, define obstacle again
+    defineObstacles();
     isFallingHole = 0;
     isOnObstacle = 0;
 }
