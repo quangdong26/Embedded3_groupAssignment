@@ -1,8 +1,17 @@
 
 #include "../uart/uart0.h"
 #include "../uart/uart1.h"
-#include "mario.h"
+#include "goomba.h"
 
+
+#include "../image/defaultMario.h"
+#include "../image/mariofw.h"
+#include "../image/terrian1.h"
+#include "../image/terrian2.h"
+#include "../image/terrian3.h"
+#include "../image/terrian10.h"
+#include "../image/terrian11.h"
+#include "../image/defaultGoomba.h"
 
 
 //define transition offset
@@ -23,12 +32,6 @@
 #define INCREMENT_VAL 1
 #define DECREMENT_VAL -1
 
-// Define he offset of obstacle position in the array bit
-#define TERRIAN2_OBSTACLE_X_OFFSET 194
-#define TERRIAN2_OBSTACLE_Y_OFFSET 37
-
-#define TERRIAN2_STAIR_X_OFFSET 385
-#define TERRIAN2_STAIR_Y_OFFSET 0
 
 
 // game state

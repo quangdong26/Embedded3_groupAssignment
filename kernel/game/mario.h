@@ -16,6 +16,8 @@
 
 
 
+
+
 // Mario action
 typedef enum {
     MOVE_LEFT,
@@ -57,6 +59,12 @@ extern volatile int frameCounter; // this can be changed in the game logic
 // stick on obstacle flag
 extern volatile int isOnObstacle;
 
+//check if enter the valley
+extern volatile int isEnterValley;
+
+// check if fallin the hole
+extern volatile int isFallingHole;
+
 // Function declaration
 void setMarioHitBox(void);
 void renderPlayerInitPoint(void);
@@ -65,3 +73,4 @@ void applyGravity(void);
 void marioMovement(MarioAction action);
 void initStatMario(void);
 void handleJumping(void);
+void handle_stay_on_obstacle(obstacle_t tmp);
