@@ -22,3 +22,4 @@ void uart_puts(char *s);
 void uart_hex(unsigned int num);
 void uart_dec(int num);
 int uart_has_data(void); 
+void uart_bi(uint32_t num);
