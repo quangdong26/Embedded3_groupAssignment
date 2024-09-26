@@ -4,9 +4,7 @@
 
 This project is an implementation of a **Mario Game** using **Bare Metal Programming** on a **Raspberry Pi**. The game runs directly on the hardware without an underlying operating system, leveraging the screen, keyboard input, and command-line interface for logging and debugging. 
 
-<p align="center">
-    <img src="[https://via.placeholder.com/800x400?text=Mario+Game+with+Bare+Metal+Programming](https://www.nintendo.com/eu/media/images/10_share_images/portals_3/2x1_SuperMarioHub_image1600w.jpg)" alt="Mario Game Banner"/>
-</p>
+
 
 ---
 
